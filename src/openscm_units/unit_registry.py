@@ -239,8 +239,10 @@ _STANDARD_GASES = {
 
 class ScmUnitRegistry(pint.UnitRegistry):
     """
-    Unit registry class for SCMData. Provides some convenience methods to add standard
-    unit and contexts.
+    Unit registry class.
+
+    Provides some convenience methods to add standard units and contexts with
+    lazy loading from disk.
     """
 
     _contexts_loaded = False
@@ -384,12 +386,14 @@ class ScmUnitRegistry(pint.UnitRegistry):
             self.add_context(transform_context)
 
     @staticmethod
-    def _add_transformations_to_context(  # pylint:disable=
+    def _add_transformations_to_context(
         context, base_unit, base_unit_ureg, other_unit, other_unit_ureg, conv_val
     ):
         """
-        Add all the transformations between units (mass x unit per time, mass x unit
-        etc. to a context for the two given units)
+        Add all the transformations between units to a context for the two
+        given units
+
+        Transformations are mass x unit per time, mass x unit etc.
         """
 
         def _get_transform_func(forward):
@@ -428,8 +432,11 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
 unit_registry = ScmUnitRegistry()  # pylint:disable=invalid-name
 """
-SCMData standard unit registry
+Standard unit registry
 
-The unit registry contains all of the recognised units.
+The unit registry contains all of the recognised units. Be careful, if you
+edit this registry in one place then it will also be edited in any other
+places that use ``openscm_units``. If you want multiple, separate registries,
+create multiple instances of ``ScmUnitRegistry``.
 """
 unit_registry.add_standards()
