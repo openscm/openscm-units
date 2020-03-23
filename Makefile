@@ -1,6 +1,10 @@
 .DEFAULT_GOAL := help
 
 VENV_DIR ?= venv
+TESTS_DIR=$(PWD)/tests
+
+NOTEBOOKS_DIR=./notebooks
+NOTEBOOKS_SANITIZE_FILE=$(TESTS_DIR)/notebook-tests.cfg
 
 define PRINT_HELP_PYSCRIPT
 import re, sys
@@ -50,11 +54,27 @@ isort: $(VENV_DIR)  ## format the code
 		echo Not trying any formatting. Working directory is dirty ... >&2; \
 	fi;
 
+.PHONY: docs
 docs: $(VENV_DIR)  ## build the docs
 	$(VENV_DIR)/bin/sphinx-build -M html docs/source docs/build
 
+.PHONY: test
 test:  $(VENV_DIR) ## run the full testsuite
 	$(VENV_DIR)/bin/pytest --cov -rfsxEX --cov-report term-missing
+
+.PHONY: test-notebooks
+test-notebooks: $(VENV_DIR)  ## test the notebooks
+	$(VENV_DIR)/bin/pytest -r a --nbval $(NOTEBOOKS_DIR) --sanitize-with $(NOTEBOOKS_SANITIZE_FILE)
+
+.PHONY: format-notebooks
+format-notebooks: $(VENV_DIR)  ## format the notebooks
+	@status=$$(git status --porcelain $(NOTEBOOKS_DIR)); \
+	if test "x$${status}" = x; then \
+		$(VENV_DIR)/bin/black-nb $(NOTEBOOKS_DIR); \
+	else \
+		echo Not trying any formatting. Working directory is dirty ... >&2; \
+	fi;
+
 
 test-testpypi-install: $(VENV_DIR)  ## test whether installing from test PyPI works
 	$(eval TEMPVENV := $(shell mktemp -d))
