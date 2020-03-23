@@ -2,7 +2,7 @@ import versioneer
 from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
-PACKAGE_NAME = "units"
+PACKAGE_NAME = "openscm-units"
 AUTHORS = [
     ("Zeb Nicholls", "zebedee.nicholls@climate-energy-college.org"),
     ("Sven Willner", "sven.willner@pik-potsdam.de"),
