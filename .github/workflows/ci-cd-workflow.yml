@@ -146,7 +146,7 @@ jobs:
     - name: Install package from test PyPI
       run: |
         pip install --upgrade pip
-        pip install pandas
+        pip install pandas pint
         pip install -i https://testpypi.python.org/pypi openscm-units --no-dependencies --pre
     - name: Test installation
       run: |
