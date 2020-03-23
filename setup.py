@@ -16,7 +16,11 @@ README = "README.rst"
 
 SOURCE_DIR = "src"
 
-REQUIREMENTS = ["pint"]
+PACKAGES = find_packages(SOURCE_DIR)  # no exclude as only searching in `src`
+PACKAGE_DIR = {"": SOURCE_DIR}
+PACKAGE_DATA = {"openscm_units": ["data/*.csv"]}
+
+REQUIREMENTS = ["pandas", "pint"]
 REQUIREMENTS_NOTEBOOKS = [
     "notebook",
 ]
@@ -25,7 +29,7 @@ REQUIREMENTS_DOCS = ["sphinx>=1.4", "sphinx_rtd_theme"]
 REQUIREMENTS_DEPLOY = ["twine>=1.11.0", "setuptools>=38.6.0", "wheel>=0.31.0"]
 
 REQUIREMENTS_DEV = [
-    *["bandit", "black", "flake8", "isort", "mypy", "pydocstyle", "pylint>=2.4.4"],
+    *["bandit", "black", "flake8", "isort", "mypy", "numpy", "pydocstyle", "pylint>=2.4.4"],
     *REQUIREMENTS_DEPLOY,
     *REQUIREMENTS_DOCS,
     *REQUIREMENTS_NOTEBOOKS,
@@ -91,9 +95,10 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     keywords=["openscm", "units", "python", "repo", "simple", "climate", "model"],
-    packages=find_packages(SOURCE_DIR),  # no exclude as only searching in `src`
-    package_dir={"": SOURCE_DIR},
-    # include_package_data=True,
+    packages=PACKAGES,
+    package_dir=PACKAGE_DIR,
+    package_data=PACKAGE_DATA,
+    include_package_data=True,
     install_requires=REQUIREMENTS,
     extras_require=REQUIREMENTS_EXTRAS,
     cmdclass=cmdclass,
