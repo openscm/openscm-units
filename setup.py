@@ -22,7 +22,7 @@ PACKAGE_DATA = {"openscm_units": ["data/*.csv"]}
 
 REQUIREMENTS = ["pandas", "pint"]
 REQUIREMENTS_NOTEBOOKS = [
-    "notebook",
+    "notebook", "seaborn"
 ]
 REQUIREMENTS_TESTS = ["codecov", "coverage", "nbval", "pytest-cov", "pytest>=4.0"]
 REQUIREMENTS_DOCS = ["sphinx>=1.4", "sphinx_rtd_theme"]
