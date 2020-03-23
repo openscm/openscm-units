@@ -4,7 +4,7 @@ allows us to easily define units as well as contexts. Contexts allow us to perfo
 conversions which would not normally be allowed e.g. in the 'AR4GWP100'
 context we can convert from CO2 to CH4 using the AR4GWP100 equivalence metric.
 
-As illustration of how the ``unit_regsitry`` can be used is shown below:
+An illustration of how the ``unit_regsitry`` can be used is shown below:
 
 .. code:: python
 
@@ -19,7 +19,11 @@ As illustration of how the ``unit_regsitry`` can be used is shown below:
     >>> emissions_aus.to("Mt CO2 / yr")
     <Quantity(1246.666666666667, 'CO2 * megametric_ton / a')>
 
-**A note on emissions units**
+    >>> with unit_registry.context("AR4GWP100"):
+    ...     (100 * unit_registry("Mt CH4 / yr")).to("Mt CO2 / yr")
+    <Quantity(2500.0, 'CO2 * megametric_ton / a')>
+
+**More details on emissions units**
 
 Emissions are a flux composed of three parts: mass, the species being emitted and the
 time period e.g. "t CO2 / yr". As mass and time are part of SI units, all we need to
@@ -52,7 +56,7 @@ emissions to be reported in C or CO2, despite the fact that they are fundamental
 different chemical species, is a convention which is particular to emissions (as far as
 we can tell).
 
-Finally, contexts are particularly useful for emissions as they facilitate much easier
+Pint's contexts are particularly useful for emissions as they facilitate
 metric conversions. With a context, a conversion which wouldn't normally be allowed
 (e.g. tCO2 --> tN2O) is allowed and will use whatever metric conversion is appropriate
 for that context (e.g. AR4GWP100).
