@@ -16,8 +16,8 @@ As illustration of how the ``unit_regsitry`` can be used is shown below:
     >>> emissions_aus
     <Quantity(0.34, 'C * gigametric_ton / a')>
 
-    >>> emissions_aus.to("Mt C / week")
-    <Quantity(6.516224050620789, 'C * megametric_ton / week')>
+    >>> emissions_aus.to("Mt CO2 / yr")
+    <Quantity(1246.666666666667, 'CO2 * megametric_ton / a')>
 
 **A note on emissions units**
 
@@ -65,7 +65,6 @@ Methane emissions are defined as 'CH4'. In order to prevent inadvertent conversi
 'CH4' to e.g. 'CO2' via 'C', the conversion 'CH4' <--> 'C' is by default forbidden.
 However, it can be performed within the context 'CH4_conversions' as shown below:
 
-# TODO: check all below
 .. code:: python
 
     >>> from openscm_units import unit_registry
@@ -73,12 +72,14 @@ However, it can be performed within the context 'CH4_conversions' as shown below
     pint.errors.DimensionalityError: Cannot convert from 'CH4' ([methane]) to 'C' ([carbon])
 
     # with a context, the conversion becomes legal again
-    >>> unit_registry("CH4").to("C", context="CH4_conversions")
-    0.75
+    >>> with unit_registry.context("CH4_conversions"):
+    ...     unit_registry("CH4").to("C")
+    <Quantity(0.75, 'C')>
 
     # as an unavoidable side effect, this also becomes possible
-    >>> unit_registry("CH4").to("CO2", context="CH4_conversions")
-    2.75
+    >>> with unit_registry.context("CH4_conversions"):
+    ...     unit_registry("CH4").to("CO2")
+    <Quantity(2.75, 'CO2')>
 
 *NOx*
 
@@ -93,12 +94,14 @@ prevent inadvertent conversions from 'NOx' to e.g. 'N2O', the conversion 'NOx' <
     pint.errors.DimensionalityError: Cannot convert from 'NOx' ([NOx]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
-    >>> unit_registry("NOx").to("N", context="NOx_conversions")
-    0.30434782608695654
+    >>> with unit_registry.context("NOx_conversions"):
+    ...     unit_registry("NOx").to("N")
+    <Quantity(0.30434782608695654, 'N')>
 
     # as an unavoidable side effect, this also becomes possible
-    >>> unit_registry("NOx").to("N2O", context="NOx_conversions")
-    0.9565217391304348
+    >>> with unit_registry.context("NOx_conversions"):
+    ...     unit_registry("NOx").to("N2O")
+    <Quantity(0.9565217391304348, 'N2O')>
 """
 from os import path
 
