@@ -18,3 +18,7 @@ disable=
 ignore-comments=no
 ignore-docstrings=yes
 ignore-imports=yes
+
+[DESIGN]
+
+max-args=10

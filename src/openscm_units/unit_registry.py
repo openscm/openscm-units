@@ -110,7 +110,7 @@ import pint
 # - list: this entry defines a derived unit
 #    - the first entry defines how to convert from base units
 #    - other entries define other names i.e. aliases
-_standard_gases = {
+_STANDARD_GASES = {
     # CO2, CH4, N2O
     "C": "carbon",
     "CO2": ["12/44 * C", "carbon_dioxide"],
@@ -244,7 +244,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         Has to be done separately because of pint's weird initializing.
         """
-        self._add_gases(_standard_gases)
+        self._add_gases(_STANDARD_GASES)
 
         self.define("a = 1 * year = annum = yr")
         self.define("h = hour")
@@ -345,7 +345,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         other_unit_ureg = self.carbon
 
         for col in metric_conversions:
-            tc = pint.Context(col)
+            transform_context = pint.Context(col)
             for label, val in metric_conversions[col].iteritems():
                 conv_val = (
                     val
@@ -365,14 +365,19 @@ class ScmUnitRegistry(pint.UnitRegistry):
                     self, base_unit.replace("[", "").replace("]", "")
                 )
 
-                tc = self._add_transformations_to_context(
-                    tc, base_unit, base_unit_ureg, "[carbon]", other_unit_ureg, conv_val
+                transform_context = self._add_transformations_to_context(
+                    transform_context,
+                    base_unit,
+                    base_unit_ureg,
+                    "[carbon]",
+                    other_unit_ureg,
+                    conv_val,
                 )
 
-            self.add_context(tc)
+            self.add_context(transform_context)
 
     @staticmethod
-    def _add_transformations_to_context(
+    def _add_transformations_to_context(  # pylint:disable=
         context, base_unit, base_unit_ureg, other_unit, other_unit_ureg, conv_val
     ):
         """
@@ -414,7 +419,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         return context
 
 
-unit_registry = ScmUnitRegistry()
+unit_registry = ScmUnitRegistry()  # pylint:disable=invalid-name
 """
 SCMData standard unit registry
 
