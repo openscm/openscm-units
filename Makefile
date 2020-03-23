@@ -83,7 +83,6 @@ $(VENV_DIR): setup.py
 
 	$(VENV_DIR)/bin/pip install --upgrade pip
 	$(VENV_DIR)/bin/pip install -e .[dev]
-	$(VENV_DIR)/bin/jupyter nbextension enable --py widgetsnbextension
 
 	touch $(VENV_DIR)
 
