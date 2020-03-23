@@ -21,9 +21,7 @@ PACKAGE_DIR = {"": SOURCE_DIR}
 PACKAGE_DATA = {"openscm_units": ["data/*.csv"]}
 
 REQUIREMENTS = ["pandas", "pint"]
-REQUIREMENTS_NOTEBOOKS = [
-    "notebook", "seaborn"
-]
+REQUIREMENTS_NOTEBOOKS = ["notebook", "seaborn"]
 REQUIREMENTS_TESTS = ["codecov", "coverage", "nbval", "pytest-cov", "pytest>=4.0"]
 REQUIREMENTS_DOCS = ["sphinx>=1.4", "sphinx_rtd_theme"]
 REQUIREMENTS_DEPLOY = ["twine>=1.11.0", "setuptools>=38.6.0", "wheel>=0.31.0"]
