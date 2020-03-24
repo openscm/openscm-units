@@ -261,6 +261,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         self.define("degreeC = degC")
         self.define("degreeF = degF")
         self.define("kt = 1000 * t")  # since kt is used for "knot" in the defaults
+        self.define("Tt = 1000000000000 * t")  # since Tt is used for "tex" in the defaults
 
         self.define("ppt = [concentrations]")
         self.define("ppb = 1000 * ppt")
