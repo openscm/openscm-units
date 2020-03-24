@@ -82,6 +82,32 @@ def test_emissions_flux():
     np.testing.assert_allclose(tOC.to("tOC/hr").magnitude, 1 / 24)
 
 
+@pytest.mark.parametrize(
+    "prefix_start,prefix_end,factor",
+    (
+        ("Tt", "Tt", 10 ** 0),
+        ("Tt", "Gt", 10 ** 3),
+        ("Tt", "Mt", 10 ** 6),
+        ("Tt", "kt", 10 ** 9),
+        ("Gt", "Gt", 10 ** 0),
+        ("Gt", "Mt", 10 ** 3),
+        ("Gt", "kt", 10 ** 6),
+        ("Gt", "t", 10 ** 9),
+        ("Mt", "Mt", 10 ** 0),
+        ("Mt", "kt", 10 ** 3),
+        ("Mt", "t", 10 ** 6),
+        ("kt", "kt", 10 ** 0),
+        ("kt", "t", 10 ** 3),
+        ("t", "t", 10 ** 0),
+    ),
+)
+def test_emissions_prefix(prefix_start, prefix_end, factor):
+    tCO2 = unit_registry("{} CO2/yr".format(prefix_start))
+    np.testing.assert_allclose(
+        tCO2.to("{} CO2/yr".format(prefix_end)).magnitude, factor
+    )
+
+
 def test_kt():
     kt = unit_registry("kt")
     np.testing.assert_allclose(kt.to("t").magnitude, 1000)
