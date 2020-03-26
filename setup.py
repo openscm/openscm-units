@@ -9,7 +9,7 @@ AUTHORS = [
     ("Jared Lewis", "jared.lewis@climate-energy-college.org"),
     ("Robert Gieseke", "robert.gieseke@pik-potsdam.de"),
 ]
-URL = "https://github.com/openscm-project/openscm-units"
+URL = "https://github.com/openscm/openscm-units"
 
 DESCRIPTION = "Thin wrapper to run simple climate models (emissions driven runs only)"
 README = "README.rst"
