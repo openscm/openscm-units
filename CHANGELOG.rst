@@ -4,6 +4,8 @@ Changelog
 master
 ------
 
+- (`#4 <https://github.com/openscm/openscm-units/pull/4>`_) Update README and url to point to openscm organisation
+
 v0.1.1
 ------
 
