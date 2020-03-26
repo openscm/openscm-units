@@ -73,8 +73,8 @@ Please see the `Development section of the docs <https://openscm-units.readthedo
     :target: https://github.com/openscm-project/openscm-units/actions?query=workflow%3A%22OpenSCM-Units+CI-CD%22
 .. |PyPI Install| image:: https://github.com/openscm-project/openscm-units/workflows/Test%20PyPI%20install/badge.svg
     :target: https://github.com/openscm-project/openscm-units/actions?query=workflow%3A%22Test+PyPI+install%22
-.. |Coverage| image:: https://img.shields.io/pypi/pyversions/openscm-units.svg
-    :target: https://pypi.org/project/openscm-units/
+.. |Coverage| image:: https://img.shields.io/codecov/c/github/openscm/openscm-units.svg
+    :target: https://codecov.io/gh/openscm/openscm-units
 .. |PyPI| image:: https://img.shields.io/pypi/pyversions/openscm-units.svg
     :target: https://pypi.org/project/openscm-units/
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/openscm-units.svg
