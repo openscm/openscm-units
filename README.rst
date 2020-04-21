@@ -48,7 +48,7 @@ dependencies using
 
     pip install openscm-units[notebooks]
 
-**Coming soon** OpenSCM-Units can also be installed with conda
+OpenSCM-Units can also be installed with conda
 
 .. code:: bash
 

@@ -4,6 +4,8 @@ Changelog
 master
 ------
 
+- (`#6 <https://github.com/openscm/openscm-units/pull/6>`_) Add conda install instructions
+
 v0.1.2
 ------
 
