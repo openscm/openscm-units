@@ -13,6 +13,9 @@ OpenSCM-Units
 | |conda install| | |conda platforms| | |conda version| |
 +-----------------+-------------------+-----------------+
 
++----------------+---------------+-----------+
+| |Contributors| | |Last Commit| | |License| |
++----------------+---------------+-----------+
 
 Brief summary
 +++++++++++++
@@ -90,5 +93,11 @@ Please see the `Development section of the docs <https://openscm-units.readthedo
     :target: https://anaconda.org/conda-forge/openscm-units
 .. |conda version| image:: https://img.shields.io/conda/vn/conda-forge/openscm-units.svg
     :target: https://anaconda.org/conda-forge/openscm-units
+.. |Contributors| image:: https://img.shields.io/github/contributors/openscm/openscm-units.svg
+    :target: https://github.com/openscm/openscm-units/graphs/contributors
+.. |Last Commit| image:: https://img.shields.io/github/last-commit/openscm/openscm-units.svg
+    :target: https://github.com/openscm/openscm-units/commits/master
+.. |License| image:: https://img.shields.io/github/license/openscm/openscm-units.svg
+    :target: https://github.com/openscm/openscm-units/blob/master/LICENSE
 
 .. sec-end-links
