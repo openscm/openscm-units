@@ -9,6 +9,11 @@ OpenSCM-Units
 |  |PyPI Install|  |     |PyPI|     |  |PyPI Version|  |
 +------------------+----------------+------------------+
 
++-----------------+-------------------+-----------------+
+| |conda install| | |conda platforms| | |conda version| |
++-----------------+-------------------+-----------------+
+
+
 Brief summary
 +++++++++++++
 
@@ -71,13 +76,19 @@ Please see the `Development section of the docs <https://openscm-units.readthedo
 
 .. |CI CD| image:: https://github.com/openscm/openscm-units/workflows/OpenSCM-Units%20CI-CD/badge.svg
     :target: https://github.com/openscm/openscm-units/actions?query=workflow%3A%22OpenSCM-Units+CI-CD%22
-.. |PyPI Install| image:: https://github.com/openscm/openscm-units/workflows/Test%20PyPI%20install/badge.svg
-    :target: https://github.com/openscm/openscm-units/actions?query=workflow%3A%22Test+PyPI+install%22
 .. |Coverage| image:: https://img.shields.io/codecov/c/github/openscm/openscm-units.svg
     :target: https://codecov.io/gh/openscm/openscm-units
+.. |PyPI Install| image:: https://github.com/openscm/openscm-units/workflows/Test%20PyPI%20install/badge.svg
+    :target: https://github.com/openscm/openscm-units/actions?query=workflow%3A%22Test+PyPI+install%22
 .. |PyPI| image:: https://img.shields.io/pypi/pyversions/openscm-units.svg
     :target: https://pypi.org/project/openscm-units/
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/openscm-units.svg
     :target: https://pypi.org/project/openscm-units/
+.. |conda install| image:: https://github.com/openscm/openscm-units/workflows/Test%20conda%20install/badge.svg
+    :target: https://github.com/openscm/openscm-units/actions?query=workflow%3A%22Test+conda+install%22
+.. |conda platforms| image:: https://img.shields.io/conda/pn/conda-forge/openscm-units.svg
+    :target: https://anaconda.org/conda-forge/openscm-units
+.. |conda version| image:: https://img.shields.io/conda/vn/conda-forge/openscm-units.svg
+    :target: https://anaconda.org/conda-forge/openscm-units
 
 .. sec-end-links
