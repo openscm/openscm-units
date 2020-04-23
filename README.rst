@@ -1,9 +1,9 @@
 OpenSCM-Units
 =============
 
-+----------------+--------------+
-|    |CI CD|     |  |Coverage|  |
-+----------------+--------------+
++----------------+--------------+--------+
+|    |CI CD|     |  |Coverage|  | |Docs| |
++----------------+--------------+--------+
 
 +------------------+----------------+------------------+
 |  |PyPI Install|  |     |PyPI|     |  |PyPI Version|  |
@@ -81,6 +81,8 @@ Please see the `Development section of the docs <https://openscm-units.readthedo
     :target: https://github.com/openscm/openscm-units/actions?query=workflow%3A%22OpenSCM-Units+CI-CD%22
 .. |Coverage| image:: https://img.shields.io/codecov/c/github/openscm/openscm-units.svg
     :target: https://codecov.io/gh/openscm/openscm-units
+.. |Docs| image:: https://readthedocs.org/projects/openscm-units/badge/?version=latest
+    :target: https://openscm-units.readthedocs.io/en/latest/?badge=latest
 .. |PyPI Install| image:: https://github.com/openscm/openscm-units/workflows/Test%20PyPI%20install/badge.svg
     :target: https://github.com/openscm/openscm-units/actions?query=workflow%3A%22Test+PyPI+install%22
 .. |PyPI| image:: https://img.shields.io/pypi/pyversions/openscm-units.svg
