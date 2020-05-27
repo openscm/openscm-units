@@ -20,4 +20,6 @@ def import_submodules(package_name):
 
 
 import_submodules("openscm_units")
+ur = openscm_units.unit_registry
+ur.enable_contexts("AR5GWP100")
 print(openscm_units.__version__)
