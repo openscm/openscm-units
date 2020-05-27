@@ -76,6 +76,14 @@ format-notebooks: $(VENV_DIR)  ## format the notebooks
 		echo Not trying any formatting. Working directory is dirty ... >&2; \
 	fi;
 
+test-install: $(VENV_DIR)  ## test installing in a fresh virtual environment
+	$(eval TEMPVENV := $(shell mktemp -d))
+	python3 -m venv $(TEMPVENV)
+	$(TEMPVENV)/bin/pip install pip --upgrade
+	$(TEMPVENV)/bin/pip install wheel
+	$(TEMPVENV)/bin/pip install .
+	$(TEMPVENV)/bin/python scripts/test_install.py
+
 
 test-testpypi-install: $(VENV_DIR)  ## test whether installing from test PyPI works
 	$(eval TEMPVENV := $(shell mktemp -d))

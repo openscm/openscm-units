@@ -11,7 +11,7 @@ AUTHORS = [
 ]
 URL = "https://github.com/openscm/openscm-units"
 
-DESCRIPTION = "Thin wrapper to run simple climate models (emissions driven runs only)"
+DESCRIPTION = "OpenSCM-Units is a repository for handling of units related to simple climate modelling."
 README = "README.rst"
 
 SOURCE_DIR = "src"
