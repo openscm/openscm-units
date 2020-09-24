@@ -320,7 +320,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
         """
         _ch4_context = pint.Context("CH4_conversions")
         _ch4_context = self._add_transformations_to_context(
-            _ch4_context, "[methane]", self.CH4, "[carbon]", self.C, 12 / 16,
+            _ch4_context,
+            "[methane]",
+            self.CH4,
+            "[carbon]",
+            self.C,
+            12 / 16,
         )
         self.add_context(_ch4_context)
 
@@ -345,7 +350,9 @@ class ScmUnitRegistry(pint.UnitRegistry):
         """
         metric_conversions = pd.read_csv(
             path.join(
-                path.dirname(path.abspath(__file__)), "data", "metric_conversions.csv",
+                path.dirname(path.abspath(__file__)),
+                "data",
+                "metric_conversions.csv",
             ),
             skiprows=1,  # skip source row
             header=0,
