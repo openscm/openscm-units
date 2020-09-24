@@ -4,6 +4,8 @@ Changelog
 master
 ------
 
+- (`#7 <https://github.com/openscm/openscm-units/pull/7>`_) Added C7F16, C8F18 and SO2F2 AR5GWP100 (closes `#8 <https://github.com/openscm/openscm-units/issues/8>`_)
+
 v0.1.3
 ------
 

@@ -25,7 +25,7 @@ checks: $(VENV_DIR)  ## run all the checks
 	@echo "=== bandit ==="; $(VENV_DIR)/bin/bandit -c .bandit.yml -r openscm_units || echo "--- bandit failed ---" >&2; \
 		echo "\n\n=== black ==="; $(VENV_DIR)/bin/black --check src tests setup.py docs/source/conf.py --exclude openscm_units/_version.py || echo "--- black failed ---" >&2; \
 		echo "\n\n=== flake8 ==="; $(VENV_DIR)/bin/flake8 src tests setup.py || echo "--- flake8 failed ---" >&2; \
-		echo "\n\n=== isort ==="; $(VENV_DIR)/bin/isort --check-only --quiet --recursive src tests setup.py || echo "--- isort failed ---" >&2; \
+		echo "\n\n=== isort ==="; $(VENV_DIR)/bin/isort --check-only --quiet src tests setup.py || echo "--- isort failed ---" >&2; \
 		echo "\n\n=== pydocstyle ==="; $(VENV_DIR)/bin/pydocstyle src || echo "--- pydocstyle failed ---" >&2; \
 		echo "\n\n=== pylint ==="; $(VENV_DIR)/bin/pylint src || echo "--- pylint failed ---" >&2; \
 		echo "\n\n=== notebook tests ==="; $(VENV_DIR)/bin/pytest notebooks -r a --nbval --sanitize-with tests/notebook-tests.cfg || echo "--- notebook tests failed ---" >&2; \
@@ -50,7 +50,7 @@ black: $(VENV_DIR)  ## apply black formatter to source and tests
 isort: $(VENV_DIR)  ## format the code
 	@status=$$(git status --porcelain src tests); \
 	if test "x$${status}" = x; then \
-		$(VENV_DIR)/bin/isort --recursive src tests setup.py; \
+		$(VENV_DIR)/bin/isort src tests setup.py; \
 	else \
 		echo Not trying any formatting. Working directory is dirty ... >&2; \
 	fi;
@@ -110,7 +110,7 @@ virtual-environment:  ## update venv, create a new venv if it doesn't exist
 $(VENV_DIR): setup.py
 	[ -d $(VENV_DIR) ] || python3 -m venv $(VENV_DIR)
 
-	$(VENV_DIR)/bin/pip install --upgrade pip
+	$(VENV_DIR)/bin/pip install --upgrade pip wheel
 	$(VENV_DIR)/bin/pip install -e .[dev]
 
 	touch $(VENV_DIR)
