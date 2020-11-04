@@ -173,6 +173,7 @@ _STANDARD_GASES = {
     "HFC245ca": "HFC245ca",
     "HFC245fa": "HFC245fa",
     "HFC365mfc": "HFC365mfc",
+    "HFC410A": "HFC410A",  # a 50/50 mixture of HFC32 and HFC125
     "HFC4310mee": "HFC4310mee",
     "HFC4310": ["HFC4310mee"],
     # Halogenated gases
