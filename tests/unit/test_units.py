@@ -154,6 +154,29 @@ def test_context_dimensionality_error():
 
 
 @pytest.mark.parametrize(
+    "metric_names,mixture,constituents",
+    (
+        [
+            ("SARGWP100", "AR4GWP100", "AR5GWP100"),
+            "HFC410A",
+            ((0.5, "HFC32"), (0.5, "HFC125")),
+        ],
+    ),
+)
+def test_gwp_mixture(metric_names, mixture, constituents):
+    for metric_name in metric_names:
+        with unit_registry.context(metric_name):
+            constituent_sum_gwp = 0 * unit_registry("CO2")
+            for fraction, species in constituents:
+                constituent_sum_gwp += (fraction * unit_registry(species)).to("CO2")
+            mixture_gwp = unit_registry(mixture).to("CO2")
+            # rounding might be happening, therefore atol=0.6
+            np.testing.assert_allclose(
+                constituent_sum_gwp.magnitude, mixture_gwp.magnitude, atol=0.6
+            )
+
+
+@pytest.mark.parametrize(
     "metric_name,species,conversion",
     (
         ["AR4GWP100", "CH4", 25],
