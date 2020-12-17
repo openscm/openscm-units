@@ -21,7 +21,7 @@ PACKAGES = find_packages(SOURCE_DIR)  # no exclude as only searching in `src`
 PACKAGE_DIR = {"": SOURCE_DIR}
 PACKAGE_DATA = {"openscm_units": ["data/*.csv"]}
 
-REQUIREMENTS = ["pandas", "pint"]
+REQUIREMENTS = ["pandas", "pint", "pyyaml"]
 REQUIREMENTS_NOTEBOOKS = ["notebook", "seaborn"]
 REQUIREMENTS_TESTS = ["codecov", "coverage", "nbval", "pytest-cov", "pytest>=4.0"]
 REQUIREMENTS_DOCS = ["sphinx>=1.4", "sphinx_rtd_theme"]

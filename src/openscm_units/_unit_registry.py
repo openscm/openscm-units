@@ -111,6 +111,7 @@ from os import path
 
 import pandas as pd
 import pint
+import yaml
 
 # Standard gases. If the value is:
 # - str: this entry defines a base gas unit
@@ -254,6 +255,14 @@ class ScmUnitRegistry(pint.UnitRegistry):
         Has to be done separately because of pint's weird initializing.
         """
         self._add_gases(_STANDARD_GASES)
+
+        with open(
+            path.join(path.dirname(path.abspath(__file__)), "data", "mixtures.yaml"),
+            "rb",
+        ) as fd:
+            self._mixtures = yaml.safe_load(fd.read())
+
+        self._add_gases({x: x for x in self._mixtures.keys()})
 
         self.define("a = 1 * year = annum = yr")
         self.define("h = hour")
