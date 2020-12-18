@@ -4,6 +4,8 @@ Changelog
 master
 ------
 
+- (`#15 <https://github.com/openscm/openscm-units/pull/15>`_) Update CI so that it runs on pull requests from forks too
+
 v0.1.4
 ------
 

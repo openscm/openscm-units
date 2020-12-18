@@ -1,5 +1,5 @@
 name: OpenSCM-Units CI-CD
-on: push
+on: [push,pull_request]
 
 jobs:
   linting-and-docs:
