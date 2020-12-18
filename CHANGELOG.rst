@@ -5,6 +5,7 @@ master
 ------
 
 - (`#15 <https://github.com/openscm/openscm-units/pull/15>`_) Update CI so that it runs on pull requests from forks too
+- (`#14 <https://github.com/openscm/openscm-units/pull/14>`_) Renamed ``openscm_units.unit_registry`` module to ``openscm_units._unit_registry`` to avoid name collision and lift ``ScmUnitRegistry`` to ``openscm_units.ScmUnitRegistry`` (closes `#13 <https://github.com/openscm/openscm-units/issues/13>`_)
 
 v0.1.4
 ------
