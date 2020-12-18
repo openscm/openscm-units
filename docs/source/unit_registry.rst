@@ -3,5 +3,5 @@
 Unit Registry API
 -----------------
 
-.. automodule:: openscm_units.unit_registry
+.. automodule:: openscm_units._unit_registry
     :members:
