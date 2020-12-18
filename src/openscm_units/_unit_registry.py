@@ -123,6 +123,7 @@ _STANDARD_GASES = {
     "C": "carbon",
     "CO2": ["12/44 * C", "carbon_dioxide"],
     "CH4": "methane",
+    "HC50": ["CH4"],
     "N": "nitrogen",
     "N2O": ["14/44 * N", "nitrous_oxide"],
     "N2ON": ["14/28 * N", "nitrous_oxide_farming_style"],
@@ -146,9 +147,26 @@ _STANDARD_GASES = {
     "CFC113": "CFC113",
     "CFC114": "CFC114",
     "CFC115": "CFC115",
+    # hydrocarbons
+    "C2H6": "ethane",
+    "HC170": ["C2H6"],
+    "C3H8": "propane",
+    "HC290": ["C3H8"],
+    "HC600": "HC600",
+    "butane": ["HC600"],
+    "HC600a": "HC600a",
+    "isobutane": ["HC600a"],
+    "HC601": "HC601",
+    "pentane":    ["HC601"],
+    "HC601a": "HC601a",
+    "isopentane": ["HC601a"],
+    "HCE170": "HCE170",
+    "HO1270": "HO1270",
+    "propene": ["HO1270"],
     # HCFCs
     "HCFC21": "HCFC21",
     "HCFC22": "HCFC22",
+    "HCFC31": "HCFC31",
     "HCFC123": "HCFC123",
     "HCFC124": "HCFC124",
     "HCFC141b": "HCFC141b",
@@ -176,6 +194,7 @@ _STANDARD_GASES = {
     "HFC365mfc": "HFC365mfc",
     "HFC4310mee": "HFC4310mee",
     "HFC4310": ["HFC4310mee"],
+    "HFC1336mzz": "HFC1336mzz",
     # Halogenated gases
     "Halon1201": "Halon1201",
     "Halon1202": "Halon1202",
@@ -185,9 +204,12 @@ _STANDARD_GASES = {
     # PFCs
     "CF4": "CF4",
     "C2F6": "C2F6",
+    "PFC116": ["C2F6"],
     "cC3F6": "cC3F6",
     "C3F8": "C3F8",
+    "PFC218": ["C3F8"],
     "cC4F8": "cC4F8",
+    "PFCC318": ["cC4F8"],
     "C4F10": "C4F10",
     "C5F12": "C5F12",
     "C6F14": "C6F14",
@@ -224,6 +246,9 @@ _STANDARD_GASES = {
     "HFE374pc2": "HFE374pc2",
     # Perfluoropolyethers
     "PFPMIE": "PFPMIE",
+    # Hydrofluoroolefins
+    "HFO1234yf": "HFO1234yf",
+    "HFO1234ze": "HFO1234ze",
     # Misc
     "CCl4": "CCl4",
     "CHCl3": "CHCl3",
@@ -235,6 +260,7 @@ _STANDARD_GASES = {
     "SF6": "SF6",
     "SO2F2": "SO2F2",
     "NF3": "NF3",
+    "HCO1130": "HCO1130",
 }
 
 
