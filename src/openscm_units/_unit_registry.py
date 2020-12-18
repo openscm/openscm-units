@@ -431,13 +431,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
             / (self(label).to_base_units()).magnitude
         )
         base_unit = next(
-            (
-                s
-                for s, _ in self._get_dimensionality(
+            iter(
+                self._get_dimensionality(
                     self(label)  # pylint: disable=protected-access
                     .to_base_units()
                     ._units
-                ).items()
+                ).keys()
             )
         )
 

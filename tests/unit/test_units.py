@@ -187,3 +187,136 @@ def test_metric_conversion(metric_name, species, conversion):
         with unit_registry.context(metric_name):
             np.testing.assert_allclose(base.to(dest).magnitude, conversion)
             np.testing.assert_allclose(dest.to(base).magnitude, 1 / conversion)
+
+
+@pytest.mark.parametrize(
+    "metric_name,mixture,conversion",
+    (
+        # mixtures that are automatically derived, final values from wikipedia
+        ["AR4GWP100", "CFC400", 10_450],
+        ["AR4GWP100", "HCFC401a", 1_182],
+        ["AR4GWP100", "HCFC401b", 1_288],
+        ["AR4GWP100", "HCFC401c", 933],
+        ["AR4GWP100", "HFC404a", 3_922],
+        # ["AR4GWP100", "HCFC406b", 1_893],  # mixture not yet in mixtures.yaml
+        ["AR4GWP100", "HFC407a", 2_107],
+        ["AR4GWP100", "HFC407b", 2_804],
+        ["AR4GWP100", "HFC407c", 1_774],
+        ["AR4GWP100", "HFC407d", 1_627],
+        ["AR4GWP100", "HFC407e", 1_552],
+        ["AR4GWP100", "HFC407f", 1_825],
+        ["AR4GWP100", "HCFC408a", 3_152],
+        ["AR4GWP100", "HCFC409a", 1_585],
+        ["AR4GWP100", "HCFC409b", 1_560],
+        ["AR4GWP100", "HFC410a", 2_088],
+        ["AR4GWP100", "HFC410b", 2_229],
+        # ["AR4GWP100", "HCFO411c", 1_730],  # mixture not yet in mixtures.yaml
+        ["AR4GWP100", "HCFC412a", 2_286],
+        ["AR4GWP100", "HCFC415a", 1_507],
+        ["AR4GWP100", "HCFC415b", 546],
+        # ["AR5GWP100", "HCFC420a", 1_548], inconsistent in wp
+        ["AR4GWP100", "HFC421a", 2_631],
+        ["AR4GWP100", "HFC421b", 3_190],
+        ["AR4GWP100", "HFC423a", 2_280],
+        ["AR4GWP100", "HFC425a", 1_505],
+        ["AR4GWP100", "HFC427a", 2_138],
+        ["AR4GWP100", "HFC458a", 1_650],
+        ["AR4GWP100", "HCFC501", 4_083],
+        ["AR4GWP100", "HCFC502", 4_657],
+        ["AR4GWP100", "HCFC503", 14_560],
+        ["AR4GWP100", "HCFC504", 4_143],
+        ["AR4GWP100", "HFC507a", 3_985],
+        ["AR4GWP100", "HFC508a", 13_214],
+        ["AR4GWP100", "HFC508b", 13_396],
+        ["AR4GWP100", "HCFC509a", 5_741],
+        # ["AR4GWP100", "HFO515b", 299],  # mixture not yet in mixtures.yaml
+    ),
+)
+def test_mixture_conversion(metric_name, mixture, conversion):
+    gwp = (1 * unit_registry(mixture)).to("CO2", metric_name).magnitude
+    # wikipedia values are rounded, therefore atol
+    np.testing.assert_allclose(conversion, gwp, atol=0.5)
+
+
+@pytest.mark.parametrize(
+    "metric_name,mixture,conversion",
+    (
+        # mixtures for which the constituents are not reported in SAR/AR4/AR5
+        # wikipedia has values nevertheless, so might come in future ARs
+        ["AR4GWP100", "HCFC402a", 2_788],
+        ["AR4GWP100", "HCFC402b", 2_416],
+        ["AR4GWP100", "HCFC403a", 3_124],
+        ["AR4GWP100", "HCFC403b", 4_457],
+        ["AR4GWP100", "HCFC405a", 5_328],
+        ["AR4GWP100", "HCFC406a", 1_943],
+        ["AR4GWP100", "HCFO411a", 1_597],
+        ["AR4GWP100", "HCFO411b", 1_705],
+        ["AR4GWP100", "HFC413a", 2_053],
+        ["AR4GWP100", "HCFC414a", 1_478],
+        ["AR4GWP100", "HCFC414b", 1_362],
+        ["AR4GWP100", "HCFC416a", 1_084],
+        ["AR4GWP100", "HFC417a", 2_346],
+        ["AR4GWP100", "HFC417b", 3_027],
+        ["AR4GWP100", "HCFC418a", 1_741],
+        ["AR4GWP100", "HFC419a", 2_967],
+        ["AR4GWP100", "HFC422b", 2_526],
+        ["AR4GWP100", "HFC422c", 3_085],
+        ["AR4GWP100", "HFC422d", 2_729],
+        ["AR4GWP100", "HFC424a", 2_440],
+        ["AR4GWP100", "HFC426a", 1_508],
+        ["AR4GWP100", "HFC428a", 3_607],
+        ["AR4GWP100", "HFC429a", 13.9],
+        ["AR4GWP100", "HFC430a", 95],
+        ["AR4GWP100", "HFC431a", 38.3],
+        ["AR4GWP100", "HO432a", 1.64],
+        ["AR4GWP100", "HO433a", 2.85],
+        ["AR4GWP100", "HO433b", 3.23],
+        ["AR4GWP100", "HO433c", 2.93],
+        ["AR4GWP100", "HFC434a", 3_245],
+        ["AR4GWP100", "HFC435a", 25.6],
+        ["AR4GWP100", "HC436a", 3.17],
+        ["AR4GWP100", "HC436b", 3.16],
+        ["AR4GWP100", "HFC437a", 1_805],
+        ["AR4GWP100", "HFC438a", 2_265],
+        ["AR4GWP100", "HFC439a", 1_983],
+        ["AR4GWP100", "HFC440a", 144],
+        ["AR4GWP100", "HC441a", 3.6],
+        ["AR4GWP100", "HFO448a", 1_273],
+        ["AR4GWP100", "HFO449a", 1_282],
+        ["AR4GWP100", "HFO452b", 676],
+        ["AR4GWP100", "HFO454a", 239],
+        ["AR4GWP100", "HFO454b", 466],
+        ["AR4GWP100", "HFO454c", 148],
+        ["AR4GWP100", "HFO455a", 146],
+        ["AR4GWP100", "HFO456a", 687],
+        ["AR4GWP100", "HFO457a", 139],
+        ["AR4GWP100", "HFO459a", 460],
+        ["AR4GWP100", "HCFC500", 8_077],
+        ["AR4GWP100", "HCFC506", 4_495],
+        ["AR4GWP100", "HC510a", 1.24],
+        ["AR4GWP100", "HC511a", 3.19],
+        ["AR4GWP100", "HFO513a", 573],
+    ),
+)
+def test_mixtures_constituents_no_gwp(metric_name, mixture, conversion):
+    with pytest.raises(DimensionalityError):
+        gwp = (1 * unit_registry(mixture)).to("CO2", metric_name).magnitude
+
+
+def test_mixture_constituent_sum_one():
+    for mixture in unit_registry._mixtures:
+        constituents = unit_registry.split_gas_mixture(1 * unit_registry(mixture))
+        np.testing.assert_allclose(sum((c.magnitude for c in constituents)), 1)
+
+
+def test_split_invalid():
+    with pytest.raises(ValueError):
+        unit_registry.split_gas_mixture(1 * unit_registry("CO2"))
+
+    with pytest.raises(NotImplementedError):
+        unit_registry.split_gas_mixture(
+            1 * unit_registry("CFC400") * unit_registry("HFC423a")
+        )
+
+    with pytest.raises(NotImplementedError):
+        unit_registry.split_gas_mixture(1 * unit_registry("CFC400") ** 2)
