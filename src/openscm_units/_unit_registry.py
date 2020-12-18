@@ -107,6 +107,7 @@ prevent inadvertent conversions from 'NOx' to e.g. 'N2O', the conversion 'NOx' <
     ...     unit_registry("NOx").to("N2O")
     <Quantity(0.9565217391304348, 'N2O')>
 """
+import math
 from os import path
 
 import pandas as pd
@@ -157,7 +158,7 @@ _STANDARD_GASES = {
     "HC600a": "HC600a",
     "isobutane": ["HC600a"],
     "HC601": "HC601",
-    "pentane":    ["HC601"],
+    "pentane": ["HC601"],
     "HC601a": "HC601a",
     "isopentane": ["HC601a"],
     "HCE170": "HCE170",
@@ -396,39 +397,60 @@ class ScmUnitRegistry(pint.UnitRegistry):
             1:, :
         ]  # drop out 'SCMData base unit' row
 
-        other_unit_ureg = self.carbon
-
         for col in metric_conversions:
+            metric_conversion = metric_conversions[col]
             transform_context = pint.Context(col)
-            for label, val in metric_conversions[col].iteritems():
-                conv_val = (
-                    val
-                    * (self("CO2").to_base_units()).magnitude
-                    / (self(label).to_base_units()).magnitude
-                )
-                base_unit = [
-                    s
-                    for s, _ in self._get_dimensionality(
-                        self(label)  # pylint: disable=protected-access
-                        .to_base_units()
-                        ._units
-                    ).items()
-                ][0]
-
-                base_unit_ureg = getattr(
-                    self, base_unit.replace("[", "").replace("]", "")
+            for label, val in metric_conversion.iteritems():
+                transform_context = self._add_gwp_to_context(
+                    transform_context, label, val
                 )
 
-                transform_context = self._add_transformations_to_context(
-                    transform_context,
-                    base_unit,
-                    base_unit_ureg,
-                    "[carbon]",
-                    other_unit_ureg,
-                    conv_val,
+            for mixture in self._mixtures:
+                constituents = self.split_gas_mixture(1 * self(mixture))
+                try:
+                    val = sum(
+                        c.magnitude * metric_conversion[str(c.units)]
+                        for c in constituents
+                    )
+                except KeyError:  # gwp not available for all constituents
+                    continue
+                if math.isnan(val):
+                    continue
+                transform_context = self._add_gwp_to_context(
+                    transform_context, mixture, val
                 )
 
             self.add_context(transform_context)
+
+    def _add_gwp_to_context(
+        self, transform_context: pint.Context, label: str, val: float
+    ) -> pint.Context:
+        conv_val = (
+            val
+            * (self("CO2").to_base_units()).magnitude
+            / (self(label).to_base_units()).magnitude
+        )
+        base_unit = next(
+            (
+                s
+                for s, _ in self._get_dimensionality(
+                    self(label)  # pylint: disable=protected-access
+                    .to_base_units()
+                    ._units
+                ).items()
+            )
+        )
+
+        base_unit_ureg = self(base_unit.replace("[", "").replace("]", ""))
+
+        return self._add_transformations_to_context(
+            transform_context,
+            base_unit,
+            base_unit_ureg,
+            "[carbon]",
+            self("carbon"),
+            conv_val,
+        )
 
     @staticmethod
     def _add_transformations_to_context(
