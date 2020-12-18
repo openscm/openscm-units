@@ -448,6 +448,39 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         return context
 
+    def split_gas_mixture(self, quantity: pint.Quantity) -> list:
+        """
+        Split a gas mixture into constituent gases.
+
+        Given a pint quantity with the units containing a gas mixture,
+        returns a list of the constituents as pint quantities.
+        """
+        mixture_dimensions = [
+            x for x in quantity.dimensionality.keys() if x[1:-1] in self._mixtures
+        ]
+        if len(mixture_dimensions) == 0:
+            raise ValueError("Dimensions don't contain a gas mixture.")
+        elif len(mixture_dimensions) > 1:
+            raise NotImplementedError(
+                "More than one gas mixture in dimensions is not supported."
+            )
+        mixture_dimension = mixture_dimensions[0]
+        if quantity.dimensionality[mixture_dimension] != 1:
+            raise NotImplementedError(
+                f"Mixture has dimensionality {quantity.dimensionality[mixture_dimension]}"
+                " != 1, which is not supported."
+            )
+
+        mixture = self._mixtures[mixture_dimension[1:-1]]
+        mixture_unit = self(mixture_dimension[1:-1])
+
+        ret = []
+        for constituent, (fraction_pct, _, _) in mixture.items():
+            constituent_unit = self(constituent)
+            ret.append(quantity / mixture_unit * fraction_pct / 100 * constituent_unit)
+
+        return ret
+
 
 unit_registry = ScmUnitRegistry()  # pylint:disable=invalid-name
 """
