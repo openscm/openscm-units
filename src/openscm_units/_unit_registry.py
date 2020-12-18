@@ -286,8 +286,8 @@ class ScmUnitRegistry(pint.UnitRegistry):
         with open(
             path.join(path.dirname(path.abspath(__file__)), "data", "mixtures.yaml"),
             "rb",
-        ) as fd:
-            self._mixtures = yaml.safe_load(fd.read())
+        ) as mixtures_file:
+            self._mixtures = yaml.safe_load(mixtures_file.read())
 
         self._add_gases({x: x for x in self._mixtures.keys()})
 
@@ -505,9 +505,9 @@ class ScmUnitRegistry(pint.UnitRegistry):
         mixture_dimensions = [
             x for x in quantity.dimensionality.keys() if x[1:-1] in self._mixtures
         ]
-        if len(mixture_dimensions) == 0:
+        if not mixture_dimensions:
             raise ValueError("Dimensions don't contain a gas mixture.")
-        elif len(mixture_dimensions) > 1:
+        if len(mixture_dimensions) > 1:
             raise NotImplementedError(
                 "More than one gas mixture in dimensions is not supported."
             )

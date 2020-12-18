@@ -300,7 +300,9 @@ def test_mixture_conversion(metric_name, mixture, conversion):
 )
 def test_mixtures_constituents_no_gwp(metric_name, mixture, conversion):
     with pytest.raises(DimensionalityError):
-        gwp = (1 * unit_registry(mixture)).to("CO2", metric_name).magnitude
+        gwp = (  # noqa: F841
+            (1 * unit_registry(mixture)).to("CO2", metric_name).magnitude
+        )
 
 
 def test_mixture_constituent_sum_one():
