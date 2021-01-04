@@ -1,3 +1,5 @@
+import re
+
 import numpy as np
 import pytest
 from pint.errors import DimensionalityError
@@ -299,7 +301,10 @@ def test_mixture_conversion(metric_name, mixture, conversion):
     ),
 )
 def test_mixtures_constituents_no_gwp(metric_name, mixture, conversion):
-    with pytest.raises(DimensionalityError):
+    error_msg = re.escape(
+        f"Cannot convert from '{mixture}' ([{mixture}]) to 'CO2' ([carbon])"
+    )
+    with pytest.raises(DimensionalityError, match=error_msg):
         gwp = (  # noqa: F841
             (1 * unit_registry(mixture)).to("CO2", metric_name).magnitude
         )
@@ -312,13 +317,19 @@ def test_mixture_constituent_sum_one():
 
 
 def test_split_invalid():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Dimensions don't contain a gas mixture."):
         unit_registry.split_gas_mixture(1 * unit_registry("CO2"))
 
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(
+        NotImplementedError,
+        match="More than one gas mixture in dimensions is not supported.",
+    ):
         unit_registry.split_gas_mixture(
             1 * unit_registry("CFC400") * unit_registry("HFC423a")
         )
 
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(
+        NotImplementedError,
+        match="Mixture has dimensionality 2 != 1, which is not supported.",
+    ):
         unit_registry.split_gas_mixture(1 * unit_registry("CFC400") ** 2)
