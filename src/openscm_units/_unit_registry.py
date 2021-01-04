@@ -278,11 +278,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
     def __init__(self):
         super().__init__()
 
-        with open(
-            path.join(path.dirname(path.abspath(__file__)), "data", "mixtures.yaml"),
-            "rb",
-        ) as mixtures_file:
-            self._mixtures = yaml.safe_load(mixtures_file.read())
+        self._mixtures = None
 
     def add_standards(self):
         """
@@ -291,6 +287,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
         Has to be done separately because of pint's weird initializing.
         """
         self._add_gases(_STANDARD_GASES)
+
+        with open(
+            path.join(path.dirname(path.abspath(__file__)), "data", "mixtures.yaml"),
+            "rb",
+        ) as mixtures_file:
+            self._mixtures = yaml.safe_load(mixtures_file.read())
 
         self._add_gases({x: x for x in self._mixtures.keys()})
 
