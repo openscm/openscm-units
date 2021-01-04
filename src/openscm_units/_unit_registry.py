@@ -276,7 +276,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
     _contexts_loaded = False
 
     def __init__(self):
-        pint.UnitRegistry.__init__(self)
+        super().__init__()
 
         with open(
             path.join(path.dirname(path.abspath(__file__)), "data", "mixtures.yaml"),
