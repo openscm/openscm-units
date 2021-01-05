@@ -112,7 +112,8 @@ from os import path
 
 import pandas as pd
 import pint
-import yaml
+
+from .data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
 # - str: this entry defines a base gas unit
@@ -275,11 +276,6 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
     _contexts_loaded = False
 
-    def __init__(self):
-        super().__init__()
-
-        self._mixtures = None
-
     def add_standards(self):
         """
         Add standard units.
@@ -288,13 +284,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         """
         self._add_gases(_STANDARD_GASES)
 
-        with open(
-            path.join(path.dirname(path.abspath(__file__)), "data", "mixtures.yaml"),
-            "rb",
-        ) as mixtures_file:
-            self._mixtures = yaml.safe_load(mixtures_file.read())
-
-        self._add_gases({x: x for x in self._mixtures.keys()})
+        self._add_gases({x: x for x in MIXTURES.keys()})
 
         self.define("a = 1 * year = annum = yr")
         self.define("h = hour")
@@ -410,7 +400,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
                     transform_context, label, val
                 )
 
-            for mixture in self._mixtures:
+            for mixture in MIXTURES:
                 constituents = self.split_gas_mixture(1 * self(mixture))
                 try:
                     val = sum(
@@ -508,7 +498,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         returns a list of the constituents as pint quantities.
         """
         mixture_dimensions = [
-            x for x in quantity.dimensionality.keys() if x[1:-1] in self._mixtures
+            x for x in quantity.dimensionality.keys() if x[1:-1] in MIXTURES
         ]
         if not mixture_dimensions:
             raise ValueError("Dimensions don't contain a gas mixture.")
@@ -523,7 +513,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
                 " != 1, which is not supported."
             )
 
-        mixture = self._mixtures[mixture_dimension[1:-1]]
+        mixture = MIXTURES[mixture_dimension[1:-1]]
         mixture_unit = self(mixture_dimension[1:-1])
 
         ret = []

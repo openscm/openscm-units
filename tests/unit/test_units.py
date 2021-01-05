@@ -5,6 +5,7 @@ import pytest
 from pint.errors import DimensionalityError
 
 from openscm_units import unit_registry
+from openscm_units.data.mixtures import MIXTURES
 
 
 def test_unit_registry():
@@ -311,7 +312,7 @@ def test_mixtures_constituents_no_gwp(metric_name, mixture, conversion):
 
 
 def test_mixture_constituent_sum_one():
-    for mixture in unit_registry._mixtures:
+    for mixture in MIXTURES:
         constituents = unit_registry.split_gas_mixture(1 * unit_registry(mixture))
         np.testing.assert_allclose(sum((c.magnitude for c in constituents)), 1)
 
