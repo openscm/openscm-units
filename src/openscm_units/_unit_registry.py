@@ -107,10 +107,13 @@ prevent inadvertent conversions from 'NOx' to e.g. 'N2O', the conversion 'NOx' <
     ...     unit_registry("NOx").to("N2O")
     <Quantity(0.9565217391304348, 'N2O')>
 """
+import math
 from os import path
 
 import pandas as pd
 import pint
+
+from .data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
 # - str: this entry defines a base gas unit
@@ -122,6 +125,7 @@ _STANDARD_GASES = {
     "C": "carbon",
     "CO2": ["12/44 * C", "carbon_dioxide"],
     "CH4": "methane",
+    "HC50": ["CH4"],
     "N": "nitrogen",
     "N2O": ["14/44 * N", "nitrous_oxide"],
     "N2ON": ["14/28 * N", "nitrous_oxide_farming_style"],
@@ -145,9 +149,26 @@ _STANDARD_GASES = {
     "CFC113": "CFC113",
     "CFC114": "CFC114",
     "CFC115": "CFC115",
+    # hydrocarbons
+    "C2H6": "ethane",
+    "HC170": ["C2H6"],
+    "C3H8": "propane",
+    "HC290": ["C3H8"],
+    "HC600": "HC600",
+    "butane": ["HC600"],
+    "HC600a": "HC600a",
+    "isobutane": ["HC600a"],
+    "HC601": "HC601",
+    "pentane": ["HC601"],
+    "HC601a": "HC601a",
+    "isopentane": ["HC601a"],
+    "HCE170": "HCE170",
+    "HO1270": "HO1270",
+    "propene": ["HO1270"],
     # HCFCs
     "HCFC21": "HCFC21",
     "HCFC22": "HCFC22",
+    "HCFC31": "HCFC31",
     "HCFC123": "HCFC123",
     "HCFC124": "HCFC124",
     "HCFC141b": "HCFC141b",
@@ -175,6 +196,7 @@ _STANDARD_GASES = {
     "HFC365mfc": "HFC365mfc",
     "HFC4310mee": "HFC4310mee",
     "HFC4310": ["HFC4310mee"],
+    "HFC1336mzz": "HFC1336mzz",
     # Halogenated gases
     "Halon1201": "Halon1201",
     "Halon1202": "Halon1202",
@@ -184,9 +206,12 @@ _STANDARD_GASES = {
     # PFCs
     "CF4": "CF4",
     "C2F6": "C2F6",
+    "PFC116": ["C2F6"],
     "cC3F6": "cC3F6",
     "C3F8": "C3F8",
+    "PFC218": ["C3F8"],
     "cC4F8": "cC4F8",
+    "PFCC318": ["cC4F8"],
     "C4F10": "C4F10",
     "C5F12": "C5F12",
     "C6F14": "C6F14",
@@ -223,6 +248,9 @@ _STANDARD_GASES = {
     "HFE374pc2": "HFE374pc2",
     # Perfluoropolyethers
     "PFPMIE": "PFPMIE",
+    # Hydrofluoroolefins
+    "HFO1234yf": "HFO1234yf",
+    "HFO1234ze": "HFO1234ze",
     # Misc
     "CCl4": "CCl4",
     "CHCl3": "CHCl3",
@@ -234,6 +262,7 @@ _STANDARD_GASES = {
     "SF6": "SF6",
     "SO2F2": "SO2F2",
     "NF3": "NF3",
+    "HCO1130": "HCO1130",
 }
 
 
@@ -254,6 +283,8 @@ class ScmUnitRegistry(pint.UnitRegistry):
         Has to be done separately because of pint's weird initializing.
         """
         self._add_gases(_STANDARD_GASES)
+
+        self._add_gases({x: x for x in MIXTURES.keys()})
 
         self.define("a = 1 * year = annum = yr")
         self.define("h = hour")
@@ -361,39 +392,59 @@ class ScmUnitRegistry(pint.UnitRegistry):
             1:, :
         ]  # drop out 'SCMData base unit' row
 
-        other_unit_ureg = self.carbon
-
         for col in metric_conversions:
+            metric_conversion = metric_conversions[col]
             transform_context = pint.Context(col)
-            for label, val in metric_conversions[col].iteritems():
-                conv_val = (
-                    val
-                    * (self("CO2").to_base_units()).magnitude
-                    / (self(label).to_base_units()).magnitude
-                )
-                base_unit = [
-                    s
-                    for s, _ in self._get_dimensionality(
-                        self(label)  # pylint: disable=protected-access
-                        .to_base_units()
-                        ._units
-                    ).items()
-                ][0]
-
-                base_unit_ureg = getattr(
-                    self, base_unit.replace("[", "").replace("]", "")
+            for label, val in metric_conversion.iteritems():
+                transform_context = self._add_gwp_to_context(
+                    transform_context, label, val
                 )
 
-                transform_context = self._add_transformations_to_context(
-                    transform_context,
-                    base_unit,
-                    base_unit_ureg,
-                    "[carbon]",
-                    other_unit_ureg,
-                    conv_val,
+            for mixture in MIXTURES:
+                constituents = self.split_gas_mixture(1 * self(mixture))
+                try:
+                    val = sum(
+                        c.magnitude * metric_conversion[str(c.units)]
+                        for c in constituents
+                    )
+                except KeyError:  # gwp not available for all constituents
+                    continue
+                if math.isnan(val):
+                    continue
+                transform_context = self._add_gwp_to_context(
+                    transform_context, mixture, val
                 )
 
             self.add_context(transform_context)
+
+    def _add_gwp_to_context(
+        self, transform_context: pint.Context, label: str, val: float
+    ) -> pint.Context:
+        conv_val = (
+            val
+            * (self("CO2").to_base_units()).magnitude
+            / (self(label).to_base_units()).magnitude
+        )
+        base_unit = next(
+            iter(
+                self._get_dimensionality(
+                    self(label)  # pylint: disable=protected-access
+                    .to_base_units()
+                    ._units
+                ).keys()
+            )
+        )
+
+        base_unit_ureg = self(base_unit.replace("[", "").replace("]", ""))
+
+        return self._add_transformations_to_context(
+            transform_context,
+            base_unit,
+            base_unit_ureg,
+            "[carbon]",
+            self("carbon"),
+            conv_val,
+        )
 
     @staticmethod
     def _add_transformations_to_context(
@@ -438,6 +489,39 @@ class ScmUnitRegistry(pint.UnitRegistry):
             )
 
         return context
+
+    def split_gas_mixture(self, quantity: pint.Quantity) -> list:
+        """
+        Split a gas mixture into constituent gases.
+
+        Given a pint quantity with the units containing a gas mixture,
+        returns a list of the constituents as pint quantities.
+        """
+        mixture_dimensions = [
+            x for x in quantity.dimensionality.keys() if x[1:-1] in MIXTURES
+        ]
+        if not mixture_dimensions:
+            raise ValueError("Dimensions don't contain a gas mixture.")
+        if len(mixture_dimensions) > 1:
+            raise NotImplementedError(
+                "More than one gas mixture in dimensions is not supported."
+            )
+        mixture_dimension = mixture_dimensions[0]
+        if quantity.dimensionality[mixture_dimension] != 1:
+            raise NotImplementedError(
+                f"Mixture has dimensionality {quantity.dimensionality[mixture_dimension]}"
+                " != 1, which is not supported."
+            )
+
+        mixture = MIXTURES[mixture_dimension[1:-1]]
+        mixture_unit = self(mixture_dimension[1:-1])
+
+        ret = []
+        for constituent, (fraction_pct, _, _) in mixture.items():
+            constituent_unit = self(constituent)
+            ret.append(quantity / mixture_unit * fraction_pct / 100 * constituent_unit)
+
+        return ret
 
 
 unit_registry = ScmUnitRegistry()  # pylint:disable=invalid-name
