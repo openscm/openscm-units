@@ -4,7 +4,7 @@ allows us to easily define units as well as contexts. Contexts allow us to perfo
 conversions which would not normally be allowed e.g. in the 'AR4GWP100'
 context we can convert from CO2 to CH4 using the AR4GWP100 equivalence metric.
 
-An illustration of how the ``unit_regsitry`` can be used is shown below:
+An illustration of how the ``unit_registry`` can be used is shown below:
 
 .. code:: python
 
@@ -106,6 +106,24 @@ prevent inadvertent conversions from 'NOx' to e.g. 'N2O', the conversion 'NOx' <
     >>> with unit_registry.context("NOx_conversions"):
     ...     unit_registry("NOx").to("N2O")
     <Quantity(0.9565217391304348, 'N2O')>
+
+*NH3*
+
+In order to prevent inadvertent conversions from 'NH3' to 'CO2', the conversion
+'NH3' <--> 'N' is by default forbidden. It can be performed within the 'NH3_conversions'
+context analogous to the 'NOx_conversions' context:
+
+.. code:: python
+
+    >>> from openscm_units import unit_registry
+    >>> unit_registry("NH3").to("N")
+    pint.errors.DimensionalityError: Cannot convert from 'NH3' ([NH3]) to 'N' ([nitrogen])
+
+    # with a context, the conversion becomes legal again
+    >>> with unit_registry.context("NH3_conversions"):
+    ...     unit_registry("NH3").to("N")
+    <Quantity(0.823529412, 'N')>
+
 """
 import math
 from os import path
