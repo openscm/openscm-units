@@ -4,7 +4,7 @@ Changelog
 master
 ------
 
-- (`#17 <https://github.com/openscm/openscm-units/pull/17>`_) Made NH3 a separate dimension to avoid accidental conversion to CO2 in GWP contexts. Also added an ``nh3_conversions`` context to convert to nitrogen (closes `#12 <https://github.com/openscm/openscm-units/issues/12>`_)
+- (`#18 <https://github.com/openscm/openscm-units/pull/18>`_) Made NH3 a separate dimension to avoid accidental conversion to CO2 in GWP contexts. Also added an ``nh3_conversions`` context to convert to nitrogen (closes `#12 <https://github.com/openscm/openscm-units/issues/12>`_)
 - (`#16 <https://github.com/openscm/openscm-units/pull/16>`_) Added refrigerant mixtures as units, including automatic GWP calculation from the GWP of their constituents. Also added the ``unit_registry.split_gas_mixtures`` function which can be used to split quantities containing a gas mixture into their constituents (closes `#10 <https://github.com/openscm/openscm-units/issues/10>`_)
 
 v0.2.0
