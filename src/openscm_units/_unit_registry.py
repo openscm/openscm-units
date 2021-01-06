@@ -133,7 +133,8 @@ _STANDARD_GASES = {
     # aerosol precursors
     "NOx": "NOx",
     "nox": ["NOx"],
-    "NH3": ["14/17 * N", "ammonia"],
+    "NH3": "NH3",
+    "ammonia": ["NH3"],
     "S": "sulfur",
     "SO2": ["32/64 * S", "sulfur_dioxide"],
     "SOx": ["SO2"],
@@ -370,6 +371,17 @@ class ScmUnitRegistry(pint.UnitRegistry):
             (14 + 2 * 16) / 14,
         )
         self.add_context(_n2o_context)
+
+        _nh3_context = pint.Context("NH3_conversions")
+        _nh3_context = self._add_transformations_to_context(
+            _nh3_context,
+            "[nitrogen]",
+            self.nitrogen,
+            "[NH3]",
+            self.NH3,
+            (14 + 3) / 14,
+        )
+        self.add_context(_nh3_context)
 
         self._load_metric_conversions()
 
