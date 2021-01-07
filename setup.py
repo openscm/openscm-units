@@ -39,6 +39,7 @@ REQUIREMENTS_DEV = [
         "numpy",
         "pydocstyle",
         "pylint>=2.4.4",
+        "nbsphinx",
     ],
     *REQUIREMENTS_DEPLOY,
     *REQUIREMENTS_DOCS,
