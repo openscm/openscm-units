@@ -43,6 +43,15 @@ extensions = [
     "sphinx.ext.napoleon",  # pass numpy style docstrings
 ]
 
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": False,
+    "private-members": False,
+    "special-members": False,
+    "inherited-members": True,
+    "show-inheritance": True,
+}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
