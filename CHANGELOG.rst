@@ -4,6 +4,7 @@ Changelog
 master
 ------
 
+- Generate static usage documentation from the introduction notebook
 - (`#20 <https://github.com/openscm/openscm-units/pull/20>`_) Make ``openscm_units.data`` a module by adding an ``__init__.py`` file to it and add docs for ``openscm_units.data`` (closes `#19 <https://github.com/openscm/openscm-units/issues/19>`_)
 - (`#18 <https://github.com/openscm/openscm-units/pull/18>`_) Made NH3 a separate dimension to avoid accidental conversion to CO2 in GWP contexts. Also added an ``nh3_conversions`` context to convert to nitrogen (closes `#12 <https://github.com/openscm/openscm-units/issues/12>`_)
 - (`#16 <https://github.com/openscm/openscm-units/pull/16>`_) Added refrigerant mixtures as units, including automatic GWP calculation from the GWP of their constituents. Also added the ``unit_registry.split_gas_mixtures`` function which can be used to split quantities containing a gas mixture into their constituents (closes `#10 <https://github.com/openscm/openscm-units/issues/10>`_)
