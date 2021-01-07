@@ -46,6 +46,27 @@ def test_nox():
         np.testing.assert_allclose(NOx.to("N2O").magnitude, 44 / 46)
 
 
+def test_ammonia():
+    NH3 = unit_registry("NH3")
+
+    # can only convert to N with right context
+    with pytest.raises(DimensionalityError):
+        NH3.to("N")
+
+    # can not convert to CO2 even in GWP contexts
+    with pytest.raises(DimensionalityError):
+        with unit_registry.context("AR5GWP100"):
+            NH3.to("CO2")
+
+    N = unit_registry("N")
+    with unit_registry.context("NH3_conversions"):
+        np.testing.assert_allclose(NH3.to("N").magnitude, 14 / 17)
+        np.testing.assert_allclose(N.to("NH3").magnitude, 17 / 14)
+        # can not convert to CO2 even in NH3 context
+        with pytest.raises(DimensionalityError):
+            NH3.to("CO2")
+
+
 def test_methane():
     CH4 = unit_registry("CH4")
     with pytest.raises(DimensionalityError):
