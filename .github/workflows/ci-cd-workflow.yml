@@ -20,7 +20,7 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install -e .[dev]
-        sudo apt install pandoc
+        sudo apt-get install pandoc
     - name: Formatting and linters
       run: |
         black --check src tests setup.py --exclude openscm_units/_version.py
