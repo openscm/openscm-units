@@ -19,7 +19,7 @@ OpenSCM-Units
     :caption: Documentation
 
     installation
-    usage
+    notebooks/introduction
     development
 
 .. toctree::
