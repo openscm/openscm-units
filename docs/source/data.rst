@@ -8,4 +8,5 @@ Data API
 Mixtures API
 ============
 
-.. automodule:: openscm_units.data.mixtures
+.. autodata:: openscm_units.data.mixtures.MIXTURES
+   :annotation:
