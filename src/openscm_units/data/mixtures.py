@@ -402,6 +402,8 @@ MIXTURES = {
 """
 dict: Gas mixtures supported by OpenSCM Units
 
+Last update: 2020-12-16
+
 Each key is the mixture's name. Each value is itself a dictionary where each
 key is the name of a component of the mixture and the value is a list in which
 the first element is the standard composition, the second element is the positive
@@ -412,5 +414,5 @@ Sources:
 
 - ANSI/ASHRAE Standard 34-2019, p. 9ff, ISSN 1041-2336, https://www.techstreet.com/ashrae/standards/ashrae-15-2019-packaged-w-34-2019?product_id=2046531
 
-- https://en.wikipedia.org/wiki/List_of_refrigerants (for common names), last update: 2020-12-16
+- https://en.wikipedia.org/wiki/List_of_refrigerants (for common names)
 """
