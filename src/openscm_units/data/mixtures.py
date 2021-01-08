@@ -1,21 +1,13 @@
 """
-Gas mixtures
-Sources:
-- ANSI/ASHRAE Standard 34-2019, p. 9ff, ISSN 1041-2336,
-  https://www.techstreet.com/ashrae/standards/ashrae-15-2019-packaged-w-34-2019?product_id=2046531
-- https://en.wikipedia.org/wiki/List_of_refrigerants (for common names)
-Last update: 2020-12-16
-Everything is given in mass-%
-Given is the standard composition, and the positive and negative composition
-tolerances
+Gas mixtures supported by OpenSCM Units
 """
 
-nan = float("nan")
+_nan = float("nan")
 
 MIXTURES = {
     # note that CFC400 can also be a 60 / 40 split and the standard says it MUST be
     # specified, but it is almost never specified and 50/50 seems to be more common
-    "CFC400": {"CFC12": [50, nan, nan], "CFC114": [50, nan, nan]},
+    "CFC400": {"CFC12": [50, _nan, _nan], "CFC114": [50, _nan, _nan]},
     "HCFC401a": {
         "HCFC22": [53, 2, -2],
         "HFC152a": [13, 0.5, -1.5],
@@ -383,17 +375,17 @@ MIXTURES = {
         "C3H8": [7.9, 0.1, -0.9],
         "HFO1234yf": [71.1, 1, -1],
     },
-    "HCFC500": {"CFC12": [73.8, nan, nan], "HFC152": [26.2, nan, nan]},
-    "HCFC501": {"HCFC22": [75, nan, nan], "CFC12": [25, nan, nan]},
-    "HCFC502": {"HCFC22": [48.8, nan, nan], "CFC115": [51.2, nan, nan]},
-    "HCFC503": {"HFC23": [40.1, nan, nan], "CFC13": [59.9, nan, nan]},
-    "HCFC504": {"HFC32": [48.2, nan, nan], "CFC115": [51.8, nan, nan]},
-    "HCFC505": {"CFC12": [78, nan, nan], "HCFC31": [22, nan, nan]},
-    "HCFC506": {"HCFC31": [55.1, nan, nan], "CFC114": [44.9, nan, nan]},
-    "HFC507a": {"HFC125": [50, nan, nan], "HFC143a": [50, nan, nan]},
-    "HFC508a": {"HFC23": [39, nan, nan], "C2F6": [61, nan, nan]},
-    "HFC508b": {"HFC23": [46, nan, nan], "C2F6": [54, nan, nan]},
-    "HCFC509a": {"HCFC22": [44, nan, nan], "C3F8": [56, nan, nan]},
+    "HCFC500": {"CFC12": [73.8, _nan, _nan], "HFC152": [26.2, _nan, _nan]},
+    "HCFC501": {"HCFC22": [75, _nan, _nan], "CFC12": [25, _nan, _nan]},
+    "HCFC502": {"HCFC22": [48.8, _nan, _nan], "CFC115": [51.2, _nan, _nan]},
+    "HCFC503": {"HFC23": [40.1, _nan, _nan], "CFC13": [59.9, _nan, _nan]},
+    "HCFC504": {"HFC32": [48.2, _nan, _nan], "CFC115": [51.8, _nan, _nan]},
+    "HCFC505": {"CFC12": [78, _nan, _nan], "HCFC31": [22, _nan, _nan]},
+    "HCFC506": {"HCFC31": [55.1, _nan, _nan], "CFC114": [44.9, _nan, _nan]},
+    "HFC507a": {"HFC125": [50, _nan, _nan], "HFC143a": [50, _nan, _nan]},
+    "HFC508a": {"HFC23": [39, _nan, _nan], "C2F6": [61, _nan, _nan]},
+    "HFC508b": {"HFC23": [46, _nan, _nan], "C2F6": [54, _nan, _nan]},
+    "HCFC509a": {"HCFC22": [44, _nan, _nan], "C3F8": [56, _nan, _nan]},
     "HC510a": {"HCE170": [88, 0.5, -0.5], "HC600a": [12, 0.5, -0.5]},
     "HC511a": {"C3H8": [95, 1, -1], "HCE170": [5, 1, -1]},
     "HFC512a": {"HFC134a": [5, 1, -1], "HFC152a": [95, 1, -1]},
@@ -407,3 +399,20 @@ MIXTURES = {
         "HFC152a": [14, 0.1, -1.9],
     },
 }
+"""
+dict: Gas mixtures supported by OpenSCM Units
+
+Last update: 2020-12-16
+
+Each key is the mixture's name. Each value is itself a dictionary where each
+key is the name of a component of the mixture and the value is a list in which
+the first element is the standard composition, the second element is the positive
+composition tolerance and the third element is the negative composition tolerance.
+All values are given in mass percentage.
+
+Sources:
+
+- ANSI/ASHRAE Standard 34-2019, p. 9ff, ISSN 1041-2336, https://www.techstreet.com/ashrae/standards/ashrae-15-2019-packaged-w-34-2019?product_id=2046531
+
+- https://en.wikipedia.org/wiki/List_of_refrigerants (for common names)
+"""

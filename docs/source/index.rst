@@ -27,6 +27,7 @@ OpenSCM-Units
     :caption: API reference
 
     unit_registry
+    data
 
 .. toctree::
     :maxdepth: 2
