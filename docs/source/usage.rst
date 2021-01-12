@@ -6,7 +6,7 @@ You can either view static versions of them below, or download and execute them 
 `interactive jupyter notebooks`_.
 
 .. _interactive jupyter notebooks:
-   https://github.com/openscm/openscm-units/tree/master/notebooks
+   https://github.com/openscm/openscm-units/tree/master/docs/source/notebooks
 
 .. toctree::
    :maxdepth: 2
