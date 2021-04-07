@@ -190,7 +190,7 @@ def test_context_dimensionality_error():
         ["AR4GWP100", "HFC32", 675],
         ["AR4GWP100", "cC4F8", 10300],
         ["AR4GWP100", "cC4F8", 10300],
-        ["AR4GWP100", "HFE356pcc3", 413],
+        ["AR4GWP100", "HFE356pcc3", 110],
         ["AR4GWP100", "CH2Cl2", 8.7],
         ["AR5GWP100", "C7F16", 7820],
         ["AR5GWP100", "C8F18", 7620],
