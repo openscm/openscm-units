@@ -49,6 +49,8 @@ def test_nox():
         np.testing.assert_allclose(N.to("NOx").magnitude, 46 / 14)
         np.testing.assert_allclose(NO2.to("NOx").magnitude, 1)
         np.testing.assert_allclose(NOx.to("NO2").magnitude, 1)
+        with pytest.raises(DimensionalityError):
+            NOx.to("N2O")
 
 
 def test_ammonia():
