@@ -24,8 +24,15 @@ def test_base_unit():
 
 def test_nitrogen():
     N = unit_registry("N")
-    np.testing.assert_allclose(N.to("N2ON").magnitude, 28 / 14)
     np.testing.assert_allclose(N.to("NO2").magnitude, 46 / 14)
+
+    # can only convert to N with right context
+    with pytest.raises(DimensionalityError):
+        N.to("N2ON")
+
+    with unit_registry.context("N2O_conversions"):
+        np.testing.assert_allclose(N.to("N2ON").magnitude, 28 / 14)
+        np.testing.assert_allclose(N.to("N2O").magnitude, 44 / 14)
 
 
 def test_nox():
@@ -42,8 +49,8 @@ def test_nox():
         np.testing.assert_allclose(N.to("NOx").magnitude, 46 / 14)
         np.testing.assert_allclose(NO2.to("NOx").magnitude, 1)
         np.testing.assert_allclose(NOx.to("NO2").magnitude, 1)
-        # this also becomes allowed, unfortunately...
-        np.testing.assert_allclose(NOx.to("N2O").magnitude, 44 / 46)
+        with pytest.raises(DimensionalityError):
+            NOx.to("N2O")
 
 
 def test_ammonia():
@@ -149,32 +156,36 @@ def test_a():
 
 def test_context():
     CO2 = unit_registry("CO2")
-    N = unit_registry("N")
+    N2ON = unit_registry("N2ON")
+    N2O = unit_registry("N2O")
     with unit_registry.context("AR4GWP100"):
-        np.testing.assert_allclose(CO2.to("N").magnitude, 14 / (44 * 298))
-        np.testing.assert_allclose(N.to("CO2").magnitude, 44 * 298 / 14)
+        np.testing.assert_allclose(CO2.to("N2ON").magnitude, 28 / (44 * 298))
+        np.testing.assert_allclose(N2ON.to("CO2").magnitude, 44 * 298 / 28)
+
+        np.testing.assert_allclose(CO2.to("N2O").magnitude, 1 / 298)
+        np.testing.assert_allclose(N2O.to("CO2").magnitude, 298)
 
 
 def test_context_with_magnitude():
     CO2 = 1 * unit_registry("CO2")
-    N = 1 * unit_registry("N")
+    N2ON = 1 * unit_registry("N2ON")
     with unit_registry.context("AR4GWP100"):
-        np.testing.assert_allclose(CO2.to("N").magnitude, 14 / (44 * 298))
-        np.testing.assert_allclose(N.to("CO2").magnitude, 44 * 298 / 14)
+        np.testing.assert_allclose(CO2.to("N2ON").magnitude, 28 / (44 * 298))
+        np.testing.assert_allclose(N2ON.to("CO2").magnitude, 44 * 298 / 28)
 
 
 def test_context_compound_unit():
     CO2 = 1 * unit_registry("kg CO2 / yr")
-    N = 1 * unit_registry("kg N / yr")
+    N2ON = 1 * unit_registry("kg N2ON / yr")
     with unit_registry.context("AR4GWP100"):
-        np.testing.assert_allclose(CO2.to("kg N / yr").magnitude, 14 / (44 * 298))
-        np.testing.assert_allclose(N.to("kg CO2 / yr").magnitude, 44 * 298 / 14)
+        np.testing.assert_allclose(CO2.to("kg N2ON / yr").magnitude, 28 / (44 * 298))
+        np.testing.assert_allclose(N2ON.to("kg CO2 / yr").magnitude, 44 * 298 / 28)
 
 
 def test_context_dimensionality_error():
     CO2 = unit_registry("CO2")
     with pytest.raises(DimensionalityError):
-        CO2.to("N")
+        CO2.to("N2O")
 
 
 @pytest.mark.parametrize(
