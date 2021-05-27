@@ -34,9 +34,8 @@ For emissions units, there are a few cases to be considered:
 
 - fairly obvious ones e.g. carbon dioxide emissions can be provided in 'C' or 'CO2' and
   converting between the two is possible
-- less obvious ones e.g. nitrous oxide emissions can be provided in 'N', 'N2O' or
-  'N2ON' (a short-hand which indicates that only the mass of the nitrogen is being counted),
-  we provide conversions between these three
+- less obvious ones e.g. NOx emissions can be provided in 'N' or 'NOx' (a short-hand
+  which is assumed to be NO2), we provide conversions between these two
 - case-sensitivity. In order to provide a simplified interface, using all uppercase
   versions of any unit is also valid e.g. ``unit_registry("HFC4310mee")`` is the same as
   ``unit_registry("HFC4310MEE")``
@@ -85,6 +84,22 @@ However, it can be performed within the context 'CH4_conversions' as shown below
     ...     unit_registry("CH4").to("CO2")
     <Quantity(2.75, 'CO2')>
 
+*N2O*
+
+Nitrous oxide emissions are typically defined as 'N2O'. However, they are also reported as 'N2ON' (a short-hand which indicates that only the mass of the nitrogen is being counted). Reporting nitrous oxide emissions as simply 'N' is ambiguous (do you mean the mass of nitrogen, so 1 N = 28 / 44 N2O or just the mass of a single N atom, so 1 N = 14 / 44 N2O). By default, converting 'N2O' <--> 'N' is forbidden to prevent this ambiguity.
+However, the conversion can be performed within the context 'N2O_conversions', in which case it is assumed that 'N' just means a single N atom i.e. 1 N = 14 / 44 N2O, as shown below:
+
+.. code:: python
+
+    >>> from openscm_units import unit_registry
+    >>> unit_registry("N2O").to("N")
+    pint.errors.DimensionalityError: Cannot convert from 'CH4' ([methane]) to 'C' ([carbon])
+
+    # with a context, the conversion becomes legal again
+    >>> with unit_registry.context("N2O_conversions"):
+    ...     unit_registry("CH4").to("C")
+    <Quantity(0.75, 'C')>
+
 *NOx*
 
 Like for methane, NOx emissions also suffer from a namespace collision. In order to
@@ -101,11 +116,6 @@ prevent inadvertent conversions from 'NOx' to e.g. 'N2O', the conversion 'NOx' <
     >>> with unit_registry.context("NOx_conversions"):
     ...     unit_registry("NOx").to("N")
     <Quantity(0.30434782608695654, 'N')>
-
-    # as an unavoidable side effect, this also becomes possible
-    >>> with unit_registry.context("NOx_conversions"):
-    ...     unit_registry("NOx").to("N2O")
-    <Quantity(0.9565217391304348, 'N2O')>
 
 *NH3*
 
@@ -144,9 +154,11 @@ _STANDARD_GASES = {
     "CO2": ["12/44 * C", "carbon_dioxide"],
     "CH4": "methane",
     "HC50": ["CH4"],
+    "N2O": "nitrous_oxide",
+    "N2ON": ["44/28 * N2O", "nitrous_oxide_farming_style"],
     "N": "nitrogen",
-    "N2O": ["14/44 * N", "nitrous_oxide"],
-    "N2ON": ["14/28 * N", "nitrous_oxide_farming_style"],
+    # "N2O": ["14/44 * N", "nitrous_oxide"],
+    # "N2ON": ["14/28 * N", "nitrous_oxide_farming_style"],
     "NO2": ["14/46 * N", "nitrogen_dioxide"],
     # aerosol precursors
     "NOx": "NOx",
@@ -379,16 +391,27 @@ class ScmUnitRegistry(pint.UnitRegistry):
         )
         self.add_context(_ch4_context)
 
-        _n2o_context = pint.Context("NOx_conversions")
+        _n2o_context = pint.Context("N2O_conversions")
         _n2o_context = self._add_transformations_to_context(
             _n2o_context,
+            "[nitrous_oxide]",
+            self.nitrous_oxide,
+            "[nitrogen]",
+            self.nitrogen,
+            14 / 44,
+        )
+        self.add_context(_n2o_context)
+
+        _nox_context = pint.Context("NOx_conversions")
+        _nox_context = self._add_transformations_to_context(
+            _nox_context,
             "[nitrogen]",
             self.nitrogen,
             "[NOx]",
             self.NOx,
             (14 + 2 * 16) / 14,
         )
-        self.add_context(_n2o_context)
+        self.add_context(_nox_context)
 
         _nh3_context = pint.Context("NH3_conversions")
         _nh3_context = self._add_transformations_to_context(
