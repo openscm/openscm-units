@@ -86,19 +86,26 @@ However, it can be performed within the context 'CH4_conversions' as shown below
 
 *N2O*
 
-Nitrous oxide emissions are typically defined as 'N2O'. However, they are also reported as 'N2ON' (a short-hand which indicates that only the mass of the nitrogen is being counted). Reporting nitrous oxide emissions as simply 'N' is ambiguous (do you mean the mass of nitrogen, so 1 N = 28 / 44 N2O or just the mass of a single N atom, so 1 N = 14 / 44 N2O). By default, converting 'N2O' <--> 'N' is forbidden to prevent this ambiguity.
-However, the conversion can be performed within the context 'N2O_conversions', in which case it is assumed that 'N' just means a single N atom i.e. 1 N = 14 / 44 N2O, as shown below:
+Nitrous oxide emissions are typically reported with units of 'N2O'. However,
+they are also reported with units of 'N2ON' (a short-hand which indicates that
+only the mass of the nitrogen is being counted). Reporting nitrous oxide
+emissions with units of simply 'N' is ambiguous (do you mean the mass of
+nitrogen, so 1 N = 28 / 44 N2O or just the mass of a single N atom, so
+1 N = 14 / 44 N2O). By default, converting 'N2O' <--> 'N' is forbidden to
+prevent this ambiguity. However, the conversion can be performed within the
+context 'N2O_conversions', in which case it is assumed that 'N' just means a
+single N atom i.e. 1 N = 14 / 44 N2O, as shown below:
 
 .. code:: python
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("N2O").to("N")
-    pint.errors.DimensionalityError: Cannot convert from 'CH4' ([methane]) to 'C' ([carbon])
+    pint.errors.DimensionalityError: Cannot convert from 'N2O' ([nitrous_oxide]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
     >>> with unit_registry.context("N2O_conversions"):
-    ...     unit_registry("CH4").to("C")
-    <Quantity(0.75, 'C')>
+    ...     unit_registry("N2O").to("N")
+    <Quantity(0.318181818, 'N')>
 
 *NOx*
 
@@ -157,8 +164,6 @@ _STANDARD_GASES = {
     "N2O": "nitrous_oxide",
     "N2ON": ["44/28 * N2O", "nitrous_oxide_farming_style"],
     "N": "nitrogen",
-    # "N2O": ["14/44 * N", "nitrous_oxide"],
-    # "N2ON": ["14/28 * N", "nitrous_oxide_farming_style"],
     "NO2": ["14/46 * N", "nitrogen_dioxide"],
     # aerosol precursors
     "NOx": "NOx",
