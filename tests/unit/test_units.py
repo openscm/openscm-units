@@ -155,9 +155,13 @@ def test_a():
 def test_context():
     CO2 = unit_registry("CO2")
     N2ON = unit_registry("N2ON")
+    N2O = unit_registry("N2O")
     with unit_registry.context("AR4GWP100"):
         np.testing.assert_allclose(CO2.to("N2ON").magnitude, 28 / (44 * 298))
         np.testing.assert_allclose(N2ON.to("CO2").magnitude, 44 * 298 / 28)
+
+        np.testing.assert_allclose(CO2.to("N2O").magnitude, 1 / 298)
+        np.testing.assert_allclose(N2O.to("CO2").magnitude, 298)
 
 
 def test_context_with_magnitude():
