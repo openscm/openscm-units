@@ -3,6 +3,8 @@ Changelog
 
 master
 ------
+
+- (`#25 <https://github.com/openscm/openscm-units/pull/25>`_) Add "N2O_conversions" context to remove ambiguity in N2O conversions
 - (`#23 <https://github.com/openscm/openscm-units/pull/23>`_) Add AR5 GWPs with climate-carbon cycle feedbacks (closes `#22 <https://github.com/openscm/openscm-units/issues/22>`_)
 - (`#20 <https://github.com/openscm/openscm-units/pull/20>`_) Make ``openscm_units.data`` a module by adding an ``__init__.py`` file to it and add docs for ``openscm_units.data`` (closes `#19 <https://github.com/openscm/openscm-units/issues/19>`_)
 - (`#18 <https://github.com/openscm/openscm-units/pull/18>`_) Made NH3 a separate dimension to avoid accidental conversion to CO2 in GWP contexts. Also added an ``nh3_conversions`` context to convert to nitrogen (closes `#12 <https://github.com/openscm/openscm-units/issues/12>`_)
