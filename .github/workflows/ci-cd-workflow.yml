@@ -128,11 +128,11 @@ jobs:
         pip install -e .[dev]
 
     - name: Extract changelog for this release
-      run: python ./scripts/extract_changelog.py > ${{ github.workflow }}-CHANGELOG.rst
+      run: python ./scripts/extract_changelog.py > temp-CHANGELOG.rst
     - name: Release on GitHub
       uses: softprops/action-gh-release@v1
       with:
-        body_path: ${{ github.workflow }}-CHANGELOG.rst
+        body_path: temp-CHANGELOG.rst
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
