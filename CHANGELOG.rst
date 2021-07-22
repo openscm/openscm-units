@@ -4,6 +4,8 @@ Changelog
 master
 ------
 
+- Add github action to automatically draft a github release from a git tag.
+
 v0.3.0
 ------
 

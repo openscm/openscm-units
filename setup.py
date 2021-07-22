@@ -39,6 +39,7 @@ REQUIREMENTS_DEV = [
         "numpy",
         "pydocstyle",
         "pylint>=2.4.4",
+        "dephell_changelogs",
     ],
     *REQUIREMENTS_DEPLOY,
     *REQUIREMENTS_DOCS,
