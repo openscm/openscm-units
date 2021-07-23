@@ -4,6 +4,8 @@ Changelog
 master
 ------
 
+- (`#27 <https://github.com/openscm/openscm-units/pull/27>`_) Add github action to automatically draft a github release from a git tag.
+
 v0.3.0
 ------
 
