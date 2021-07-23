@@ -312,7 +312,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
     _contexts_loaded = False
 
-    def __init__(self, metric_conversions_csv=None, *args, **kwargs):
+    def __init__(self, *args, metric_conversions_csv=None, **kwargs):
         """
         Initialise the unit registry
 
