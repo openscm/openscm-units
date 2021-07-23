@@ -312,6 +312,32 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
     _contexts_loaded = False
 
+    def __init__(self, metric_conversions_csv=None, *args, **kwargs):
+        """
+        Initialise the unit registry
+
+        Parameters
+        ----------
+        metric_conversions_csv : str
+            csv file containing the metric conversions. If not supplied,
+            the internal metric conversions csv is used.
+
+        *args
+            Passed to the ``__init__`` method of the super class
+
+        **kwargs
+            Passed to the ``__init__`` method of the super class
+        """
+        if metric_conversions_csv is None:
+            metric_conversions_csv = path.join(
+                path.dirname(path.abspath(__file__)),
+                "data",
+                "metric_conversions.csv",
+            )
+
+        self._metric_conversions_csv = metric_conversions_csv
+        super().__init__(*args, **kwargs)
+
     def add_standards(self):
         """
         Add standard units.
@@ -438,11 +464,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         This is done only when contexts are needed to avoid reading files on import.
         """
         metric_conversions = pd.read_csv(
-            path.join(
-                path.dirname(path.abspath(__file__)),
-                "data",
-                "metric_conversions.csv",
-            ),
+            self._metric_conversions_csv,
             skiprows=1,  # skip source row
             header=0,
             index_col=0,
@@ -450,6 +472,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
             1:, :
         ]  # drop out 'SCMData base unit' row
 
+
+        self._add_metric_conversions_from_df(metric_conversions)
+
+    def _add_metric_conversions_from_df(self, metric_conversions):
+        # could make this public in future so people can write conversions
+        # in memory and then set them
         for col in metric_conversions:
             metric_conversion = metric_conversions[col]
             transform_context = pint.Context(col)
