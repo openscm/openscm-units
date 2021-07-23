@@ -2,7 +2,6 @@ import os.path
 
 import pytest
 
-
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "test-data")
 
 
