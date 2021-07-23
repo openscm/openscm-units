@@ -472,7 +472,6 @@ class ScmUnitRegistry(pint.UnitRegistry):
             1:, :
         ]  # drop out 'SCMData base unit' row
 
-
         self._add_metric_conversions_from_df(metric_conversions)
 
     def _add_metric_conversions_from_df(self, metric_conversions):
