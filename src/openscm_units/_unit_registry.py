@@ -144,7 +144,6 @@ context analogous to the 'NOx_conversions' context:
 """
 import importlib
 import math
-from os import path
 
 import pandas as pd
 import pint
