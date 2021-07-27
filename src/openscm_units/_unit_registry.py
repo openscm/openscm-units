@@ -142,12 +142,14 @@ context analogous to the 'NOx_conversions' context:
     <Quantity(0.823529412, 'N')>
 
 """
+import importlib
 import math
 from os import path
 
 import pandas as pd
 import pint
 
+from . import data
 from .data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
@@ -328,13 +330,6 @@ class ScmUnitRegistry(pint.UnitRegistry):
         **kwargs
             Passed to the ``__init__`` method of the super class
         """
-        if metric_conversions_csv is None:
-            metric_conversions_csv = path.join(
-                path.dirname(path.abspath(__file__)),
-                "data",
-                "metric_conversions.csv",
-            )
-
         self._metric_conversions_csv = metric_conversions_csv
         super().__init__(*args, **kwargs)
 
@@ -463,8 +458,13 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         This is done only when contexts are needed to avoid reading files on import.
         """
+        if self._metric_conversions_csv is None:
+            to_read = importlib.resources.open_text(data, "metric_conversions.csv")
+        else:
+            to_read = self._metric_conversions_csv
+
         metric_conversions = pd.read_csv(
-            self._metric_conversions_csv,
+            to_read,
             skiprows=1,  # skip source row
             header=0,
             index_col=0,
