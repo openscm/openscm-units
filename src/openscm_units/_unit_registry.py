@@ -148,7 +148,7 @@ import math
 import pandas as pd
 import pint
 
-from . import data
+from . import data  # pylint:disable=no-name-in-module # no idea why this is failing
 from .data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
