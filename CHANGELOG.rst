@@ -1,7 +1,7 @@
 Changelog
 =========
 
-master
+v0.4.0
 ------
 
 - (`#28 <https://github.com/openscm/openscm-units/pull/28>`_) Add ability to use a custom metrics csv with :class:`ScmUnitRegistry`
