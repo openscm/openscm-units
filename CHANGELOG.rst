@@ -4,6 +4,8 @@ Changelog
 master
 ------
 
+- (`#28 <https://github.com/openscm/openscm-units/pull/28>`_) Add ability to use a custom metrics csv with :class:`ScmUnitRegistry`
+- (`#28 <https://github.com/openscm/openscm-units/pull/28>`_) Drop Python3.6 support
 - (`#27 <https://github.com/openscm/openscm-units/pull/27>`_) Add github action to automatically draft a github release from a git tag.
 
 v0.3.0

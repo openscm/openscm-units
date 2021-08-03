@@ -142,12 +142,13 @@ context analogous to the 'NOx_conversions' context:
     <Quantity(0.823529412, 'N')>
 
 """
+import importlib
 import math
-from os import path
 
 import pandas as pd
 import pint
 
+from . import data  # pylint:disable=no-name-in-module # no idea why this is failing
 from .data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
@@ -312,6 +313,25 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
     _contexts_loaded = False
 
+    def __init__(self, *args, metric_conversions_csv=None, **kwargs):
+        """
+        Initialise the unit registry
+
+        Parameters
+        ----------
+        metric_conversions_csv : str
+            csv file containing the metric conversions. If not supplied,
+            the internal metric conversions csv is used.
+
+        *args
+            Passed to the ``__init__`` method of the super class
+
+        **kwargs
+            Passed to the ``__init__`` method of the super class
+        """
+        self._metric_conversions_csv = metric_conversions_csv
+        super().__init__(*args, **kwargs)
+
     def add_standards(self):
         """
         Add standard units.
@@ -437,12 +457,13 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         This is done only when contexts are needed to avoid reading files on import.
         """
+        if self._metric_conversions_csv is None:
+            to_read = importlib.resources.open_text(data, "metric_conversions.csv")
+        else:
+            to_read = self._metric_conversions_csv
+
         metric_conversions = pd.read_csv(
-            path.join(
-                path.dirname(path.abspath(__file__)),
-                "data",
-                "metric_conversions.csv",
-            ),
+            to_read,
             skiprows=1,  # skip source row
             header=0,
             index_col=0,
@@ -450,6 +471,11 @@ class ScmUnitRegistry(pint.UnitRegistry):
             1:, :
         ]  # drop out 'SCMData base unit' row
 
+        self._add_metric_conversions_from_df(metric_conversions)
+
+    def _add_metric_conversions_from_df(self, metric_conversions):
+        # could make this public in future so people can write conversions
+        # in memory and then set them
         for col in metric_conversions:
             metric_conversion = metric_conversions[col]
             transform_context = pint.Context(col)
