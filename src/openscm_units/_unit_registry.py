@@ -319,8 +319,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
         Parameters
         ----------
         metric_conversions : [:obj:`pd.DataFrame`, None]
-            :obj:`pd.DataFrame` containing the metric conversions. If not
-            supplied, the ``globalwarmingpotentials`` package is used.
+            :obj:`pd.DataFrame` containing the metric conversions.
+            ``metric_conversions`` must have an index named ``"Species"`` that
+            contains the different species and columns which contain the
+            conversion for different metrics (the name of the metrics is taken
+            from the column names).If not supplied, the
+            ``globalwarmingpotentials`` package is used.
 
         *args
             Passed to the ``__init__`` method of the super class
@@ -464,8 +468,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         self._add_metric_conversions_from_df(metric_conversions)
 
     def _add_metric_conversions_from_df(self, metric_conversions):
-        # could make this public in future so people can write conversions
-        # in memory and then set them
+        # could make this public in future
         for col in metric_conversions:
             metric_conversion = metric_conversions[col]
             transform_context = pint.Context(col)
