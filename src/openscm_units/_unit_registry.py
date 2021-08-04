@@ -142,13 +142,12 @@ context analogous to the 'NOx_conversions' context:
     <Quantity(0.823529412, 'N')>
 
 """
-import importlib
 import math
 
+import globalwarmingpotentials
 import pandas as pd
 import pint
 
-from . import data  # pylint:disable=no-name-in-module # no idea why this is failing
 from .data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
@@ -458,8 +457,6 @@ class ScmUnitRegistry(pint.UnitRegistry):
         This is done only when contexts are needed to avoid reading files on import.
         """
         if self._metric_conversions_csv is None:
-            import globalwarmingpotentials
-
             metric_conversions = globalwarmingpotentials.as_frame()
         else:
             to_read = self._metric_conversions_csv
