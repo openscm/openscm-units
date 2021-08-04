@@ -31,18 +31,20 @@ def test_custom_context_csv(test_data_dir):
 
 
 def test_custom_context():
-    metric_conversions_custom = pd.DataFrame([
-        {
-            "Species": "CH4",
-            "Custom1": 20,
-            "Custom2": 25,
-        },
-        {
-            "Species": "N2O",
-            "Custom1": 341,
-            "Custom2": 300,
-        },
-    ]).set_index("Species")
+    metric_conversions_custom = pd.DataFrame(
+        [
+            {
+                "Species": "CH4",
+                "Custom1": 20,
+                "Custom2": 25,
+            },
+            {
+                "Species": "N2O",
+                "Custom1": 341,
+                "Custom2": 300,
+            },
+        ]
+    ).set_index("Species")
 
     unit_registry = ScmUnitRegistry(metric_conversions=metric_conversions_custom)
     unit_registry.add_standards()
