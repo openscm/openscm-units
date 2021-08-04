@@ -145,7 +145,6 @@ context analogous to the 'NOx_conversions' context:
 import math
 
 import globalwarmingpotentials
-import pandas as pd
 import pint
 
 from .data.mixtures import MIXTURES
