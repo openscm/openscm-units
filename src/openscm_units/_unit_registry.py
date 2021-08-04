@@ -458,18 +458,20 @@ class ScmUnitRegistry(pint.UnitRegistry):
         This is done only when contexts are needed to avoid reading files on import.
         """
         if self._metric_conversions_csv is None:
-            to_read = importlib.resources.open_text(data, "metric_conversions.csv")
+            import globalwarmingpotentials
+
+            metric_conversions = globalwarmingpotentials.as_frame()
         else:
             to_read = self._metric_conversions_csv
 
-        metric_conversions = pd.read_csv(
-            to_read,
-            skiprows=1,  # skip source row
-            header=0,
-            index_col=0,
-        ).iloc[
-            1:, :
-        ]  # drop out 'SCMData base unit' row
+            metric_conversions = pd.read_csv(
+                to_read,
+                skiprows=1,  # skip source row
+                header=0,
+                index_col=0,
+            ).iloc[
+                1:, :
+            ]  # drop out 'SCMData base unit' row
 
         self._add_metric_conversions_from_df(metric_conversions)
 
