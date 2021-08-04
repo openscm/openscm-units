@@ -312,15 +312,15 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
     _contexts_loaded = False
 
-    def __init__(self, *args, metric_conversions_csv=None, **kwargs):
+    def __init__(self, *args, metric_conversions=None, **kwargs):
         """
         Initialise the unit registry
 
         Parameters
         ----------
-        metric_conversions_csv : str
-            csv file containing the metric conversions. If not supplied,
-            the internal metric conversions csv is used.
+        metric_conversions : [:obj:`pd.DataFrame`, None]
+            :obj:`pd.DataFrame` containing the metric conversions. If not
+            supplied, the ``globalwarmingpotentials`` package is used.
 
         *args
             Passed to the ``__init__`` method of the super class
@@ -328,7 +328,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         **kwargs
             Passed to the ``__init__`` method of the super class
         """
-        self._metric_conversions_csv = metric_conversions_csv
+        self._metric_conversions = metric_conversions
         super().__init__(*args, **kwargs)
 
     def add_standards(self):
@@ -456,19 +456,10 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         This is done only when contexts are needed to avoid reading files on import.
         """
-        if self._metric_conversions_csv is None:
+        if self._metric_conversions is None:
             metric_conversions = globalwarmingpotentials.as_frame()
         else:
-            to_read = self._metric_conversions_csv
-
-            metric_conversions = pd.read_csv(
-                to_read,
-                skiprows=1,  # skip source row
-                header=0,
-                index_col=0,
-            ).iloc[
-                1:, :
-            ]  # drop out 'SCMData base unit' row
+            metric_conversions = self._metric_conversions
 
         self._add_metric_conversions_from_df(metric_conversions)
 
