@@ -305,11 +305,10 @@ class ScmUnitRegistry(pint.UnitRegistry):
     """
     Unit registry class.
 
-    Provides some convenience methods to add standard units and contexts with
-    lazy loading from disk.
+    Provides some convenience methods to add standard units and contexts.
     """
 
-    _contexts_loaded = False
+    _contexts_added = False
 
     def __init__(self, *args, metric_conversions=None, **kwargs):
         """
@@ -360,12 +359,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
     def enable_contexts(self, *names_or_contexts, **kwargs):
         """
-        Overload pint's :func:`enable_contexts` to load contexts once (the first time
-        they are used) to avoid (unnecessary) file operations on import.
+        Overload pint's :func:`enable_contexts` to add contexts once (the first time
+        they are used) to avoid (unnecessary) operations.
         """
-        if not self._contexts_loaded:
-            self._load_contexts()
-        self._contexts_loaded = True
+        if not self._contexts_added:
+            self._add_contexts()
+        self._contexts_added = True
         super().enable_contexts(*names_or_contexts, **kwargs)
 
     def _add_mass_emissions_joint_version(self, symbol):
@@ -403,9 +402,9 @@ class ScmUnitRegistry(pint.UnitRegistry):
                 self.define("{} = {}".format(symbol.upper(), symbol))
                 self._add_mass_emissions_joint_version(symbol.upper())
 
-    def _load_contexts(self):
+    def _add_contexts(self):
         """
-        Load contexts.
+        Add contexts
         """
         _ch4_context = pint.Context("CH4_conversions")
         _ch4_context = self._add_transformations_to_context(
@@ -451,13 +450,11 @@ class ScmUnitRegistry(pint.UnitRegistry):
         )
         self.add_context(_nh3_context)
 
-        self._load_metric_conversions()
+        self._add_metric_conversions()
 
-    def _load_metric_conversions(self):
+    def _add_metric_conversions(self):
         """
-        Load metric conversion contexts from file.
-
-        This is done only when contexts are needed to avoid reading files on import.
+        Add metric conversion contexts
         """
         if self._metric_conversions is None:
             metric_conversions = globalwarmingpotentials.as_frame()
