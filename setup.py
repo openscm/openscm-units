@@ -8,7 +8,7 @@ AUTHORS = [
     ("Zeb Nicholls", "zebedee.nicholls@climate-energy-college.org"),
     ("Sven Willner", "sven.willner@pik-potsdam.de"),
     ("Jared Lewis", "jared.lewis@climate-energy-college.org"),
-    ("Robert Gieseke", "robert.gieseke@pik-potsdam.de"),
+    ("Robert Gieseke", "rob.g@web.de"),
 ]
 URL = "https://github.com/openscm/openscm-units"
 
@@ -19,9 +19,8 @@ SOURCE_DIR = "src"
 
 PACKAGES = find_packages(SOURCE_DIR)  # no exclude as only searching in `src`
 PACKAGE_DIR = {"": SOURCE_DIR}
-PACKAGE_DATA = {"openscm_units": ["data/*.csv"]}
 
-REQUIREMENTS = ["pandas", "pint"]
+REQUIREMENTS = ["pandas", "pint", "globalwarmingpotentials"]
 REQUIREMENTS_NOTEBOOKS = ["notebook", "seaborn"]
 REQUIREMENTS_TESTS = ["codecov", "coverage", "nbval", "pytest-cov", "pytest>=4.0"]
 REQUIREMENTS_DOCS = ["sphinx>=1.4", "sphinx_rtd_theme"]
@@ -108,7 +107,6 @@ setup(
     keywords=["openscm", "units", "python", "repo", "simple", "climate", "model"],
     packages=PACKAGES,
     package_dir=PACKAGE_DIR,
-    package_data=PACKAGE_DATA,
     include_package_data=True,
     install_requires=REQUIREMENTS,
     extras_require=REQUIREMENTS_EXTRAS,

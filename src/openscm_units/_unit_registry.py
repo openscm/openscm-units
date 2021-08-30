@@ -142,13 +142,11 @@ context analogous to the 'NOx_conversions' context:
     <Quantity(0.823529412, 'N')>
 
 """
-import importlib
 import math
 
-import pandas as pd
+import globalwarmingpotentials
 import pint
 
-from . import data  # pylint:disable=no-name-in-module # no idea why this is failing
 from .data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
@@ -307,21 +305,24 @@ class ScmUnitRegistry(pint.UnitRegistry):
     """
     Unit registry class.
 
-    Provides some convenience methods to add standard units and contexts with
-    lazy loading from disk.
+    Provides some convenience methods to add standard units and contexts.
     """
 
-    _contexts_loaded = False
+    _contexts_added = False
 
-    def __init__(self, *args, metric_conversions_csv=None, **kwargs):
+    def __init__(self, *args, metric_conversions=None, **kwargs):
         """
         Initialise the unit registry
 
         Parameters
         ----------
-        metric_conversions_csv : str
-            csv file containing the metric conversions. If not supplied,
-            the internal metric conversions csv is used.
+        metric_conversions : [:obj:`pd.DataFrame`, None]
+            :obj:`pd.DataFrame` containing the metric conversions.
+            ``metric_conversions`` must have an index named ``"Species"`` that
+            contains the different species and columns which contain the
+            conversion for different metrics (the name of the metrics is taken
+            from the column names).If not supplied, the
+            ``globalwarmingpotentials`` package is used.
 
         *args
             Passed to the ``__init__`` method of the super class
@@ -329,7 +330,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         **kwargs
             Passed to the ``__init__`` method of the super class
         """
-        self._metric_conversions_csv = metric_conversions_csv
+        self._metric_conversions = metric_conversions
         super().__init__(*args, **kwargs)
 
     def add_standards(self):
@@ -358,12 +359,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
     def enable_contexts(self, *names_or_contexts, **kwargs):
         """
-        Overload pint's :func:`enable_contexts` to load contexts once (the first time
-        they are used) to avoid (unnecessary) file operations on import.
+        Overload pint's :func:`enable_contexts` to add contexts once (the first time
+        they are used) to avoid (unnecessary) operations.
         """
-        if not self._contexts_loaded:
-            self._load_contexts()
-        self._contexts_loaded = True
+        if not self._contexts_added:
+            self._add_contexts()
+        self._contexts_added = True
         super().enable_contexts(*names_or_contexts, **kwargs)
 
     def _add_mass_emissions_joint_version(self, symbol):
@@ -401,9 +402,9 @@ class ScmUnitRegistry(pint.UnitRegistry):
                 self.define("{} = {}".format(symbol.upper(), symbol))
                 self._add_mass_emissions_joint_version(symbol.upper())
 
-    def _load_contexts(self):
+    def _add_contexts(self):
         """
-        Load contexts.
+        Add contexts
         """
         _ch4_context = pint.Context("CH4_conversions")
         _ch4_context = self._add_transformations_to_context(
@@ -449,33 +450,21 @@ class ScmUnitRegistry(pint.UnitRegistry):
         )
         self.add_context(_nh3_context)
 
-        self._load_metric_conversions()
+        self._add_metric_conversions()
 
-    def _load_metric_conversions(self):
+    def _add_metric_conversions(self):
         """
-        Load metric conversion contexts from file.
-
-        This is done only when contexts are needed to avoid reading files on import.
+        Add metric conversion contexts
         """
-        if self._metric_conversions_csv is None:
-            to_read = importlib.resources.open_text(data, "metric_conversions.csv")
+        if self._metric_conversions is None:
+            metric_conversions = globalwarmingpotentials.as_frame()
         else:
-            to_read = self._metric_conversions_csv
-
-        metric_conversions = pd.read_csv(
-            to_read,
-            skiprows=1,  # skip source row
-            header=0,
-            index_col=0,
-        ).iloc[
-            1:, :
-        ]  # drop out 'SCMData base unit' row
+            metric_conversions = self._metric_conversions
 
         self._add_metric_conversions_from_df(metric_conversions)
 
     def _add_metric_conversions_from_df(self, metric_conversions):
-        # could make this public in future so people can write conversions
-        # in memory and then set them
+        # could make this public in future
         for col in metric_conversions:
             metric_conversion = metric_conversions[col]
             transform_context = pint.Context(col)

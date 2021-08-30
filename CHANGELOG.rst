@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+- (`#29 <https://github.com/openscm/openscm-units/pull/29>`_) Load Global Warming Potentials from `globalwarmingpotentials <https://github.com/openclimatedata/globalwarmingpotentials>`_ package.
+
 v0.4.0
 ------
 
