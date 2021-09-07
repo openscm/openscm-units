@@ -1,9 +1,10 @@
 Changelog
 =========
 
-Unreleased
-----------
+v0.5.0
+------
 
+- (`#30 <https://github.com/openscm/openscm-units/pull/30>`_) Custom metrics are now to be provided as :obj:`pd.DataFrame` rather than being read off disk
 - (`#29 <https://github.com/openscm/openscm-units/pull/29>`_) Load Global Warming Potentials from `globalwarmingpotentials <https://github.com/openclimatedata/globalwarmingpotentials>`_ package.
 
 v0.4.0
