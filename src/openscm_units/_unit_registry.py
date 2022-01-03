@@ -341,7 +341,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         """
         self._add_gases(_STANDARD_GASES)
 
-        self._add_gases({x: x for x in MIXTURES.keys()})
+        self._add_gases({x: x for x in MIXTURES})
 
         self.define("a = 1 * year = annum = yr")
         self.define("h = hour")
@@ -386,20 +386,20 @@ class ScmUnitRegistry(pint.UnitRegistry):
         for symbol, value in gases.items():
             if isinstance(value, str):
                 # symbol is base unit
-                self.define("{} = [{}]".format(symbol, value))
+                self.define(f"{symbol} = [{value}]")
                 if value != symbol:
-                    self.define("{} = {}".format(value, symbol))
+                    self.define(f"{value} = {symbol}")
             else:
                 # symbol has conversion and aliases
-                self.define("{} = {}".format(symbol, value[0]))
+                self.define(f"{symbol} = {value[0]}")
                 for alias in value[1:]:
-                    self.define("{} = {}".format(alias, symbol))
+                    self.define(f"{alias} = {symbol}")
 
             self._add_mass_emissions_joint_version(symbol)
 
             # Add alias for upper case symbol:
             if symbol.upper() != symbol:
-                self.define("{} = {}".format(symbol.upper(), symbol))
+                self.define(f"{symbol.upper()} = {symbol}")
                 self._add_mass_emissions_joint_version(symbol.upper())
 
     def _add_contexts(self):
