@@ -41,6 +41,8 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",  # pass numpy style docstrings
+    "sphinx.ext.mathjax",
+    "nbsphinx",
 ]
 
 autodoc_default_options = {

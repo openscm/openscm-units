@@ -23,7 +23,7 @@ PACKAGE_DIR = {"": SOURCE_DIR}
 REQUIREMENTS = ["pandas", "pint", "globalwarmingpotentials"]
 REQUIREMENTS_NOTEBOOKS = ["notebook", "seaborn"]
 REQUIREMENTS_TESTS = ["codecov", "coverage", "nbval", "pytest-cov", "pytest>=4.0"]
-REQUIREMENTS_DOCS = ["sphinx>=1.4", "sphinx_rtd_theme"]
+REQUIREMENTS_DOCS = ["sphinx>=1.4", "sphinx_rtd_theme", "nbsphinx", "ipykernel"]
 REQUIREMENTS_DEPLOY = ["twine>=1.11.0", "setuptools>=38.6.0", "wheel>=0.31.0"]
 
 REQUIREMENTS_DEV = [
@@ -39,6 +39,7 @@ REQUIREMENTS_DEV = [
         "pydocstyle",
         "pylint>=2.4.4",
         "dephell_changelogs",
+        "nbsphinx",
     ],
     *REQUIREMENTS_DEPLOY,
     *REQUIREMENTS_DOCS,
