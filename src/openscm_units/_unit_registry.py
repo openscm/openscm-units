@@ -34,8 +34,8 @@ For emissions units, there are a few cases to be considered:
 
 - fairly obvious ones e.g. carbon dioxide emissions can be provided in 'C' or 'CO2' and
   converting between the two is possible
-- less obvious ones e.g. NOx emissions can be provided in 'N' or 'NOx' (a short-hand
-  which is assumed to be NO2), we provide conversions between these two
+- less obvious ones e.g. NOx emissions can be provided in 'N' or 'NOx', we provide
+  conversions between these two which can be enabled if needed (see below).
 - case-sensitivity. In order to provide a simplified interface, using all uppercase
   versions of any unit is also valid e.g. ``unit_registry("HFC4310mee")`` is the same as
   ``unit_registry("HFC4310MEE")``
