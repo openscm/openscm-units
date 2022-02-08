@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.9]
 
     steps:
     - name: Checkout repository
@@ -104,7 +104,7 @@ jobs:
       run: |
           pytest docs/source/notebooks -r a --nbval-lax --sanitize-with tests/notebook-tests.cfg --no-cov
     - name: Test notebooks strictly
-      if: matrix.python-version == 3.7
+      if: matrix.python-version == 3.9
       run: |
         pytest docs/source/notebooks -r a --nbval --sanitize-with tests/notebook-tests.cfg --no-cov
 
@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.9]
 
     steps:
     - name: Checkout repository
