@@ -184,7 +184,7 @@ coverage_write_headline = False  # do not write headlines.
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    "numpy": ("https://docs.scipy.org/doc/numpy", None),
+    "numpy": ("https://numpy.org/doc/stable", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable", None),
     "python": ("https://docs.python.org/3", None),
     "pyam": ("https://pyam-iamc.readthedocs.io/en/latest", None),
