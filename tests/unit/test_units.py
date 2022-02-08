@@ -100,7 +100,7 @@ def test_ppt():
 def test_short_definition():
     tC = unit_registry("tC")
     np.testing.assert_allclose(tC.to("tCO2").magnitude, 44 / 12)
-    np.testing.assert_allclose(tC.to("gC").magnitude, 10 ** 6)
+    np.testing.assert_allclose(tC.to("gC").magnitude, 10**6)
 
 
 def test_uppercase():
@@ -116,20 +116,20 @@ def test_emissions_flux():
 @pytest.mark.parametrize(
     "prefix_start,prefix_end,factor",
     (
-        ("Tt", "Tt", 10 ** 0),
-        ("Tt", "Gt", 10 ** 3),
-        ("Tt", "Mt", 10 ** 6),
-        ("Tt", "kt", 10 ** 9),
-        ("Gt", "Gt", 10 ** 0),
-        ("Gt", "Mt", 10 ** 3),
-        ("Gt", "kt", 10 ** 6),
-        ("Gt", "t", 10 ** 9),
-        ("Mt", "Mt", 10 ** 0),
-        ("Mt", "kt", 10 ** 3),
-        ("Mt", "t", 10 ** 6),
-        ("kt", "kt", 10 ** 0),
-        ("kt", "t", 10 ** 3),
-        ("t", "t", 10 ** 0),
+        ("Tt", "Tt", 10**0),
+        ("Tt", "Gt", 10**3),
+        ("Tt", "Mt", 10**6),
+        ("Tt", "kt", 10**9),
+        ("Gt", "Gt", 10**0),
+        ("Gt", "Mt", 10**3),
+        ("Gt", "kt", 10**6),
+        ("Gt", "t", 10**9),
+        ("Mt", "Mt", 10**0),
+        ("Mt", "kt", 10**3),
+        ("Mt", "t", 10**6),
+        ("kt", "kt", 10**0),
+        ("kt", "t", 10**3),
+        ("t", "t", 10**0),
     ),
 )
 def test_emissions_prefix(prefix_start, prefix_end, factor):
