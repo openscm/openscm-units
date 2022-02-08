@@ -5,6 +5,7 @@ master
 ------
 
 - (`#33 <https://github.com/openscm/openscm-units/pull/33>`_) Generate static usage documentation from the introduction notebook
+- (`#34 <https://github.com/openscm/openscm-units/pull/34>`_) Update documentation regarding NOx conversions.
 
 v0.5.0
 ------
