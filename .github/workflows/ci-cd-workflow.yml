@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.9]
 
     steps:
     - name: Checkout repository
@@ -26,6 +26,7 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install -e .[dev]
+        sudo apt-get install pandoc
     - name: Formatting and linters
       run: |
         black --check src tests setup.py --exclude openscm_units/_version.py
@@ -101,11 +102,11 @@ jobs:
         pip install -e .[tests,notebooks]
     - name: Test notebooks with nbval
       run: |
-          pytest notebooks -r a --nbval-lax --sanitize-with tests/notebook-tests.cfg --no-cov
+          pytest docs/source/notebooks -r a --nbval-lax --sanitize-with tests/notebook-tests.cfg --no-cov
     - name: Test notebooks strictly
-      if: matrix.python-version == 3.7
+      if: matrix.python-version == 3.9
       run: |
-        pytest notebooks -r a --nbval --sanitize-with tests/notebook-tests.cfg --no-cov
+        pytest docs/source/notebooks -r a --nbval --sanitize-with tests/notebook-tests.cfg --no-cov
 
   deploy-pypi-github:
     needs: [linting-and-docs,build,test-notebooks]
@@ -113,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.7]
+        python-version: [3.9]
 
     steps:
     - name: Checkout repository

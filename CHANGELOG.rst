@@ -1,6 +1,11 @@
 Changelog
 =========
 
+master
+------
+
+- (`#33 <https://github.com/openscm/openscm-units/pull/33>`_) Generate static usage documentation from the introduction notebook
+
 v0.5.0
 ------
 
