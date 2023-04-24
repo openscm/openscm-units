@@ -6,6 +6,8 @@ master
 
 - (`#33 <https://github.com/openscm/openscm-units/pull/33>`_) Generate static usage documentation from the introduction notebook
 - (`#34 <https://github.com/openscm/openscm-units/pull/34>`_) Update documentation regarding NOx conversions.
+- (`#38 <https://github.com/openscm/openscm-units/pull/38>`_) Fixed Series.iteritems() removal in pandas, see e.g. `#150 in primap2 <https://github.com/pik-primap/primap2/issues/150>`_
+
 
 v0.5.0
 ------
