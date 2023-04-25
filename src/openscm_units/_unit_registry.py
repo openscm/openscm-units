@@ -145,6 +145,7 @@ context analogous to the 'NOx_conversions' context:
 import math
 
 import globalwarmingpotentials
+import pandas as pd
 import pint
 
 from .data.mixtures import MIXTURES
@@ -463,12 +464,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         self._add_metric_conversions_from_df(metric_conversions)
 
-    def _add_metric_conversions_from_df(self, metric_conversions):
+    def _add_metric_conversions_from_df(self, metric_conversions: pd.DataFrame):
         # could make this public in future
         for col in metric_conversions:
-            metric_conversion = metric_conversions[col]
+            metric_conversion: pd.Series = metric_conversions[col]
             transform_context = pint.Context(col)
-            for label, val in metric_conversion.iteritems():
+            for label, val in metric_conversion.items():
                 transform_context = self._add_gwp_to_context(
                     transform_context, label, val
                 )
