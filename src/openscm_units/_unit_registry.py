@@ -302,7 +302,7 @@ _STANDARD_GASES = {
 }
 
 
-class ScmUnitRegistry(pint.UnitRegistry):
+class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
     """
     Unit registry class.
 
@@ -332,6 +332,8 @@ class ScmUnitRegistry(pint.UnitRegistry):
             Passed to the ``__init__`` method of the super class
         """
         self._metric_conversions = metric_conversions
+        # If we didn't call init here, we wouldn't need to rebuild the cache
+        # below but that also feels like a bad pattern
         super().__init__(*args, **kwargs)
 
     def add_standards(self):
