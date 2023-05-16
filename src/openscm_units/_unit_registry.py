@@ -354,9 +354,12 @@ class ScmUnitRegistry(pint.UnitRegistry):
             "Tt = 1000000000000 * t"
         )  # since Tt is used for "tex" in the defaults
 
-        self.define("ppt = [concentrations]")
-        self.define("ppb = 1000 * ppt")
-        self.define("ppm = 1000 * ppb")
+        self.define("ppm = [concentrations]")
+        self.define("ppb = ppm / 1000")
+        self.define("ppt = ppb / 1000")
+        # Have to rebuild cache to get right units for ppm as it is defined in
+        # pint
+        self._build_cache()
 
     def enable_contexts(self, *names_or_contexts, **kwargs):
         """
