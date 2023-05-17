@@ -1,6 +1,8 @@
 Changelog
 =========
 
+- (`#40 <https://github.com/openscm/openscm-units/pull/40>`_) Fixed broken definition of ppm, caused by regression in Pint where `'ppm' was added to Pint <https://github.com/hgrecco/pint/pull/1661>`_
+
 v0.5.1
 ------
 
