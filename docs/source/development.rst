@@ -56,7 +56,7 @@ Getting help
 ~~~~~~~~~~~~
 
 Whilst developing, unexpected things can go wrong (that's why it's called 'developing', if we knew what we were doing, it would already be 'developed').
-Normally, the fastest way to solve an issue is to contact us via the `issue tracker <https://github.com/znicholls/openscm-units/issues>`_.
+Normally, the fastest way to solve an issue is to contact us via the `issue tracker <https://github.com/openscm/openscm-units/issues>`_.
 The other option is to debug yourself.
 For this purpose, we provide a list of the tools we use during our development as starting points for your search to find what has gone wrong.
 
@@ -187,5 +187,5 @@ Whilst it may not be standard practice, a ``Makefile`` is a simple way to automa
 Hence we have one here which basically acts as a notes file for how to do all those little jobs which we often forget e.g. setting up environments, running tests (and making sure we're in the right environment), building docs, setting up auxillary bits and pieces.
 
 .. _Sphinx: http://www.sphinx-doc.org/en/master/
-.. _OpenSCM-Units issue tracker: https://github.com/znicholls/openscm-units/issues
+.. _OpenSCM-Units issue tracker: https://github.com/openscm/openscm-units/issues
 .. _`OpenSCM-Units's PyPI`: https://pypi.org/project/openscm-units/
