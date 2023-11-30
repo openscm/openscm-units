@@ -1,10 +1,13 @@
-import os.path
+"""
+Re-useable fixtures etc. for tests
+
+See https://docs.pytest.org/en/7.1.x/reference/fixtures.html#conftest-py-sharing-fixtures-across-multiple-files
+"""
+from pathlib import Path
 
 import pytest
 
-TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "test-data")
 
-
-@pytest.fixture
+@pytest.fixture(scope="session")
 def test_data_dir():
-    return TEST_DATA_DIR
+    return Path(__file__).parent / "test-data"

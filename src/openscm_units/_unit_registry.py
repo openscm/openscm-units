@@ -17,7 +17,7 @@ An illustration of how the ``unit_registry`` can be used is shown below:
     <Quantity(0.34, 'C * gigametric_ton / a')>
 
     >>> emissions_aus.to("Mt CO2 / yr")
-    <Quantity(1246.666666666667, 'CO2 * megametric_ton / a')>
+    <Quantity(1246.66667, 'CO2 * megametric_ton / a')>
 
     >>> with unit_registry.context("AR4GWP100"):
     ...     (100 * unit_registry("Mt CH4 / yr")).to("Mt CO2 / yr")
@@ -72,6 +72,8 @@ However, it can be performed within the context 'CH4_conversions' as shown below
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("CH4").to("C")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'CH4' ([methane]) to 'C' ([carbon])
 
     # with a context, the conversion becomes legal again
@@ -100,6 +102,8 @@ single N atom i.e. 1 N = 14 / 44 N2O, as shown below:
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("N2O").to("N")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'N2O' ([nitrous_oxide]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
@@ -117,12 +121,14 @@ prevent inadvertent conversions from 'NOx' to e.g. 'N2O', the conversion 'NOx' <
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("NOx").to("N")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'NOx' ([NOx]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
     >>> with unit_registry.context("NOx_conversions"):
     ...     unit_registry("NOx").to("N")
-    <Quantity(0.30434782608695654, 'N')>
+    <Quantity(0.304347826, 'N')>
 
 *NH3*
 
@@ -134,6 +140,8 @@ context analogous to the 'NOx_conversions' context:
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("NH3").to("N")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'NH3' ([NH3]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
@@ -148,7 +156,7 @@ import globalwarmingpotentials
 import pandas as pd
 import pint
 
-from .data.mixtures import MIXTURES
+from openscm_units.data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
 # - str: this entry defines a base gas unit

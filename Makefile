@@ -1,123 +1,76 @@
+# Makefile to help automate key steps
+
 .DEFAULT_GOAL := help
+# Will likely fail on Windows, but Makefiles are in general not Windows
+# compatible so we're not too worried
+TEMP_FILE := $(shell mktemp)
 
-VENV_DIR ?= venv
-TESTS_DIR=$(PWD)/tests
-
-NOTEBOOKS_DIR=./docs/source/notebooks
-NOTEBOOKS_SANITIZE_FILE=$(TESTS_DIR)/notebook-tests.cfg
-
+# A helper script to get short descriptions of each target in the Makefile
 define PRINT_HELP_PYSCRIPT
 import re, sys
 
 for line in sys.stdin:
-	match = re.match(r'^([a-zA-Z_-]+):.*?## (.*)$$', line)
+	match = re.match(r'^([\$$\(\)a-zA-Z_-]+):.*?## (.*)$$', line)
 	if match:
 		target, help = match.groups()
-		print("%-20s %s" % (target, help))
+		print("%-30s %s" % (target, help))
 endef
 export PRINT_HELP_PYSCRIPT
 
-.PHONY: help
-help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-checks: $(VENV_DIR)  ## run all the checks
-	@echo "=== bandit ==="; $(VENV_DIR)/bin/bandit -c .bandit.yml -r openscm_units || echo "--- bandit failed ---" >&2; \
-		echo "\n\n=== black ==="; $(VENV_DIR)/bin/black --check src tests setup.py docs/source/conf.py --exclude openscm_units/_version.py || echo "--- black failed ---" >&2; \
-		echo "\n\n=== flake8 ==="; $(VENV_DIR)/bin/flake8 src tests setup.py || echo "--- flake8 failed ---" >&2; \
-		echo "\n\n=== isort ==="; $(VENV_DIR)/bin/isort --check-only --quiet src tests setup.py || echo "--- isort failed ---" >&2; \
-		echo "\n\n=== pydocstyle ==="; $(VENV_DIR)/bin/pydocstyle src || echo "--- pydocstyle failed ---" >&2; \
-		echo "\n\n=== pylint ==="; $(VENV_DIR)/bin/pylint src || echo "--- pylint failed ---" >&2; \
-		echo "\n\n=== notebook tests ==="; $(VENV_DIR)/bin/pytest $(NOTEBOOKS_DIR) -r a --nbval --sanitize-with tests/notebook-tests.cfg || echo "--- notebook tests failed ---" >&2; \
-		echo "\n\n=== tests ==="; $(VENV_DIR)/bin/pytest tests -r a --cov=openscm_units --cov-report='' \
-			&& $(VENV_DIR)/bin/coverage report --fail-under=95 || echo "--- tests failed ---" >&2; \
-		echo "\n\n=== docs ==="; $(VENV_DIR)/bin/sphinx-build -M html docs/source docs/build -qW || echo "--- docs failed ---" >&2; \
-		echo
+help:  ## print short description of each target
+	@python3 -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-.PHONY: format
-format:  ## re-format files
-	make isort
-	make black
+.PHONY: checks
+checks:  ## run all the linting checks of the codebase
+	@echo "=== pre-commit ==="; poetry run pre-commit run --all-files || echo "--- pre-commit failed ---" >&2; \
+		echo "=== mypy ==="; MYPYPATH=stubs poetry run mypy src || echo "--- mypy failed ---" >&2; \
+		echo "======"
 
-black: $(VENV_DIR)  ## apply black formatter to source and tests
-	@status=$$(git status --porcelain src tests docs scripts); \
-	if test "x$${status}" = x; then \
-		$(VENV_DIR)/bin/black --exclude _version.py setup.py src tests docs/source/conf.py scripts/*.py; \
-	else \
-		echo Not trying any formatting. Working directory is dirty ... >&2; \
-	fi;
+.PHONY: black
+black:  ## format the code using black
+	poetry run black src tests docs/source/conf.py scripts docs/source/notebooks/*.py
+	poetry run blackdoc src
 
-isort: $(VENV_DIR)  ## format the code
-	@status=$$(git status --porcelain src tests); \
-	if test "x$${status}" = x; then \
-		$(VENV_DIR)/bin/isort src tests setup.py; \
-	else \
-		echo Not trying any formatting. Working directory is dirty ... >&2; \
-	fi;
+.PHONY: ruff-fixes
+ruff-fixes:  ## fix the code using ruff
+	poetry run ruff src tests scripts docs/source/conf.py docs/source/notebooks/*.py --fix
 
-.PHONY: docs
-docs: $(VENV_DIR)  ## build the docs
-	$(VENV_DIR)/bin/sphinx-build -M html docs/source docs/build
 
 .PHONY: test
-test:  $(VENV_DIR) ## run the full testsuite
-	$(VENV_DIR)/bin/pytest --cov -rfsxEX --cov-report term-missing
+test:  ## run the tests
+	poetry run pytest src tests -r a -v --doctest-modules --cov=src
 
-.PHONY: test-notebooks
-test-notebooks: $(VENV_DIR)  ## test the notebooks
-	$(VENV_DIR)/bin/pytest -r a --nbval $(NOTEBOOKS_DIR) --sanitize-with $(NOTEBOOKS_SANITIZE_FILE)
+# Note on code coverage and testing:
+# You must specify cov=src as otherwise funny things happen when doctests are
+# involved.
+# If you want to debug what is going on with coverage, we have found
+# that adding COVERAGE_DEBUG=trace to the front of the below command
+# can be very helpful as it shows you if coverage is tracking the coverage
+# of all of the expected files or not.
+# We are sure that the coverage maintainers would appreciate a PR that improves
+# the coverage handling when there are doctests and a `src` layout like ours.
 
-.PHONY: format-notebooks
-format-notebooks: $(VENV_DIR)  ## format the notebooks
-	@status=$$(git status --porcelain $(NOTEBOOKS_DIR)); \
-	if test "x$${status}" = x; then \
-		$(VENV_DIR)/bin/black-nb $(NOTEBOOKS_DIR); \
-	else \
-		echo Not trying any formatting. Working directory is dirty ... >&2; \
-	fi;
+.PHONY: docs
+docs:  ## build the docs
+	poetry run sphinx-build -T -b html docs/source docs/build/html
 
-test-install: $(VENV_DIR)  ## test installing in a fresh virtual environment
-	$(eval TEMPVENV := $(shell mktemp -d))
-	python3 -m venv $(TEMPVENV)
-	$(TEMPVENV)/bin/pip install pip --upgrade
-	$(TEMPVENV)/bin/pip install wheel
-	$(TEMPVENV)/bin/pip install .
-	$(TEMPVENV)/bin/python scripts/test_install.py
+.PHONY: changelog-draft
+changelog-draft:  ## compile a draft of the next changelog
+	poetry run towncrier build --draft
 
+.PHONY: licence-check
+licence-check:  ## Check that licences of the dependencies are suitable
+	# Will likely fail on Windows, but Makefiles are in general not Windows
+	# compatible so we're not too worried
+	poetry export --without=tests --without=docs --without=dev > $(TEMP_FILE)
+	poetry run liccheck -r $(TEMP_FILE) -R licence-check.txt
+	rm -f $(TEMP_FILE)
 
-test-testpypi-install: $(VENV_DIR)  ## test whether installing from test PyPI works
-	$(eval TEMPVENV := $(shell mktemp -d))
-	python3 -m venv $(TEMPVENV)
-	$(TEMPVENV)/bin/pip install pip --upgrade
-	# Install dependencies not on testpypi registry
-	$(TEMPVENV)/bin/pip install pandas
-	# Install pymagicc without dependencies.
-	$(TEMPVENV)/bin/pip install \
-		-i https://testpypi.python.org/pypi openscm-units \
-		--no-dependencies --pre
-	$(TEMPVENV)/bin/python -c "import sys; sys.path.remove(''); import openscm_units; print(openscm_units.__version__)"
-
-test-pypi-install: $(VENV_DIR)  ## test whether installing from PyPI works
-	$(eval TEMPVENV := $(shell mktemp -d))
-	python3 -m venv $(TEMPVENV)
-	$(TEMPVENV)/bin/pip install pip --upgrade
-	$(TEMPVENV)/bin/pip install openscm-units --pre
-	$(TEMPVENV)/bin/python scripts/test_install.py
-
-virtual-environment:  ## update venv, create a new venv if it doesn't exist
-	make $(VENV_DIR)
-
-$(VENV_DIR): setup.py
-	[ -d $(VENV_DIR) ] || python3 -m venv $(VENV_DIR)
-
-	$(VENV_DIR)/bin/pip install --upgrade pip wheel
-	$(VENV_DIR)/bin/pip install -e .[dev]
-
-	touch $(VENV_DIR)
-
-first-venv: ## create a new virtual environment for the very first repo setup
-	python3 -m venv $(VENV_DIR)
-
-	$(VENV_DIR)/bin/pip install --upgrade pip
-	$(VENV_DIR)/bin/pip install versioneer
-	# don't touch here as we don't want this venv to persist anyway
+.PHONY: virtual-environment
+virtual-environment:  ## update virtual environment, create a new one if it doesn't already exist
+	poetry lock
+	# Put virtual environments in the project
+	poetry config virtualenvs.in-project true
+	poetry install --all-extras
+	poetry run pre-commit install
