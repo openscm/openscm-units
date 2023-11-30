@@ -133,10 +133,8 @@ def test_emissions_flux():
     ),
 )
 def test_emissions_prefix(prefix_start, prefix_end, factor):
-    tCO2 = unit_registry("{} CO2/yr".format(prefix_start))
-    np.testing.assert_allclose(
-        tCO2.to("{} CO2/yr".format(prefix_end)).magnitude, factor
-    )
+    tCO2 = unit_registry(f"{prefix_start} CO2/yr")
+    np.testing.assert_allclose(tCO2.to(f"{prefix_end} CO2/yr").magnitude, factor)
 
 
 def test_kt():
@@ -350,7 +348,7 @@ def test_mixtures_constituents_no_gwp(metric_name, mixture, conversion):
 def test_mixture_constituent_sum_one():
     for mixture in MIXTURES:
         constituents = unit_registry.split_gas_mixture(1 * unit_registry(mixture))
-        np.testing.assert_allclose(sum((c.magnitude for c in constituents)), 1)
+        np.testing.assert_allclose(sum(c.magnitude for c in constituents), 1)
 
 
 def test_split_invalid():

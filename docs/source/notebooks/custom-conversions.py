@@ -25,21 +25,26 @@ from openscm_units import ScmUnitRegistry
 # %% [markdown]
 # ## Custom conversions DataFrame
 #
-# On initialisation, a `pd.DataFrame` can be provided which contains the custom conversions. This `pd.DataFrame` should be formatted as shown below, with an index that contains the different species and columns which contain the conversion for different metrics.
+# On initialisation, a `pd.DataFrame` can be provided which contains the custom
+# conversions. This `pd.DataFrame` should be formatted as shown below, with an
+# index that contains the different species and columns which contain the
+# conversion for different metrics.
 
 # %%
-metric_conversions_custom = pd.DataFrame([
-    {
-        "Species": "CH4",
-        "Custom1": 20,
-        "Custom2": 25,
-    },
-    {
-        "Species": "N2O",
-        "Custom1": 341,
-        "Custom2": 300,
-    },
-]).set_index("Species")
+metric_conversions_custom = pd.DataFrame(
+    [
+        {
+            "Species": "CH4",
+            "Custom1": 20,
+            "Custom2": 25,
+        },
+        {
+            "Species": "N2O",
+            "Custom1": 341,
+            "Custom2": 300,
+        },
+    ]
+).set_index("Species")
 metric_conversions_custom
 
 # %% [markdown]
@@ -53,9 +58,9 @@ unit_registry.add_standards()
 
 # start with e.g. N2O
 nitrous_oxide = unit_registry("N2O")
-display(f"N2O: {nitrous_oxide}")
+print(f"N2O: {nitrous_oxide}")
 
-# our unit registry allows us to make conversions using the 
+# our unit registry allows us to make conversions using the
 # conversion factors we previously defined
 with unit_registry.context("Custom1"):
-    display(f"N2O in CO2-equivalent: {nitrous_oxide.to('CO2')}")
+    print(f"N2O in CO2-equivalent: {nitrous_oxide.to('CO2')}")

@@ -10,3 +10,4 @@ API Reference
   :toctree: ./
 
   openscm_units.data
+  openscm_units.registry

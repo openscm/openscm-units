@@ -74,4 +74,3 @@ of rst and use slightly different categories.
 ## openscm-units 0.1.0
 
 - Setup repository ([#1](https://github.com/openscm/openscm-units/pull/1))
-

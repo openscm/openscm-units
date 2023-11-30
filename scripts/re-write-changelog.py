@@ -1,6 +1,8 @@
+"""
+Re-write CHANGELOG after converting rst to md
+"""
 import re
 from pathlib import Path
-
 
 with open(Path("docs/source/changelog.md")) as fh:
     raw = fh.read()

@@ -20,7 +20,12 @@
 # %% [markdown]
 # ## The unit registry
 #
-# ``openscm_units.unit_registry`` extends Pint's default unit registry by adding simple climate modelling related units. We'll spare the details here (they can be found in [our documentation](https://openscm-units.readthedocs.io/en/latest/unit_registry.html)), but the short idea is that you can now do all sorts of simple climate modelling related conversions which were previously impossible.
+# ``openscm_units.unit_registry`` extends Pint's default unit registry by
+# adding simple climate modelling related units. We'll spare the details here
+# (they can be found in
+# [our documentation](https://openscm-units.readthedocs.io/en/latest/unit_registry.html)),
+# but the short idea is that you can now do all sorts of simple climate
+# modelling related conversions which were previously impossible.
 
 # %%
 import traceback
@@ -56,7 +61,7 @@ emissions_aus.to("Mt CO2/yr")
 # %% [markdown]
 # ## Contexts
 #
-# In general, we cannot simply convert e.g. CO$_2$ emissions into CH$_4$ emissions. 
+# In general, we cannot simply convert e.g. CO$_2$ emissions into CH$_4$ emissions.
 
 # %%
 try:
@@ -65,7 +70,9 @@ except DimensionalityError:
     traceback.print_exc(limit=0, chain=False)
 
 # %% [markdown]
-# However, a number of metrics exist which do allow conversions between GHG species. Pint plus OpenSCM's inbuilt metric conversions allow you to perform such conversions trivially by specifying the `context` keyword.
+# However, a number of metrics exist which do allow conversions between GHG
+# species. Pint plus OpenSCM's inbuilt metric conversions allow you to perform
+# such conversions trivially by specifying the `context` keyword.
 
 # %%
 with unit_registry.context("AR4GWP100"):
@@ -76,13 +83,16 @@ ch4_ar4gwp100_co2e
 # %% [markdown]
 # ## Gas mixtures
 #
-# Some gases (mainly, refrigerants) are actually mixtures of other gases, for example HFC407a (aka R-407A). In general, they can be used like any other gas. Additionally, `openscm_units` provides the ability to split these gases into their constituents.
+# Some gases (mainly, refrigerants) are actually mixtures of other gases, for
+# example HFC407a (aka R-407A). In general, they can be used like any other
+# gas. Additionally, `openscm_units` provides the ability to split these gases
+# into their constituents.
 
 # %%
-emissions = 20 * unit_registry('kt HFC407a / year')
+emissions = 20 * unit_registry("kt HFC407a / year")
 
 with unit_registry.context("AR4GWP100"):
-    print(emissions.to('Gg CO2 / year'))
+    print(emissions.to("Gg CO2 / year"))
 
 # %%
 unit_registry.split_gas_mixture(emissions)
@@ -90,7 +100,12 @@ unit_registry.split_gas_mixture(emissions)
 # %% [markdown]
 # ## Building up complexity
 #
-# `openscm_units` is meant to be a simple repository which does one thing, but does it well. We encourage you to use it wherever you like (and if you do please let us know via the [issue tracker](https://github.com/openscm/openscm-units/issues)). As an example of something we can do, we can quickly see how GWP100 has changed between assessment reports.
+# `openscm_units` is meant to be a simple repository which does one thing, but
+# does it well. We encourage you to use it wherever you like (and if you do
+# please let us know via the
+# [issue tracker](https://github.com/openscm/openscm-units/issues)).
+# As an example of something we can do, we can quickly see how GWP100 has
+# changed between assessment reports.
 
 # %% pycharm={"name": "#%%\n"}
 units_of_interest = ["CO2", "CH4", "N2O", "HFC32", "CFC11"]
