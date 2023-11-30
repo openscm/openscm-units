@@ -341,7 +341,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         Parameters
         ----------
-        metric_conversions : [:obj:`pd.DataFrame`, None]
+        metric_conversions
             :obj:`pd.DataFrame` containing the metric conversions.
             ``metric_conversions`` must have an index named ``"Species"`` that
             contains the different species and columns which contain the
@@ -364,7 +364,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         """
         Add standard units.
 
-        Has to be done separately because of pint's weird initializing.
+        Has to be done separately because of pint's weird initialising.
         """
         self._add_gases(_STANDARD_GASES)
 
@@ -547,13 +547,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
             / (self(label).to_base_units()).magnitude
         )
         base_unit = next(
-            iter(
-                self._get_dimensionality(
-                    self(label)  # pylint: disable=protected-access
-                    .to_base_units()
-                    ._units
-                ).keys()
-            )
+            iter(self._get_dimensionality(self(label).to_base_units()._units).keys())
         )
 
         base_unit_ureg = self(base_unit.replace("[", "").replace("]", ""))
@@ -641,8 +635,14 @@ class ScmUnitRegistry(pint.UnitRegistry):
         """
         Split a gas mixture into constituent gases.
 
-        Given a pint quantity with the units containing a gas mixture,
-        returns a list of the constituents as pint quantities.
+        Parameters
+        ----------
+        quantity
+            Pint quantity to split
+
+        Returns
+        -------
+            List of constituent gases
         """
         mixture_dimensions = [
             x for x in quantity.dimensionality.keys() if x[1:-1] in MIXTURES
@@ -671,7 +671,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         return ret
 
 
-unit_registry = ScmUnitRegistry()  # pylint:disable=invalid-name
+unit_registry = ScmUnitRegistry()
 """
 Standard unit registry
 
