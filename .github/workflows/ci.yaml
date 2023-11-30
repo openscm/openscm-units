@@ -33,7 +33,13 @@ jobs:
           venv-id: "docs"
           poetry-dependency-install-flags: "--all-extras --only 'main,docs'"
       - name: docs
-        run: poetry run sphinx-build -W --keep-going -T -b html docs/source docs/build
+        # Disable warning as error on build because something weird happens
+        # with how pint has set things up. In future, add the `-W` flag back
+        # in here.
+        # (see https://github.com/hgrecco/pint/blob/fc1aeba21823092007adc62fae96596e15aa0127/pint/registry.py#L109)
+        # and how autodoc-typehints tries to then handle the types
+        # (see https://github.com/tox-dev/sphinx-autodoc-typehints/issues/186)
+        run: poetry run sphinx-build --keep-going -T -b html docs/source docs/build
 
   tests:
     strategy:
