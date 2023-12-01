@@ -13,7 +13,7 @@ packages = [{include = "openscm_units", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pint = "^0.22"
+pint = "*"
 globalwarmingpotentials = "*"
 pandas = "*"
 notebook = { version = "^7.0.0", optional = true }
