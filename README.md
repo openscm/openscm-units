@@ -12,7 +12,7 @@ Handling of units related to simple climate modelling.
 
 
 [![CI](https://github.com/openscm/openscm-units/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/openscm/openscm-units/actions/workflows/ci.yaml)
-[![Coverage](https://codecov.io/gh/openscm/openscm-units/branch/main/graph/badge.svg)](https://codecov.io/gh/climate-resource/openscm-units)
+[![Coverage](https://codecov.io/gh/openscm/openscm-units/branch/main/graph/badge.svg)](https://codecov.io/gh/openscm/openscm-units)
 [![Docs](https://readthedocs.org/projects/openscm-units/badge/?version=latest)](https://openscm-units.readthedocs.io)
 
 **PyPI :**
