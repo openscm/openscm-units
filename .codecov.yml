@@ -2,6 +2,9 @@
 # https://docs.codecov.io/docs/commit-status
 
 # validate with `curl --data-binary @.codecov.yml https://codecov.io/validate`
+codecov:
+  branch: main
+
 coverage:
   status:
     project:
@@ -13,4 +16,4 @@ coverage:
         target: 95%
 
 comment:
-  behaviour: new
+  behavior: new
