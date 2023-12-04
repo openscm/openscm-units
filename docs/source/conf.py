@@ -87,6 +87,8 @@ autodocgen_config = [
         "module_title_decider": lambda modulename: "API Reference"
         if modulename == "openscm_units"
         else modulename,
+        # Include private docs too
+        "skip_module_regex": "",
     }
 ]
 
