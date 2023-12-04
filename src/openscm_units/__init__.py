@@ -1,8 +1,13 @@
 """
-OpenSCM Units, units for use with simple climate modelling
+Handling of units related to simple climate modelling.
 """
-from ._unit_registry import ScmUnitRegistry, unit_registry  # noqa: F401
-from ._version import get_versions
+import importlib.metadata
 
-__version__ = get_versions()["version"]
-del get_versions
+from ._unit_registry import ScmUnitRegistry, unit_registry
+
+__version__ = importlib.metadata.version("openscm_units")
+
+__all__ = [
+    "ScmUnitRegistry",
+    "unit_registry",
+]

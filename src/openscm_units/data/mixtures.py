@@ -1,12 +1,14 @@
 """
 Gas mixtures supported by OpenSCM Units
 """
+from __future__ import annotations
 
 _nan = float("nan")
 
-MIXTURES = {
-    # note that CFC400 can also be a 60 / 40 split and the standard says it MUST be
-    # specified, but it is almost never specified and 50/50 seems to be more common
+MIXTURES: dict[str, dict[str, list[float | int]]] = {
+    # note that CFC400 can also be a 60 / 40 split and the standard says it
+    # MUST be specified, but it is almost never specified and 50/50 seems to be
+    # more common
     "CFC400": {"CFC12": [50, _nan, _nan], "CFC114": [50, _nan, _nan]},
     "HCFC401a": {
         "HCFC22": [53, 2, -2],

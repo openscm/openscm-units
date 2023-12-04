@@ -1,4 +1,6 @@
 """
+Definition of our unit registry
+
 Unit handling makes use of the `Pint <https://github.com/hgrecco/pint>`_ library. This
 allows us to easily define units as well as contexts. Contexts allow us to perform
 conversions which would not normally be allowed e.g. in the 'AR4GWP100'
@@ -17,10 +19,11 @@ An illustration of how the ``unit_registry`` can be used is shown below:
     <Quantity(0.34, 'C * gigametric_ton / a')>
 
     >>> emissions_aus.to("Mt CO2 / yr")
-    <Quantity(1246.666666666667, 'CO2 * megametric_ton / a')>
+    <Quantity(1246.66667, 'CO2 * megametric_ton / a')>
 
     >>> with unit_registry.context("AR4GWP100"):
     ...     (100 * unit_registry("Mt CH4 / yr")).to("Mt CO2 / yr")
+    ...
     <Quantity(2500.0, 'CO2 * megametric_ton / a')>
 
 **More details on emissions units**
@@ -72,16 +75,20 @@ However, it can be performed within the context 'CH4_conversions' as shown below
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("CH4").to("C")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'CH4' ([methane]) to 'C' ([carbon])
 
     # with a context, the conversion becomes legal again
     >>> with unit_registry.context("CH4_conversions"):
     ...     unit_registry("CH4").to("C")
+    ...
     <Quantity(0.75, 'C')>
 
     # as an unavoidable side effect, this also becomes possible
     >>> with unit_registry.context("CH4_conversions"):
     ...     unit_registry("CH4").to("CO2")
+    ...
     <Quantity(2.75, 'CO2')>
 
 *N2O*
@@ -100,11 +107,14 @@ single N atom i.e. 1 N = 14 / 44 N2O, as shown below:
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("N2O").to("N")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'N2O' ([nitrous_oxide]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
     >>> with unit_registry.context("N2O_conversions"):
     ...     unit_registry("N2O").to("N")
+    ...
     <Quantity(0.318181818, 'N')>
 
 *NOx*
@@ -117,12 +127,15 @@ prevent inadvertent conversions from 'NOx' to e.g. 'N2O', the conversion 'NOx' <
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("NOx").to("N")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'NOx' ([NOx]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
     >>> with unit_registry.context("NOx_conversions"):
     ...     unit_registry("NOx").to("N")
-    <Quantity(0.30434782608695654, 'N')>
+    ...
+    <Quantity(0.304347826, 'N')>
 
 *NH3*
 
@@ -134,28 +147,34 @@ context analogous to the 'NOx_conversions' context:
 
     >>> from openscm_units import unit_registry
     >>> unit_registry("NH3").to("N")
+    Traceback (most recent call last):
+     ...
     pint.errors.DimensionalityError: Cannot convert from 'NH3' ([NH3]) to 'N' ([nitrogen])
 
     # with a context, the conversion becomes legal again
     >>> with unit_registry.context("NH3_conversions"):
     ...     unit_registry("NH3").to("N")
+    ...
     <Quantity(0.823529412, 'N')>
 
 """
+from __future__ import annotations
+
 import math
+from typing import Any
 
 import globalwarmingpotentials
 import pandas as pd
 import pint
 
-from .data.mixtures import MIXTURES
+from openscm_units.data.mixtures import MIXTURES
 
 # Standard gases. If the value is:
 # - str: this entry defines a base gas unit
 # - list: this entry defines a derived unit
 #    - the first entry defines how to convert from base units
 #    - other entries define other names i.e. aliases
-_STANDARD_GASES = {
+_STANDARD_GASES: dict[str, str | list[str]] = {
     # CO2, CH4, N2O
     "C": "carbon",
     "CO2": ["12/44 * C", "carbon_dioxide"],
@@ -302,7 +321,7 @@ _STANDARD_GASES = {
 }
 
 
-class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
+class ScmUnitRegistry(pint.UnitRegistry):
     """
     Unit registry class.
 
@@ -311,13 +330,18 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
 
     _contexts_added = False
 
-    def __init__(self, *args, metric_conversions=None, **kwargs):
+    def __init__(
+        self,
+        *args: Any,
+        metric_conversions: pd.DataFrame | None = None,
+        **kwargs: Any,
+    ):
         """
         Initialise the unit registry
 
         Parameters
         ----------
-        metric_conversions : [:obj:`pd.DataFrame`, None]
+        metric_conversions
             :obj:`pd.DataFrame` containing the metric conversions.
             ``metric_conversions`` must have an index named ``"Species"`` that
             contains the different species and columns which contain the
@@ -336,11 +360,11 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
         # below but that also feels like a bad pattern
         super().__init__(*args, **kwargs)
 
-    def add_standards(self):
+    def add_standards(self) -> None:
         """
         Add standard units.
 
-        Has to be done separately because of pint's weird initializing.
+        Has to be done separately because of pint's weird initialising.
         """
         self._add_gases(_STANDARD_GASES)
 
@@ -363,22 +387,37 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
         # pint
         self._build_cache()
 
-    def enable_contexts(self, *names_or_contexts, **kwargs):
+    def enable_contexts(
+        self,
+        *names_or_contexts: str | pint.facets.context.objects.Context,
+        **kwargs: Any,
+    ) -> None:
         """
-        Overload pint's :func:`enable_contexts` to add contexts once (the first time
-        they are used) to avoid (unnecessary) operations.
+        Overload pint's :func:`enable_contexts`
+
+        This ensures we only add contexts once (the first time they are used)
+        to avoid (unnecessary) operations.
+
+        Parameters
+        ----------
+        names_or_contexts
+            Names of contexts or :obj:`pint.registry.UnitRegistry.Context`
+            objects to enable
+
+        kwargs
+            Passed to :meth:`enable_contexts` of the parent class
         """
         if not self._contexts_added:
             self._add_contexts()
         self._contexts_added = True
         super().enable_contexts(*names_or_contexts, **kwargs)
 
-    def _add_mass_emissions_joint_version(self, symbol):
+    def _add_mass_emissions_joint_version(self, symbol: str) -> None:
         """
         Add a unit which is the combination of mass and emissions.
 
-        This allows users to units like e.g. ``"tC"`` rather than requiring a space
-        between the mass and the emissions i.e. ``"t C"``
+        This allows users to units like e.g. ``"tC"`` rather than requiring a
+        space between the mass and the emissions i.e. ``"t C"``
 
         Parameters
         ----------
@@ -388,7 +427,7 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
         self.define("g{symbol} = g * {symbol}".format(symbol=symbol))
         self.define("t{symbol} = t * {symbol}".format(symbol=symbol))
 
-    def _add_gases(self, gases):
+    def _add_gases(self, gases: dict[str, str | list[str]]) -> None:
         for symbol, value in gases.items():
             if isinstance(value, str):
                 # symbol is base unit
@@ -408,7 +447,7 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
                 self.define(f"{symbol.upper()} = {symbol}")
                 self._add_mass_emissions_joint_version(symbol.upper())
 
-    def _add_contexts(self):
+    def _add_contexts(self) -> None:
         """
         Add contexts
         """
@@ -458,7 +497,7 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
 
         self._add_metric_conversions()
 
-    def _add_metric_conversions(self):
+    def _add_metric_conversions(self) -> None:
         """
         Add metric conversion contexts
         """
@@ -469,14 +508,14 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
 
         self._add_metric_conversions_from_df(metric_conversions)
 
-    def _add_metric_conversions_from_df(self, metric_conversions: pd.DataFrame):
+    def _add_metric_conversions_from_df(self, metric_conversions: pd.DataFrame) -> None:
         # could make this public in future
         for col in metric_conversions:
-            metric_conversion: pd.Series = metric_conversions[col]
-            transform_context = pint.Context(col)
+            metric_conversion: pd.Series[float] = metric_conversions[col]
+            transform_context = pint.Context(str(col))
             for label, val in metric_conversion.items():
                 transform_context = self._add_gwp_to_context(
-                    transform_context, label, val
+                    transform_context, str(label), val
                 )
 
             for mixture in MIXTURES:
@@ -497,21 +536,18 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
             self.add_context(transform_context)
 
     def _add_gwp_to_context(
-        self, transform_context: pint.Context, label: str, val: float
-    ) -> pint.Context:
+        self,
+        transform_context: pint.facets.context.objects.Context,
+        label: str,
+        val: float,
+    ) -> pint.facets.context.objects.Context:
         conv_val = (
             val
             * (self("CO2").to_base_units()).magnitude
             / (self(label).to_base_units()).magnitude
         )
         base_unit = next(
-            iter(
-                self._get_dimensionality(
-                    self(label)  # pylint: disable=protected-access
-                    .to_base_units()
-                    ._units
-                ).keys()
-            )
+            iter(self._get_dimensionality(self(label).to_base_units()._units).keys())
         )
 
         base_unit_ureg = self(base_unit.replace("[", "").replace("]", ""))
@@ -526,28 +562,52 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
         )
 
     @staticmethod
-    def _add_transformations_to_context(
-        context, base_unit, base_unit_ureg, other_unit, other_unit_ureg, conv_val
-    ):
+    def _add_transformations_to_context(  # noqa: PLR0913
+        context: pint.facets.context.objects.Context,
+        base_unit: str,
+        base_unit_ureg: pint.registry.UnitRegistry.Unit
+        | pint.registry.UnitRegistry.Quantity,
+        other_unit: str,
+        other_unit_ureg: pint.registry.UnitRegistry.Unit
+        | pint.registry.UnitRegistry.Quantity,
+        conv_val: float,
+    ) -> pint.facets.context.objects.Context:
         """
-        Add all the transformations between units to a context for the two
-        given units
+        Add all the transformations between units to a context for the two given units
 
         Transformations are mass x unit per time, mass x unit etc.
         """
 
-        def _get_transform_func(forward):
+        def _get_transform_func(
+            forward: bool,
+        ) -> pint.facets.context.objects.Transformation:
             if forward:
 
-                def result_forward(_, strt):
-                    return strt * other_unit_ureg / base_unit_ureg * conv_val
+                def result_forward(
+                    ureg: pint.registry.UnitRegistry,
+                    value: pint.registry.UnitRegistry.Quantity,
+                    **kwargs: Any,
+                ) -> pint.registry.UnitRegistry.Quantity:
+                    out: pint.registry.UnitRegistry.Quantity = (
+                        value * other_unit_ureg / base_unit_ureg * conv_val
+                    )
 
-                return result_forward
+                    return out
 
-            def result_backward(_, strt):
-                return strt * (base_unit_ureg / other_unit_ureg) / conv_val
+                return result_forward  # type: ignore # cannot make pint behave
 
-            return result_backward
+            def result_backward(
+                ureg: pint.registry.UnitRegistry,
+                value: pint.registry.UnitRegistry.Quantity,
+                **kwargs: Any,
+            ) -> pint.registry.UnitRegistry.Quantity:
+                out: pint.registry.UnitRegistry.Quantity = (
+                    value * (base_unit_ureg / other_unit_ureg) / conv_val
+                )
+
+                return out
+
+            return result_backward  # type: ignore # cannot make pint behave
 
         formatters = [
             "{}",
@@ -569,25 +629,33 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
 
         return context
 
-    def split_gas_mixture(self, quantity: pint.Quantity) -> list:
+    def split_gas_mixture(
+        self, quantity: pint.Quantity
+    ) -> list[pint.registry.UnitRegistry.Quantity]:
         """
         Split a gas mixture into constituent gases.
 
-        Given a pint quantity with the units containing a gas mixture,
-        returns a list of the constituents as pint quantities.
+        Parameters
+        ----------
+        quantity
+            Pint quantity to split
+
+        Returns
+        -------
+            List of constituent gases
         """
         mixture_dimensions = [
             x for x in quantity.dimensionality.keys() if x[1:-1] in MIXTURES
         ]
         if not mixture_dimensions:
-            raise ValueError("Dimensions don't contain a gas mixture.")
+            raise ValueError("Dimensions don't contain a gas mixture.")  # noqa: TRY003
         if len(mixture_dimensions) > 1:
-            raise NotImplementedError(
+            raise NotImplementedError(  # noqa: TRY003
                 "More than one gas mixture in dimensions is not supported."
             )
         mixture_dimension = mixture_dimensions[0]
         if quantity.dimensionality[mixture_dimension] != 1:
-            raise NotImplementedError(
+            raise NotImplementedError(  # noqa: TRY003
                 f"Mixture has dimensionality {quantity.dimensionality[mixture_dimension]}"
                 " != 1, which is not supported."
             )
@@ -603,7 +671,7 @@ class ScmUnitRegistry(pint.UnitRegistry):  # pylint: disable=too-many-ancestors
         return ret
 
 
-unit_registry = ScmUnitRegistry()  # pylint:disable=invalid-name
+unit_registry = ScmUnitRegistry()
 """
 Standard unit registry
 
