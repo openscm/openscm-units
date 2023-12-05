@@ -9,5 +9,10 @@ API Reference
 .. autosummary::
   :toctree: ./
 
-  openscm_units._unit_registry
   openscm_units.data
+
+ScmUnitRegistry
+===============
+
+.. autoclass:: ScmUnitRegistry
+   :members:

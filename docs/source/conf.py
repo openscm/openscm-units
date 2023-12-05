@@ -74,6 +74,7 @@ source_encoding = "utf-8"
 autodoc_default_options = {
     # Show the inheritance of classes
     "show-inheritance": True,
+    "imported-members": True,
 }
 
 # autosummary with autodocgen
@@ -89,8 +90,6 @@ autodocgen_config = [
         "module_title_decider": lambda modulename: "API Reference"
         if modulename == "openscm_units"
         else modulename,
-        # Include private docs too
-        "skip_module_regex": "",
     }
 ]
 
