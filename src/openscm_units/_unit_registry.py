@@ -514,15 +514,3 @@ class ScmUnitRegistry(pint.UnitRegistry):
             ret.append(quantity / mixture_unit * fraction_pct / 100 * constituent_unit)
 
         return ret
-
-
-unit_registry = ScmUnitRegistry()
-"""
-Standard unit registry
-
-The unit registry contains all of the recognised units. Be careful, if you
-edit this registry in one place then it will also be edited in any other
-places that use ``openscm_units``. If you want multiple, separate registries,
-create multiple instances of ``ScmUnitRegistry``.
-"""
-unit_registry.add_standards()

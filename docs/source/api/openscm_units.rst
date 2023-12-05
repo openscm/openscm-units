@@ -11,6 +11,12 @@ API Reference
 
   openscm_units.data
 
+unit\_registry
+==============
+
+.. autodata:: unit_registry
+
+
 ScmUnitRegistry
 ===============
 
