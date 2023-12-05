@@ -5,6 +5,7 @@ description = "Handling of units related to simple climate modelling."
 authors = [
     "Zebedee Nicholls <zebedee.nicholls@climate-energy-college.org>",
     "Jared Lewis <jared.lewis@climate-resource.com>",
+    "Mika Pflueger <mika.pflueger@climate-resource.com>",
     "Robert Gieseke <rob.g@web.de>",
     "Sven Willner <sven.willer@gmail.com>",
 ]

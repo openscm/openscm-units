@@ -15,7 +15,9 @@ import openscm_units
 
 project = "OpenSCM-Units"
 # put the authors in their own variable, so they can be reused later
-authors = ", ".join(["Zeb Nicholls", "Sven Willner", "Jared Lewis", "Robert Gieseke"])
+authors = ", ".join(
+    ["Zeb Nicholls", "Jared Lewis", "Mika Pflueger", "Robert Gieseke", "Sven Willner"]
+)
 # add a copyright year variable, we can extend this over time in future as
 # needed
 copyright_year = "2020 - 2023"
