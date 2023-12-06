@@ -57,10 +57,12 @@ unit_registry = ScmUnitRegistry(metric_conversions=metric_conversions_custom)
 unit_registry.add_standards()
 
 # start with e.g. N2O
-nitrous_oxide = unit_registry("N2O")
-print(f"N2O: {nitrous_oxide}")
+nitrous_oxide = unit_registry("tN2O / yr")
 
 # our unit registry allows us to make conversions using the
 # conversion factors we previously defined
-with unit_registry.context("Custom1"):
-    print(f"N2O in CO2-equivalent: {nitrous_oxide.to('CO2')}")
+for context in ["Custom1", "Custom2"]:
+    with unit_registry.context(context):
+        print(
+            f"{nitrous_oxide} in CO2-equivalent in context {context} is {nitrous_oxide.to('tCO2 / yr')}"
+        )

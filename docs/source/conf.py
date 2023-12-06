@@ -15,7 +15,9 @@ import openscm_units
 
 project = "OpenSCM-Units"
 # put the authors in their own variable, so they can be reused later
-authors = ", ".join(["Zeb Nicholls", "Sven Willner", "Jared Lewis", "Robert Gieseke"])
+authors = ", ".join(
+    ["Zeb Nicholls", "Jared Lewis", "Mika Pflueger", "Robert Gieseke", "Sven Willner"]
+)
 # add a copyright year variable, we can extend this over time in future as
 # needed
 copyright_year = "2020 - 2023"
@@ -72,6 +74,7 @@ source_encoding = "utf-8"
 autodoc_default_options = {
     # Show the inheritance of classes
     "show-inheritance": True,
+    "imported-members": True,
 }
 
 # autosummary with autodocgen
@@ -87,8 +90,6 @@ autodocgen_config = [
         "module_title_decider": lambda modulename: "API Reference"
         if modulename == "openscm_units"
         else modulename,
-        # Include private docs too
-        "skip_module_regex": "",
     }
 ]
 
