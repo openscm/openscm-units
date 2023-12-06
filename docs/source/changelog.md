@@ -19,6 +19,18 @@ of rst and use slightly different categories.
 
 <!-- towncrier release notes start -->
 
+## openscm-units v0.5.3 (2023-12-06)
+
+
+### Improved Documentation
+
+- Move docs on design decisions out of `src/openscm_units/_unit_registry.py` into a dedicated notebook ([#47](https://github.com/openscm/openscm-units/pulls/47))
+
+### Trivial/Internal Changes
+
+- [#44](https://github.com/openscm/openscm-units/pulls/44), [#46](https://github.com/openscm/openscm-units/pulls/46), [#47](https://github.com/openscm/openscm-units/pulls/47)
+
+
 ## openscm-units 0.5.2
 
 - Fixed broken definition of ppm, caused by regression in Pint where [\'ppm\' was added to Pint](https://github.com/hgrecco/pint/pull/1661) ([#40](https://github.com/openscm/openscm-units/pull/40))
