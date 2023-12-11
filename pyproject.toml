@@ -11,6 +11,7 @@ authors = [
 ]
 readme = "README.md"
 packages = [{include = "openscm_units", from = "src"}]
+license = "BSD-3-Clause"
 
 [tool.poetry.dependencies]
 python = "^3.9"
