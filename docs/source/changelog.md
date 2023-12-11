@@ -19,6 +19,14 @@ of rst and use slightly different categories.
 
 <!-- towncrier release notes start -->
 
+## openscm-units v0.5.4 (2023-12-11)
+
+
+### Trivial/Internal Changes
+
+- [#48](https://github.com/openscm/openscm-units/pulls/48)
+
+
 ## openscm-units v0.5.3 (2023-12-06)
 
 
