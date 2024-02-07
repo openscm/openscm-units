@@ -9,8 +9,6 @@ https://myst-parser.readthedocs.io/en/latest/syntax/organising_content.html#inse
 
 Handling of units related to simple climate modelling.
 
-
-
 [![CI](https://github.com/openscm/openscm-units/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/openscm/openscm-units/actions/workflows/ci.yaml)
 [![Coverage](https://codecov.io/gh/openscm/openscm-units/branch/main/graph/badge.svg)](https://codecov.io/gh/openscm/openscm-units)
 [![Docs](https://readthedocs.org/projects/openscm-units/badge/?version=latest)](https://openscm-units.readthedocs.io)
@@ -25,7 +23,6 @@ Handling of units related to simple climate modelling.
 [![Last Commit](https://img.shields.io/github/last-commit/openscm/openscm-units.svg)](https://github.com/openscm/openscm-units/commits/main)
 [![Contributors](https://img.shields.io/github/contributors/openscm/openscm-units.svg)](https://github.com/openscm/openscm-units/graphs/contributors)
 
-
 <!--- sec-end-description -->
 
 Full documentation can be found at:
@@ -37,13 +34,13 @@ don't render correctly on GitHub's viewer.
 
 <!--- sec-begin-installation -->
 
-OpenSCM-Units can be installed with conda or pip:
+OpenSCM-Units can be installed with pip, mamba or conda:
 
 ```bash
 pip install openscm-units
+mamba install -c conda-forge openscm-units
 conda install -c conda-forge openscm-units
 ```
-
 
 <!--- sec-end-installation -->
 
@@ -67,6 +64,6 @@ through. If not, please raise an issue in the [issue tracker][issue_tracker].
 
 For the rest of our developer docs, please see [](development-reference).
 
-[issue_tracker]: https://github.com/openscm/openscm-units/issues
-
 <!--- sec-end-installation-dev -->
+
+[issue_tracker]: https://github.com/openscm/openscm-units/issues
