@@ -7,6 +7,9 @@
 # Jupyter cache
 .jupyter_cache
 
+# Ruff cache
+.ruff_cache
+
 # Licence check
 licence-check.txt
 

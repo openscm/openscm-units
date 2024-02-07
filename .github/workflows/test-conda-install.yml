@@ -32,4 +32,4 @@ jobs:
       shell: bash -l {0}
       run: |
         which python
-        python scripts/test_install.py
+        python scripts/test-install.py
