@@ -60,10 +60,9 @@ but we generally discourage this because it can be error prone.
 In order to create your environment, run `make virtual-environment`.
 
 If there are any issues, the messages from the `Makefile` should guide you
-through. If not, please raise an issue in the [issue tracker][issue_tracker].
+through. If not, please raise an issue in the
+[issue tracker](https://github.com/openscm/openscm-units/issues).
 
 For the rest of our developer docs, please see [](development-reference).
 
 <!--- sec-end-installation-dev -->
-
-[issue_tracker]: https://github.com/openscm/openscm-units/issues
