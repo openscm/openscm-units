@@ -1,4 +1,4 @@
-name: Test conda install
+name: Test (micro)mamba install
 on:
   pull_request:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   test-installation:
-    name: Test conda install (${{ matrix.python-version }}, ${{ matrix.os }})
+    name: Test (micro)mamba install (${{ matrix.python-version }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -16,22 +16,19 @@ jobs:
         python-version: [3.7, 3.8, 3.9]
 
     steps:
-    - name: Setup conda
-      uses: conda-incubator/setup-miniconda@v2
+    - name: Setup (micro)mamba and install package
+      uses: mamba-org/setup-micromamba@v1
       with:
-        auto-update-conda: true
-        python-version: ${{ matrix.python-version }}
-        activate-environment: test
-    - name: Conda info
-      shell: bash -l {0}
-      run: conda info
-    - name: Install package from conda
-      shell: bash -l {0}
-      run: conda install -c conda-forge openscm-units
+        environment-name: test-mamba-install
+        create-args: >-
+          python=${{ matrix.python-version }}
+          -c conda-forge
+          openscm-units
+        init-shell: bash
     - name: Checkout repository (after installation)
       uses: actions/checkout@v2
     - name: Test installation
-      shell: bash -l {0}
+      shell: bash -leo pipefail {0}
       run: |
         which python
         python scripts/test-install.py
