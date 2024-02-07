@@ -18,6 +18,7 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 
+.PHONY: help
 help:  ## print short description of each target
 	@python3 -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
@@ -27,14 +28,13 @@ checks:  ## run all the linting checks of the codebase
 		echo "=== mypy ==="; MYPYPATH=stubs poetry run mypy src || echo "--- mypy failed ---" >&2; \
 		echo "======"
 
-.PHONY: black
-black:  ## format the code using black
-	poetry run black src tests docs/source/conf.py scripts docs/source/notebooks/*.py
-	poetry run blackdoc src
-
 .PHONY: ruff-fixes
 ruff-fixes:  ## fix the code using ruff
+    # format before and after checking so that the formatted stuff is checked and
+    # the fixed stuff is formatted
+	poetry run ruff format src tests scripts docs/source/conf.py docs/source/notebooks/*.py
 	poetry run ruff src tests scripts docs/source/conf.py docs/source/notebooks/*.py --fix
+	poetry run ruff format src tests scripts docs/source/conf.py docs/source/notebooks/*.py
 
 
 .PHONY: test

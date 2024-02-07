@@ -26,4 +26,4 @@ jobs:
       uses: actions/checkout@v2
     - name: Test installation
       run: |
-        python scripts/test_install.py
+        python scripts/test-install.py

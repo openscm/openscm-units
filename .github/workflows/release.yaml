@@ -39,9 +39,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body_path: ".github/release_template.md"
+          token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
           draft: true
           files: |
             dist/openscm_units-${{ env.PROJECT_VERSION }}-py3-none-any.whl
             dist/openscm_units-${{ env.PROJECT_VERSION }}.tar.gz
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

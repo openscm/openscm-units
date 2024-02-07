@@ -51,13 +51,14 @@ with unit_registry.context("AR4GWP100"):
 #
 # Emissions are a flux composed of three parts: mass, the species being emitted and the
 # time period e.g. "t CO2 / yr". As mass and time are part of SI units, all we need to
-# define in OpenSCM-Units are emissions units i.e. the stuff. Here we include as many of the canonical
-# emissions units, and their conversions, as possible.
+# define in OpenSCM-Units are emissions units i.e. the stuff.
+# Here we include as many of the canonical emissions units,
+# and their conversions, as possible.
 #
 # For emissions units, there are a few cases to be considered:
 #
-# - fairly obvious ones e.g. carbon dioxide emissions can be provided in 'C' or 'CO2' and
-#   converting between the two is possible
+# - fairly obvious ones e.g. carbon dioxide emissions can be provided in 'C' or 'CO2'
+#   and converting between the two is possible
 # - less obvious ones e.g. NOx emissions can be provided in 'N' or 'NOx', we provide
 #   conversions between these two which can be enabled if needed (see below).
 # - case-sensitivity. In order to provide a simplified interface, using all uppercase
@@ -66,18 +67,19 @@ with unit_registry.context("AR4GWP100"):
 # - hyphens and underscores in units. In order to be Pint compatible and to simplify
 #   things, we strip all hyphens and underscores from units.
 #
-# As a convenience, we allow users to combine the mass and the type of emissions to make a
-# 'joint unit' e.g. "tCO2". It should be recognised that this joint unit is a derived
-# unit and not a base unit.
+# As a convenience, we allow users to combine the mass and the type of emissions to make
+# a 'joint unit' e.g. "tCO2".
+# It should be recognised that this joint unit is a derived unit and not a base unit.
 #
-# By defining these three separate components, it is much easier to track what conversions
-# are valid and which are not. For example, as the emissions units are all defined as
+# By defining these three separate components,
+# it is much easier to track what conversions are valid and which are not.
+# For example, as the emissions units are all defined as
 # emissions units, and not as atomic masses, we are able to prevent invalid conversions.
 # If emissions units were simply atomic masses, it would be possible to convert between
 # e.g. C and N2O which would be a problem. Conventions such as allowing carbon dioxide
 # emissions to be reported in C or CO2, despite the fact that they are fundamentally
-# different chemical species, is a convention which is particular to emissions (as far as
-# we can tell).
+# different chemical species, is a convention which is particular to emissions
+# (as far as we can tell).
 #
 # Pint's contexts are particularly useful for emissions as they facilitate
 # metric conversions. With a context, a conversion which wouldn't normally be allowed
@@ -164,8 +166,9 @@ with unit_registry.context("NOx_conversions"):
 # ### NH$_3$
 #
 # In order to prevent inadvertent conversions from 'NH3' to 'CO2', the conversion
-# 'NH3' <--> 'N' is by default forbidden. It can be performed within the 'NH3_conversions'
-# context analogous to the 'NOx_conversions' context:
+# 'NH3' <--> 'N' is by default forbidden.
+# It can be performed within the 'NH3_conversions' context,
+# analogous to the 'NOx_conversions' context:
 
 # %%
 try:
