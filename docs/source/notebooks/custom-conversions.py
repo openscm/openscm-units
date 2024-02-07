@@ -48,7 +48,8 @@ metric_conversions_custom = pd.DataFrame(
 metric_conversions_custom
 
 # %% [markdown]
-# With such a `pd.DataFrame`, we can use custom conversions in our unit registry as shown.
+# With such a `pd.DataFrame`,
+# we can use custom conversions in our unit registry as shown.
 
 # %%
 # initialise the unit registry with custom conversions
@@ -64,5 +65,6 @@ nitrous_oxide = unit_registry("tN2O / yr")
 for context in ["Custom1", "Custom2"]:
     with unit_registry.context(context):
         print(
-            f"{nitrous_oxide} in CO2-equivalent in context {context} is {nitrous_oxide.to('tCO2 / yr')}"
+            f"{nitrous_oxide} in CO2-equivalent in context {context} "
+            "is {nitrous_oxide.to('tCO2 / yr')}"
         )

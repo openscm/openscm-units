@@ -30,6 +30,9 @@ runs:
         pipx install poetry
         which poetry
         poetry --version  # Check poetry installation
+    - name: Lock poetry  # lock file is needed for the next step, but we don't track our lock file
+      shell: bash
+      run: poetry lock
     - name: Set up Python ${{ inputs.python-version }}
       id: setup-python
       uses: actions/setup-python@v5

@@ -269,8 +269,8 @@ class ScmUnitRegistry(pint.UnitRegistry):
         symbol
             The unit to add a joint version for
         """
-        self.define("g{symbol} = g * {symbol}".format(symbol=symbol))
-        self.define("t{symbol} = t * {symbol}".format(symbol=symbol))
+        self.define(f"g{symbol} = g * {symbol}")
+        self.define(f"t{symbol} = t * {symbol}")
 
     def _add_gases(self, gases: dict[str, str | list[str]]) -> None:
         for symbol, value in gases.items():
@@ -495,13 +495,14 @@ class ScmUnitRegistry(pint.UnitRegistry):
         if not mixture_dimensions:
             raise ValueError("Dimensions don't contain a gas mixture.")  # noqa: TRY003
         if len(mixture_dimensions) > 1:
-            raise NotImplementedError(  # noqa: TRY003
+            raise NotImplementedError(
                 "More than one gas mixture in dimensions is not supported."
             )
         mixture_dimension = mixture_dimensions[0]
         if quantity.dimensionality[mixture_dimension] != 1:
-            raise NotImplementedError(  # noqa: TRY003
-                f"Mixture has dimensionality {quantity.dimensionality[mixture_dimension]}"
+            raise NotImplementedError(
+                "Mixture has dimensionality "
+                f"{quantity.dimensionality[mixture_dimension]}"
                 " != 1, which is not supported."
             )
 
