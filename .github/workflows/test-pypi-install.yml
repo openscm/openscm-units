@@ -20,11 +20,11 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install package
+    - name: Install package from PyPI
       run: |
         pip install --upgrade pip
         pip install openscm-units --pre
-    - name: Checkout repository
+    - name: Checkout repository (after installing)
       uses: actions/checkout@v2
     - name: Test installation
       run: |
