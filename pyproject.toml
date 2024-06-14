@@ -12,6 +12,7 @@ authors = [
 readme = "README.md"
 packages = [{include = "openscm_units", from = "src"}]
 license = "BSD-3-Clause"
+include = ["LICENCE"]  # poetry uses US English so assumes it will be spelt LICENSE
 
 [tool.poetry.dependencies]
 python = "^3.9"
