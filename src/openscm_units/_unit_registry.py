@@ -136,6 +136,7 @@ _STANDARD_GASES: dict[str, str | list[str]] = {
     "HFE227ea": "HFE227ea",
     "HFE236ea2": "HFE236ea2",
     "HFE236fa": "HFE236fa",
+    "HFE254cb2": "HFE254cb2",
     "HFE245fa1": "HFE245fa1",
     "HFE263fb2": "HFE263fb2",
     "HFE329mcc2": "HFE329mcc2",
@@ -146,23 +147,39 @@ _STANDARD_GASES: dict[str, str | list[str]] = {
     "HFE356pcf3": "HFE356pcf3",
     "HFE365mcf3": "HFE365mcf3",
     "HFE374pc2": "HFE374pc2",
+    "HFE7100": "HFE7100",
+    "HFE7200": "HFE7200",
     # Perfluoropolyethers
     "PFPMIE": "PFPMIE",
     # Hydrofluoroolefins
     "HFO1234yf": "HFO1234yf",
     "HFO1234ze": "HFO1234ze",
     # Misc
+    "CHOH": "CHOH",
+    "CHOCHF2": "CHOCHF2",
+    "CHOCH3": "CHOCH3",
+    "CF3": "CF3",
+    "CF3I": "CF3I",
+    "CFOCH3": "CFOCH3",
+    "CF3CH2OH": "CF3CH2OH",
+    "CF3CF2CH2OH": "CF3CF2CH2OH",
     "CCl4": "CCl4",
     "CHCl3": "CHCl3",
     "CH2Cl2": "CH2Cl2",
     "CH3CCl3": "CH3CCl3",
+    "CH3OCH3": "CH3OCH3",
     "CH3Cl": "CH3Cl",
+    "CHBrF2": "CHBrF2",
+    "CH2Br2": "CH2Br2",
     "CH3Br": "CH3Br",
     "SF5CF3": "SF5CF3",
     "SF6": "SF6",
     "SO2F2": "SO2F2",
     "NF3": "NF3",
     "HCO1130": "HCO1130",
+    "HGalden1040x": "HGalden1040x",
+    "HG10": "HG10",
+    "HG01": "HG01",
 }
 
 
@@ -347,7 +364,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
         Add metric conversion contexts
         """
         if self._metric_conversions is None:
-            metric_conversions = globalwarmingpotentials.as_frame()
+            metric_conversions = _load_globalwarmingpotentials_frame()
         else:
             metric_conversions = self._metric_conversions
 
@@ -515,3 +532,15 @@ class ScmUnitRegistry(pint.UnitRegistry):
             ret.append(quantity / mixture_unit * fraction_pct / 100 * constituent_unit)
 
         return ret
+
+
+def _load_globalwarmingpotentials_frame() -> pd.DataFrame:
+    """
+    Load the information from {py:mod}`globalwarmingpotentials`
+    """
+    metric_conversions = globalwarmingpotentials.as_frame()
+    # Drop out any gases which have a hyphen in their name,
+    # this causes pint to explode
+    metric_conversions = metric_conversions[~metric_conversions.index.str.contains("-")]
+
+    return metric_conversions
