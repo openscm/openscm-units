@@ -19,7 +19,7 @@ Handling of units related to simple climate modelling.
 [![PyPI install](https://github.com/openscm/openscm-units/actions/workflows/install.yaml/badge.svg?branch=main)](https://github.com/openscm/openscm-units/actions/workflows/install.yaml)
 
 **Other info :**
-[![License](https://img.shields.io/github/license/openscm/openscm-units.svg)](https://github.com/openscm/openscm-units/blob/main/LICENSE)
+[![Licence](https://img.shields.io/github/license/openscm/openscm-units.svg)](https://github.com/openscm/openscm-units/blob/main/LICENCE)
 [![Last Commit](https://img.shields.io/github/last-commit/openscm/openscm-units.svg)](https://github.com/openscm/openscm-units/commits/main)
 [![Contributors](https://img.shields.io/github/contributors/openscm/openscm-units.svg)](https://github.com/openscm/openscm-units/graphs/contributors)
 

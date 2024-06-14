@@ -107,6 +107,8 @@ jobs:
       - name: Check build
         run: |
           tar -tvf dist/openscm_units-*.tar.gz --wildcards '*openscm_units/py.typed'
+          tar -tvf dist/openscm_units-*.tar.gz --wildcards 'openscm_units-*/LICENCE'
+
 
   check-dependency-licences:
     runs-on: ubuntu-latest
