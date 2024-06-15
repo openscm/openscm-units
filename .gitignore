@@ -1,6 +1,9 @@
 # Notebooks
 *.ipynb
 
+# Lock file
+poetry.lock
+
 # Databases
 *.db
 

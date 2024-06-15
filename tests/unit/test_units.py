@@ -214,6 +214,18 @@ def test_context_dimensionality_error():
         ["SARGWP100", "SF6", 23900],
         ["SARGWP100", "CF4", 6500],
         ["SARGWP100", "C2F6", 9200],
+        ["TARGWP20", "CH4", 62],
+        ["TARGWP100", "CH4", 23],
+        ["TARGWP500", "CH4", 7],
+        ["TARGWP20", "N2O", 275],
+        ["TARGWP100", "N2O", 296],
+        ["TARGWP500", "N2O", 156],
+        ["TARGWP20", "CFC13", 10000],
+        ["TARGWP100", "CFC13", 14000],
+        ["TARGWP500", "CFC13", 16300],
+        ["TARGWP20", "C5F12", 6000],
+        ["TARGWP100", "C5F12", 8900],
+        ["TARGWP500", "C5F12", 13200],
     ),
 )
 def test_metric_conversion(metric_name, species, conversion):
