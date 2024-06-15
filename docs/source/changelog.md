@@ -19,6 +19,22 @@ of rst and use slightly different categories.
 
 <!-- towncrier release notes start -->
 
+## openscm-units v0.6.0 (2024-06-15)
+
+
+### Features
+
+- Added support for the new version of {py:mod}`globalwarmingpotentials`.
+
+  This means that {py:mod}`globalwarmingpotentials` >= 10.0.1 can be used,
+  so support for metrics from the third assessment report (TAR)
+  are now provided too. ([#51](https://github.com/openscm/openscm-units/pulls/51))
+
+### Trivial/Internal Changes
+
+- [#49](https://github.com/openscm/openscm-units/pulls/49), [#50](https://github.com/openscm/openscm-units/pulls/50), [#51](https://github.com/openscm/openscm-units/pulls/51)
+
+
 ## openscm-units v0.5.4 (2023-12-11)
 
 
