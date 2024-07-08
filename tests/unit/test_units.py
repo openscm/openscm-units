@@ -396,7 +396,13 @@ def test_no_autoconversion(inp):
     assert str(res.units) == inp
 
 
-@pytest.mark.parametrize("alias, exp", (("degC", "degree_Celsius"),))
+@pytest.mark.parametrize(
+    "alias, exp",
+    (
+        ("annum", "a"),
+        ("degC", "degree_Celsius"),
+    ),
+)
 def test_aliases(alias, exp):
     """Test our aliases behave as expected"""
     res = unit_registry.Quantity(1, alias)
