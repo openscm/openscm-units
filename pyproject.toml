@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "openscm-units"
-version = "0.6.1a0"
+version = "0.6.1"
 description = "Handling of units related to simple climate modelling."
 authors = [
     "Zebedee Nicholls <zebedee.nicholls@climate-energy-college.org>",
