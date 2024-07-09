@@ -3,6 +3,8 @@ ci:
   autofix_prs: false
   autoupdate_schedule: quarterly
   autoupdate_branch: pre-commit-autoupdate
+  # Currently network access isn't supported in the CI product.
+  skip: [poetry-lock]
 
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
