@@ -3,12 +3,17 @@
 
 # Lock file
 poetry.lock
+# Associated requirements file
+requirements.txt
 
 # Databases
 *.db
 
 # Jupyter cache
 .jupyter_cache
+
+# IDE stuff
+.idea/
 
 # Ruff cache
 .ruff_cache
