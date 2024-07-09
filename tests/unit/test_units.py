@@ -380,3 +380,31 @@ def test_split_invalid():
         match="Mixture has dimensionality 2 != 1, which is not supported.",
     ):
         unit_registry.split_gas_mixture(1 * unit_registry("CFC400") ** 2)
+
+
+@pytest.mark.parametrize("inp", ("yr",))
+def test_no_autoconversion(inp):
+    """
+    Make sure that the units are not automatically converted to some other value
+
+    The auto-conversion happens if pint thinks that the units are an alias
+    for something else.
+    See {py:func}`test_aliases`.
+    """
+    res = unit_registry.Quantity(1, inp)
+
+    assert str(res.units) == inp
+
+
+@pytest.mark.parametrize(
+    "alias, exp",
+    (
+        ("annum", "a"),
+        ("degC", "degree_Celsius"),
+    ),
+)
+def test_aliases(alias, exp):
+    """Test our aliases behave as expected"""
+    res = unit_registry.Quantity(1, alias)
+
+    assert str(res.units) == exp

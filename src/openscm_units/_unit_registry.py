@@ -232,7 +232,8 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         self._add_gases({x: x for x in MIXTURES})
 
-        self.define("a = 1 * year = annum = yr")
+        self.define("yr = 1 * year")
+        self.define("a = 1 * year = annum")
         self.define("h = hour")
         self.define("d = day")
         self.define("degreeC = degC")
