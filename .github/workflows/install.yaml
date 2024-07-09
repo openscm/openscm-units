@@ -26,7 +26,7 @@ jobs:
         pip install --upgrade pip
         pip install openscm-units
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Test installation
       run: |
         which python
@@ -52,7 +52,7 @@ jobs:
           openscm-units
         init-shell: bash
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Test installation
       shell: bash -leo pipefail {0}
       run: |

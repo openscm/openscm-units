@@ -69,7 +69,10 @@ licence-check:  ## Check that licences of the dependencies are suitable
 
 .PHONY: virtual-environment
 virtual-environment:  ## update virtual environment, create a new one if it doesn't already exist
-	poetry lock
+	# Ensure that the lock file is up to date,
+	# but don't update dependencies in the process
+	# see https://python-poetry.org/docs/cli/#lock
+	poetry lock --no-update
 	# Put virtual environments in the project
 	poetry config virtualenvs.in-project true
 	poetry install --all-extras
