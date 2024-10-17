@@ -2,8 +2,6 @@
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
-# Thank you also https://browniebroke.com/blog/specify-docs-dependency-groups-with-poetry-and-read-the-docs/
-
 # Required
 version: 2
 
@@ -13,17 +11,14 @@ build:
   tools:
     python: "3.11"
   jobs:
-    post_create_environment:
-      - pip install poetry
-      - poetry config virtualenvs.create false
     post_install:
-      # RtD seems to be not happy with poetry installs,
+      # RtD seems to be not happy with pdm installs,
       # hence use pip directly instead.
-      - poetry export -f requirements.txt --output requirements.txt --with docs
-      - python -m pip install -r requirements.txt
-      - python -m pip install .
+      - python -m pip install -r requirements-docs-locked.txt
       - python -m pip list
+    pre_build:
+      - pip install --no-deps .
 
-# Set sphinx configuration
-sphinx:
-   configuration: docs/source/conf.py
+mkdocs:
+  configuration: mkdocs.yml
+  fail_on_warning: true

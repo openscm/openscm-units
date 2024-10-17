@@ -1,10 +1,12 @@
 # Notebooks
 *.ipynb
 
-# Lock file
-poetry.lock
-# Associated requirements file
-requirements.txt
+# Auto-generated docs and helper files
+docs/api/*
+!docs/api/.gitkeep
+
+# pdm stuff
+.pdm-python
 
 # Databases
 *.db
@@ -20,9 +22,6 @@ requirements.txt
 
 # Licence check
 licence-check.txt
-
-# Poetry lock as this is a library
-poetry.lock
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

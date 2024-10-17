@@ -1,68 +1,45 @@
-name: "Setup Python and Poetry"
-description: "setup Python and Poetry with caches"
+name: "Setup Python and pdm"
+description: "setup Python and pdm with caches"
 
 inputs:
-  os:
-    description: "Operating system to use"
-    required: false
-    default: "ubuntu-latest"
   python-version:
     description: "Python version to use"
     required: true
-  venv-id:
-    description: "ID to identify cached environment (should be unique from other steps)"
+  pdm-dependency-install-flags:
+    description: "Flags to pass to pdm when running `pdm install`"
     required: true
-  poetry-dependency-install-flags:
-    description: "Flags to pass to poetry when running `poetry install --no-interaction --no-root`"
-    required: true
-  run-poetry-install:
-    description: "Should we run the poetry install steps"
+  run-pdm-install:
+    description: "Should we run the pdm install steps"
     required: false
     default: true
-
 
 runs:
   using: "composite"
   steps:
-    - name: Install poetry
+    - name: Write file with install flags
       shell: bash
       run: |
-        pipx install poetry
-        which poetry
-        poetry --version  # Check poetry installation
-    - name: Lock poetry
-      # Lock file is needed for the next step,
-      # but we don't track our lock file
-      # so we we generate one here.
-      shell: bash
-      run: poetry lock
-    - name: Set up Python ${{ inputs.python-version }}
-      id: setup-python
-      uses: actions/setup-python@v5
+        echo "${{ inputs.pdm-dependency-install-flags }}" > pdm-install-flags.txt
+    - name: Setup PDM
+      id: setup-pdm
+      uses: pdm-project/setup-pdm@v4.1
       with:
         python-version: ${{ inputs.python-version }}
-        cache: poetry
-    - name: Set Poetry environment
-      shell: bash
-      run: |
-        # This line used to be needed, but seems to have been
-        # sorted with newer poetry versions. We can still check whether
-        # the right version of python is used by looking at the output of
-        # `poetry run which python` below and whether the right version
-        # of python is used in the tests (or whatever step is being done)
-        # poetry env use "python${{ inputs.python-version }}"
-        poetry config virtualenvs.create true
-        poetry config virtualenvs.in-project true
+        cache: true
+        cache-dependency-path: |
+          ./pdm.lock
+          ./pdm-install-flags.txt
     - name: Install dependencies
-      if: ${{ (inputs.run-poetry-install == 'true')  && (steps.setup-python.outputs.cache-hit != 'true') }}
       shell: bash
+      if: ${{ (inputs.run-pdm-install == 'true')  && (steps.setup-pdm.outputs.cache-hit != 'true') }}
       run: |
-        poetry install --no-interaction --no-root ${{ inputs.poetry-dependency-install-flags }}
+        pdm install --no-self ${{ inputs.pdm-dependency-install-flags }}
     # Now run same command but let the package install too
     - name: Install package
-      # To ensure that the package is always installed, this step is run even if the cache was hit
-      if: ${{ inputs.run-poetry-install == 'true' }}
       shell: bash
+      # To ensure that the package is always installed, this step is run even if the cache was hit
+      if: ${{ inputs.run-pdm-install == 'true' }}
       run: |
-        poetry install --no-interaction ${{ inputs.poetry-dependency-install-flags }}
-        poetry run python --version  # Check python version just in case
+        pdm install ${{ inputs.pdm-dependency-install-flags }}
+        pdm run which python
+        pdm run python --version  # Check python version just in case

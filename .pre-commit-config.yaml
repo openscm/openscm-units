@@ -3,13 +3,13 @@ ci:
   autofix_prs: false
   autoupdate_schedule: quarterly
   autoupdate_branch: pre-commit-autoupdate
-  # Currently network access isn't supported in the CI product.
-  skip: [poetry-lock]
+  # Currently network access isn't supported in the pre-commit CI product.
+  skip: [pdm-lock-check, pdm-export, pdm-sync]
 
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: 'v4.5.0'
+    rev: "v4.5.0"
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -33,18 +33,24 @@ repos:
         language: fail
         files: "\\.rej$"
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.1.8'
+    rev: "v0.1.8"
     hooks:
       - id: ruff
         args: [ --fix, --exit-non-zero-on-fix ]
       - id: ruff-format
-  - repo: https://github.com/python-poetry/poetry
-    rev: '1.8.3'
+  - repo: https://github.com/pdm-project/pdm
+    rev: 2.17.0
     hooks:
-      - id: poetry-check
-      - id: poetry-lock
-        args: [--no-update]
-  - repo: https://github.com/python-poetry/poetry-plugin-export
-    rev: '1.8.0'
-    hooks:
-      - id: poetry-export
+      # Check that the lock file is up to date.
+      # We need the pdm lock file too
+      # so that we can build locked version of the package.
+      - id: pdm-lock-check
+        args: ["--dev", "-G", ":all", "--strategy", "inherit_metadata" ]
+      # Put requirements.txt files in the repo too
+      - id: pdm-export
+        name: export-requirements
+        args: ["-o", "requirements-locked.txt", "--without-hashes", "--prod"]
+      - id: pdm-export
+        name: export-requirements-docs
+        args: ["-o", "requirements-docs-locked.txt", "--without-hashes", "-G", ":all", "-G", "docs"]
+      - id: pdm-sync

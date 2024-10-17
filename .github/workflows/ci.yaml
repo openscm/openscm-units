@@ -15,12 +15,11 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
         with:
-          os: "ubuntu-latest"
-          python-version: "3.9"
-          venv-id: "docs"
-          poetry-dependency-install-flags: "--all-extras --only 'main,dev'"
+          python-version: "3.11"
+          pdm-dependency-install-flags: "-G :all"
       - name: mypy
-        run: MYPYPATH=stubs poetry run mypy src
+        run: |
+          MYPYPATH=stubs pdm run mypy src
 
   docs:
     if: ${{ !github.event.pull_request.draft }}
@@ -30,18 +29,22 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
         with:
-          os: "ubuntu-latest"
-          python-version: "3.9"
-          venv-id: "docs"
-          poetry-dependency-install-flags: "--all-extras --only 'main,docs'"
+          python-version: "3.11"
+          pdm-dependency-install-flags: "-G docs -G :all"
       - name: docs
-        # Disable warning as error on build because something weird happens
-        # with how pint has set things up. In future, add the `-W` flag back
-        # in here.
-        # (see https://github.com/hgrecco/pint/blob/fc1aeba21823092007adc62fae96596e15aa0127/pint/registry.py#L109)
-        # and how autodoc-typehints tries to then handle the types
-        # (see https://github.com/tox-dev/sphinx-autodoc-typehints/issues/186)
-        run: poetry run sphinx-build --keep-going -T -b html docs/source docs/build
+        run: |
+          pdm run mkdocs build --strict
+      - uses: ./.github/actions/setup
+        with:
+          python-version: "3.11"
+          pdm-dependency-install-flags: "-G docs -G :all -G dev"
+      - name: docs-with-changelog
+        run: |
+          # Check CHANGELOG will build too
+          pdm run towncrier build --yes
+          pdm run mkdocs build --strict
+          # Just in case, undo the staged changes
+          git restore --staged . && git restore .
 
   tests:
     strategy:
@@ -52,8 +55,9 @@ jobs:
     runs-on: "${{ matrix.os }}"
     defaults:
       run:
-        # This might be needed for Windows and doesn't seem to affect unix-based systems
-        # so we include it. If you have better proof of whether this is needed or not,
+        # This might be needed for Windows
+        # and doesn't seem to affect unix-based systems so we include it.
+        # If you have better proof of whether this is needed or not,
         # feel free to update.
         shell: bash
     steps:
@@ -61,18 +65,23 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
         with:
-          os: "${{ matrix.os }}"
-          python-version: "${{ matrix.python-version }}"
-          venv-id: "tests-${{ runner.os }}"
-          poetry-dependency-install-flags: "--all-extras"
+          python-version: ${{ matrix.python-version }}
+          # When running the tests, install with all optional dependencies
+          # to get maximum test coverage.
+          # If we find that we're getting failures
+          # when people try to run without installing optional dependencies,
+          # we should add a CI step that runs the tests without optional dependencies too.
+          # We don't have that right now, because we're not sure this pain point exists.
+          pdm-dependency-install-flags: "-G :all -G tests"
       - name: Run tests
         run: |
-          poetry run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
-          poetry run coverage report
+          pdm run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
+          pdm run coverage report
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v4.2.0
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   imports-without-extras:
     strategy:
       fail-fast: false
@@ -85,31 +94,29 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
         with:
-          python-version: "${{ matrix.python-version }}"
-          venv-id: "imports-without-extras-${{ runner.os }}"
-          poetry-dependency-install-flags: "--only main"
+          python-version: ${{ matrix.python-version }}
+          pdm-dependency-install-flags: "--prod --without :all"
       - name: Check importable without extras
-        run: poetry run python scripts/test-install.py
+        run: pdm run python scripts/test-install.py
 
   check-build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v4
         with:
           python-version: "3.9"
-          venv-id: "check-build-${{ runner.os }}"
-          run-poetry-install: false
-          poetry-dependency-install-flags: "not used"
+          pdm-dependency-install-flags: "not-used"
+          run-pdm-install: false
       - name: Build package
         run: |
-          poetry build --no-interaction
+          pdm build
       - name: Check build
         run: |
           tar -tvf dist/openscm_units-*.tar.gz --wildcards '*openscm_units/py.typed'
           tar -tvf dist/openscm_units-*.tar.gz --wildcards 'openscm_units-*/LICENCE'
-
 
   check-dependency-licences:
     runs-on: ubuntu-latest
@@ -119,12 +126,11 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           python-version: "3.9"
-          venv-id: "licence-check"
-          poetry-dependency-install-flags: "--all-extras"
+          pdm-dependency-install-flags: "-G dev"
       - name: Check licences of dependencies
         shell: bash
         run: |
           TEMP_FILE=$(mktemp)
-          poetry export --without=tests --without=docs --without=dev > $TEMP_FILE
-          poetry run liccheck -r $TEMP_FILE -R licence-check.txt
+          pdm export --prod > $TEMP_FILE
+          pdm run liccheck -r $TEMP_FILE -R licence-check.txt
           cat licence-check.txt

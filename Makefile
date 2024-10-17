@@ -24,56 +24,62 @@ help:  ## print short description of each target
 
 .PHONY: checks
 checks:  ## run all the linting checks of the codebase
-	@echo "=== pre-commit ==="; poetry run pre-commit run --all-files || echo "--- pre-commit failed ---" >&2; \
-		echo "=== mypy ==="; MYPYPATH=stubs poetry run mypy src || echo "--- mypy failed ---" >&2; \
+	@echo "=== pre-commit ==="; pdm run pre-commit run --all-files || echo "--- pre-commit failed ---" >&2; \
+		echo "=== mypy ==="; MYPYPATH=stubs pdm run mypy src || echo "--- mypy failed ---" >&2; \
 		echo "======"
 
 .PHONY: ruff-fixes
 ruff-fixes:  ## fix the code using ruff
     # format before and after checking so that the formatted stuff is checked and
     # the fixed stuff is formatted
-	poetry run ruff format src tests scripts docs/source/conf.py docs/source/notebooks/*.py
-	poetry run ruff src tests scripts docs/source/conf.py docs/source/notebooks/*.py --fix
-	poetry run ruff format src tests scripts docs/source/conf.py docs/source/notebooks/*.py
+	pdm run ruff format src tests scripts docs
+	pdm run ruff check src tests scripts docs --fix
+	pdm run ruff format src tests scripts docs
 
 
 .PHONY: test
 test:  ## run the tests
-	poetry run pytest src tests -r a -v --doctest-modules --cov=src
+	pdm run pytest src tests -r a -v --doctest-modules --cov=src
 
 # Note on code coverage and testing:
-# You must specify cov=src as otherwise funny things happen when doctests are
-# involved.
-# If you want to debug what is going on with coverage, we have found
-# that adding COVERAGE_DEBUG=trace to the front of the below command
-# can be very helpful as it shows you if coverage is tracking the coverage
+# You must specify cov=src.
+# Otherwise, funny things happen when doctests are involved.
+# If you want to debug what is going on with coverage,
+# we have found that adding COVERAGE_DEBUG=trace
+# to the front of the below command
+# can be very helpful as it shows you
+# if coverage is tracking the coverage
 # of all of the expected files or not.
-# We are sure that the coverage maintainers would appreciate a PR that improves
-# the coverage handling when there are doctests and a `src` layout like ours.
+# We are sure that the coverage maintainers would appreciate a PR
+# that improves the coverage handling when there are doctests
+# and a `src` layout like ours.
 
 .PHONY: docs
 docs:  ## build the docs
-	poetry run sphinx-build -T -b html docs/source docs/build/html
+	pdm run mkdocs build
+
+.PHONY: docs-strict
+docs-strict:  ## build the docs strictly (e.g. raise an error on warnings, this most closely mirrors what we do in the CI)
+	pdm run mkdocs build --strict
+
+.PHONY: docs-serve
+docs-serve:  ## serve the docs locally
+	pdm run mkdocs serve
 
 .PHONY: changelog-draft
 changelog-draft:  ## compile a draft of the next changelog
-	poetry run towncrier build --draft
+	pdm run towncrier build --draft --version draft
 
 .PHONY: licence-check
 licence-check:  ## Check that licences of the dependencies are suitable
 	# Will likely fail on Windows, but Makefiles are in general not Windows
 	# compatible so we're not too worried
-	poetry export --without=tests --without=docs --without=dev > $(TEMP_FILE)
-	poetry run liccheck -r $(TEMP_FILE) -R licence-check.txt
+	pdm export --without=tests --without=docs --without=dev > $(TEMP_FILE)
+	pdm run liccheck -r $(TEMP_FILE) -R licence-check.txt
 	rm -f $(TEMP_FILE)
 
 .PHONY: virtual-environment
 virtual-environment:  ## update virtual environment, create a new one if it doesn't already exist
-	# Ensure that the lock file is up to date,
-	# but don't update dependencies in the process
-	# see https://python-poetry.org/docs/cli/#lock
-	poetry lock --no-update
-	# Put virtual environments in the project
-	poetry config virtualenvs.in-project true
-	poetry install --all-extras
-	poetry run pre-commit install
+	pdm lock --dev --group :all --strategy inherit_metadata
+	pdm install --dev --group :all
+	pdm run pre-commit install

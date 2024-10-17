@@ -1,10 +1,10 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: v0.7.0
-_src_path: gl:climate-resource/copier-core-python-repository
+_commit: v0.4.1
+_src_path: gl:znicholls/copier-core-python-repository
 email: zebedee.nicholls@climate-energy-college.org
-initial_setup: true
+include_cli: false
 name: Zebedee Nicholls
-notebook_dependencies: false
+notebook_based_docs: true
 pandas_doctests: false
 plot_dependencies: false
 project_description_short: Handling of units related to simple climate modelling.
@@ -12,4 +12,4 @@ project_name_human: OpenSCM-Units
 project_name_pip: openscm-units
 project_name_python: openscm_units
 project_url: https://github.com/openscm/openscm-units
-track_lock_file: false
+track_lock_file: true
