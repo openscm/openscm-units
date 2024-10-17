@@ -2,7 +2,7 @@
 Write out the pins for our conda recipe
 
 These can be copy-pasted into the locked info at
-https://github.com/conda-forge/input4mips-validation-feedstock/blob/main/recipe/meta.yaml
+https://github.com/conda-forge/openscm-units-feedstock/blob/main/recipe/meta.yaml
 """
 
 from __future__ import annotations
