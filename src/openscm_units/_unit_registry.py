@@ -3,6 +3,7 @@ Definition of our unit registry
 
 See also `docs/source/notebooks/design-principles.py`
 """
+
 from __future__ import annotations
 
 import math
@@ -31,6 +32,7 @@ _STANDARD_GASES: dict[str, str | list[str]] = {
     "NO2": ["14/46 * N", "nitrogen_dioxide"],
     # aerosol precursors
     "NOx": "NOx",
+    "NO": ["46/30 * NOx", "nox_cmip_style"],
     "nox": ["NOx"],
     "NH3": "NH3",
     "ammonia": ["NH3"],
