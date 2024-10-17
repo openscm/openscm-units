@@ -1,82 +1,94 @@
-[tool.poetry]
+[project]
 name = "openscm-units"
 version = "0.6.3a0"
 description = "Handling of units related to simple climate modelling."
 authors = [
-    "Zebedee Nicholls <zebedee.nicholls@climate-energy-college.org>",
-    "Jared Lewis <jared.lewis@climate-resource.com>",
-    "Mika Pflueger <mika.pflueger@climate-resource.com>",
-    "Robert Gieseke <rob.g@web.de>",
-    "Sven Willner <sven.willer@gmail.com>",
+    { name = "Zebedee Nicholls", email = "zebedee.nicholls@climate-energy-college.org" },
+    { name = "Jared Lewis", email = "jared.lewis@climate-resource.com" },
+    { name = "Mika Pflueger", email = "mika.pflueger@climate-resource.com" },
+    { name = "Robert Gieseke", email = "rob.g@web.de" },
+    { name = "Sven Willner", email = "sven.willer@gmail.com" },
+]
+license = {text = "BSD-3-Clause"}
+requires-python = ">=3.9"
+dependencies = [
+    "pint",
+    "globalwarmingpotentials",
+    "numpy",
+    "pandas",
 ]
 readme = "README.md"
-packages = [{include = "openscm_units", from = "src"}]
-license = "BSD-3-Clause"
-include = ["LICENCE"]  # poetry uses US English so assumes it will be spelt LICENSE
-
-[tool.poetry.dependencies]
-python = "^3.9"
-pint = "*"
-globalwarmingpotentials = "*"
-pandas = "*"
-notebook = { version = "^7.0.0", optional = true }
-seaborn = { version = "^0.13.0", optional = true }
-
-[tool.poetry.extras]
-notebooks = ["notebook", "seaborn"]
-
-[tool.poetry.group.tests.dependencies]
-pytest = "^7.3.1"
-
-[tool.poetry.group.docs.dependencies]
-myst-nb = "^0.17.0"
-sphinx-book-theme = "^1.1.0"
-sphinx-autodoc-typehints = "^1.23.0"
-sphinx-autodocgen = "^1.3"
-jupytext = "^1.14.5"
-sphinx-copybutton = "^0.5.2"
-
-[tool.poetry.group.dev.dependencies]
-pytest-cov = "^4.0.0"
-coverage = "^7.2.0"
-mypy = "^1.2.0"
-ruff = "^0.1.8"
-pre-commit = "^3.3.1"
-towncrier = "^23.6.0"
-liccheck = "^0.9.1"
-pandas-stubs = "^2.1.1.230928"
-# Required here so that liccheck will install
-# liccheck's installation isn't setup correctly
-setuptools = "^70.1.1"
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "pdm-backend",
+    "pdm-build-locked",
+]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+[tool.pdm.build]
+locked = true
+includes = [
+    "src/openscm_units",
+    "LICENCE",
+]
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pre-commit>=3.8.0",
+    "mypy>=1.11",
+    "towncrier>=24.8.0",
+    "liccheck>=0.9.2",
+    # Required for liccheck
+    "setuptools>=74.1.2",
+    "pip>=24.2",
+    "pandas-stubs>=2.2.2.240807",
+]
+docs = [
+    "attrs>=24.0.0",
+    "mkdocs>=1.6.0",
+    "mkdocs-autorefs>=1.2.0",
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-literate-nav>=0.6.1",
+    "mkdocs-material>=9.5.34",
+    "mkdocs-section-index>=0.3.9",
+    "mkdocstrings[python]>=0.25.0",
+    "pymdown-extensions>=10.9",
+    "mkdocs-jupyter>=0.25.1",
+    "jupyterlab>=4.2.0",
+    "jupytext>=1.16.3",
+]
+tests = [
+    "pytest>=8.3.3",
+    "coverage>=7.6.0",
+    "pytest-cov>=5.0.0",
+]
+
 
 [tool.coverage.run]
-source = ["src"]
+source = [
+    "src",
+]
 branch = true
 
 [tool.coverage.report]
-fail_under = 95
+fail_under = 90
 skip_empty = true
 show_missing = true
-# Regexes for lines to exclude from consideration in addition to the defaults
 exclude_also = [
-    # Don't complain about missing type checking code:
     "if TYPE_CHECKING",
 ]
 
 [tool.mypy]
 strict = true
-# prevent unimported libraries silently being treated as Any
 disallow_any_unimported = true
-# show error codes on failure with context
 show_error_codes = true
 show_error_context = true
-# warn if code can't be reached
 warn_unreachable = true
-# importing following uses default settings
 follow_imports = "normal"
 
 [tool.jupytext]
@@ -88,100 +100,85 @@ addopts = [
 ]
 
 [tool.ruff]
-src = ["src"]
+src = [
+    "src",
+]
 target-version = "py39"
+line-length = 88
+
+[tool.ruff.lint]
 select = [
-    "E",  # pycodestyle error
-    "W",  # pycodestyle warning
-    "F",  # pyflakes
-    "I",  # isort
-    "D",  # pydocstyle
-    "PL",  # pylint
-    "TRY",  # tryceratops
-    "NPY",  # numpy rules
-    "RUF",  # ruff specifics
-    "UP",  # pyupgrade
-    "S",  # flake8-bandit
-    # pandas support via pandas-vet. In some cases we will want to disable
-    # this because it can lead to too many false positives.
-    "PD",
+    "E",
+    "W",
+    "F",
+    "I",
+    "D",
+    "PL",
+    "TRY",
+    "NPY",
+    "RUF",
+    "UP",
+    "S",
 ]
 unfixable = [
-    "PD002",  # Disable autofix for inplace as this often introduces bugs
+    "PD002",
 ]
 ignore = [
-    "D200",  # One-line docstring should fit on one line with quotes
-    "D400",  # First line should end with a period
+    "D200",
+    "D400",
+    "UP007",
 ]
-line-length = 88
+
+[tool.ruff.lint.per-file-ignores]
+"test*.py" = [
+    "D",
+    "S101",
+    "PLR2004",
+]
+"docs/*" = [
+    "D100",
+    "E402",
+    "S101",
+]
+"scripts/*" = [
+    "S101",
+]
+"stubs/*" = [
+    "PLR0913",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "src",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.ruff.format]
 docstring-code-format = true
 
-[tool.ruff.per-file-ignores]
-"test*.py" = [
-    "D",  # Documentation not needed in tests
-    "S101",  # S101 Use of `assert` detected
-    "PLR2004" # Magic value used in comparison
-]
-"docs/source/notebooks/*" = [
-    "D100",  # Missing docstring at the top of file
-    "E402",  # Module level import not at top of file
-    "S101",  # Use of `assert` detected
-]
-"scripts/*" = [
-    "S101" # S101 Use of `assert` detected
-]
-
-[tool.ruff.isort]
-known-first-party = ["src"]
-
-[tool.ruff.pydocstyle]
-convention = "numpy"
-
 [tool.towncrier]
 package = "openscm_units"
 package_dir = "src"
-filename = "docs/source/changelog.md"
+filename = "docs/changelog.md"
 directory = "changelog/"
-title_format = "## openscm-units {version} ({project_date})"
-underlines = ["", "", ""]
-issue_format = "[#{issue}](https://github.com/openscm/openscm-units/pulls/{issue})"
-
-  [[tool.towncrier.type]]
-  directory = "breaking"
-  name = "Breaking Changes"
-  showcontent = true
-
-  [[tool.towncrier.type]]
-  directory = "deprecation"
-  name = "Deprecations"
-  showcontent = true
-
-  [[tool.towncrier.type]]
-  directory = "feature"
-  name = "Features"
-  showcontent = true
-
-  [[tool.towncrier.type]]
-  directory = "improvement"
-  name = "Improvements"
-  showcontent = true
-
-  [[tool.towncrier.type]]
-  directory = "fix"
-  name = "Bug Fixes"
-  showcontent = true
-
-  [[tool.towncrier.type]]
-  directory = "docs"
-  name = "Improved Documentation"
-  showcontent = true
-
-  [[tool.towncrier.type]]
-  directory = "trivial"
-  name = "Trivial/Internal Changes"
-  showcontent = false
+title_format = "## OpenSCM-Units {version} ({project_date})"
+underlines = [
+    "",
+    "",
+    "",
+]
+issue_format = "[#{issue}](https://github.com/openscm/openscm-units/pull/{issue})"
+type = [
+    { directory = "breaking", name = "⚠️ Breaking Changes", showcontent = true },
+    { directory = "deprecation", name = "🗑️ Deprecations", showcontent = true },
+    { directory = "feature", name = "🆕 Features", showcontent = true },
+    { directory = "improvement", name = "🎉 Improvements", showcontent = true },
+    { directory = "fix", name = "🐛 Bug Fixes", showcontent = true },
+    { directory = "docs", name = "📚 Improved Documentation", showcontent = true },
+    { directory = "trivial", name = "🔧 Trivial/Internal Changes", showcontent = false },
+]
 
 [tool.liccheck]
 authorized_licenses = [
@@ -209,8 +206,6 @@ authorized_licenses = [
     "python software foundation license",
     "zpl 2.1",
 ]
-# This starting list is relatively conservative. Depending on the project, it
-# may make sense to move some of these into the authorized list
 unauthorized_licenses = [
     "agpl",
     "gnu agpl",

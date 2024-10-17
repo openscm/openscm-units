@@ -1,6 +1,6 @@
 """
 Data used within OpenSCM Units
 
-For example, metric conversions and breakdownss of mixture substances into
-their constituents.
+For example, metric conversions
+and breakdowns of mixture substances into their constituents.
 """

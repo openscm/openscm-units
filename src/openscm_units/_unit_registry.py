@@ -507,6 +507,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
         Returns
         -------
+        :
             List of constituent gases
         """
         mixture_dimensions = [
@@ -539,7 +540,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
 
 def _load_globalwarmingpotentials_frame() -> pd.DataFrame:
     """
-    Load the information from {py:mod}`globalwarmingpotentials`
+    Load the information from [`globalwarmingpotentials`][]
     """
     metric_conversions = globalwarmingpotentials.as_frame()
     # Drop out any gases which have a hyphen in their name,

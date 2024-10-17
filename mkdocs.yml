@@ -1,0 +1,131 @@
+site_name: OpenSCM-Units
+site_description: Handling of units related to simple climate modelling.
+site_url: https://openscm-units.readthedocs.io
+edit_uri: blob/master/docs/
+
+repo_name: openscm/openscm-units
+repo_url: https://github.com/openscm/openscm-units
+
+theme:
+  name: "material"
+  features:
+    - content.code.copy
+  palette:
+    # Light mode (toggle to dark mode)
+    - scheme: default
+      # Other colour choices at https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#color-palette
+      primary: blue-grey
+      # More info on toggles at https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#color-palette-toggle
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # Dark mode (toggle back to light mode)
+    - scheme: slate
+      primary: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to light mode
+
+plugins:
+  # https://mkdocstrings.github.io/autorefs/
+  - autorefs
+  # Required for auto-generating our documentation stubs
+  # https://oprypin.github.io/mkdocs-gen-files/
+  - gen-files:
+      scripts:
+        - docs/gen_doc_stubs.py
+  # Make the navigation easier to handle/auto-generate if we wish
+  # https://oprypin.github.io/mkdocs-literate-nav/
+  - literate-nav:
+      nav_file: NAVIGATION.md
+  # Notebook support.
+  # Working out how to make this play with nb-exec would be nice,
+  # then it wouldn't run every time.
+  # See also: https://github.com/danielfrg/mkdocs-jupyter/issues/161
+  # We could also get the nb-exec-table mentioned here:
+  # https://myst-nb.readthedocs.io/en/v0.12.2/use/execute.html
+  # One for another day.
+  - mkdocs-jupyter:
+      # Use filenames for titles
+      ignore_h1_titles: True
+      include: ["*.py"]
+      execute: true
+      # Toggle off for faster builds
+      # execute: false
+      allow_errors: false
+      # theme: dark
+      include_source: True
+      ignore: ["*.ipynb", "*.md", "docs/gen_doc_stubs.py"]
+      remove_tag_config:
+        remove_input_tags:
+          - remove_input
+  # Docstring generation
+  - mkdocstrings:
+      enable_inventory: true
+      handlers:
+        python:
+          paths: [src]
+          import:
+            # Cross-ref helpers (lots included here, remove what you don't want)
+            - https://www.attrs.org/en/stable/objects.inv
+            - https://unidata.github.io/cftime/objects.inv
+            - https://ipython.readthedocs.io/en/stable/objects.inv
+            - https://loguru.readthedocs.io/en/latest/objects.inv
+            - https://matplotlib.org/stable/objects.inv
+            - https://ncdata.readthedocs.io/en/stable/objects.inv
+            - https://openscm-units.readthedocs.io/en/stable/objects.inv
+            - https://pandas.pydata.org/docs/objects.inv
+            - https://pint.readthedocs.io/en/stable/objects.inv
+            - https://www.fatiando.org/pooch/latest/objects.inv
+            - https://docs.python.org/3/objects.inv
+            - https://docs.scipy.org/doc/scipy/objects.inv
+            - https://scitools-iris.readthedocs.io/en/stable/objects.inv
+            - https://scmdata.readthedocs.io/en/stable/objects.inv
+            - https://validators.readthedocs.io/en/stable/objects.inv
+            - http://xarray.pydata.org/en/stable/objects.inv
+          options:
+            docstring_style: numpy
+            show_root_heading: true
+            show_source: true
+  # https://squidfunk.github.io/mkdocs-material/plugins/search/
+  - search
+  # Add clickable sections to the sidebar
+  # https://oprypin.github.io/mkdocs-section-index/
+  - section-index
+
+markdown_extensions:
+  # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown/#attribute-lists
+  - attr_list
+  # Allow admonitions, useful for deprecation warnings
+  # https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/admonition/
+  - pymdownx.blocks.admonition
+  # Code highlighting handiness
+  # https://facelessuser.github.io/pymdown-extensions/extensions/highlight/
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  # https://facelessuser.github.io/pymdown-extensions/extensions/inlinehilite/
+  - pymdownx.inlinehilite
+  # Enable the use of snippets (e.g. taking snippets from README and putting them in docs)
+  # https://facelessuser.github.io/pymdown-extensions/extensions/snippets/
+  - pymdownx.snippets
+  # Support more complicated indents etc.
+  # https://facelessuser.github.io/pymdown-extensions/extensions/superfences/
+  - pymdownx.superfences
+  # Tabbed sections (e.g. for our installation options)
+  # https://facelessuser.github.io/pymdown-extensions/extensions/tabbed/
+  - pymdownx.tabbed:
+      alternate_style: true
+  # Support tables (used in our API docs)
+  # https://squidfunk.github.io/mkdocs-material/reference/data-tables/
+  - tables
+  # Ensure that there are links to table of contents items
+  - toc:
+      permalink: "#"
+
+watch:
+  - README.md
+  # Auto-generate if `src` changes (because this changes API docs)
+  - src

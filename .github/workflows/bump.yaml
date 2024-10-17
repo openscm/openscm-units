@@ -5,15 +5,17 @@ on:
     inputs:
       bump_rule:
         type: choice
-        description: How to bump the project's version (see https://python-poetry.org/docs/cli/#version)
+        description: How to bump the project's version (see https://github.com/carstencodes/pdm-bump#usage)
         options:
-          - patch
+          - no-pre-release
+          # no micro because we always sit on a pre-release in main,
+          # so we would always use no-pre-release instead of micro
+          # - micro
           - minor
           - major
-          - prepatch
-          - preminor
-          - premajor
-          - prerelease
+          - "pre-release --pre alpha"
+          - "pre-release --pre beta"
+          - "pre-release --pre release-candidate"
         required: true
 
 jobs:
@@ -24,44 +26,58 @@ jobs:
     env:
       CI_COMMIT_EMAIL: "ci-runner@openscm-units.invalid"
     steps:
-      - name: Check out repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
 
-      # towncrier imports the package as part of building so we have to
-      # install the pacakage (to keep things slim, we only install the main
-      # dependencies, which also means that we get a test that we can import
-      # the package with only the compulsory dependencies installed for free)
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install pdm-bump
+        run: |
+          pdm self add pdm-bump
+
       - uses: ./.github/actions/setup
         with:
-          python-version: "3.11"
-          venv-id: "bump"
-          poetry-dependency-install-flags: "--only main"
-
-      - name: Install towncrier
-        run: |
-          poetry run pip install towncrier
+          python-version: ${{ matrix.python-version }}
+          pdm-dependency-install-flags: "-G dev"
 
       - name: Create bump and changelog
-
         run: |
           git config --global user.name "$GITHUB_ACTOR"
           git config --global user.email "$CI_COMMIT_EMAIL"
 
+          BASE_VERSION=`sed -ne 's/^version = "\([0-9\.a]*\)"/\1/p' pyproject.toml`
+          echo "Bumping from version $BASE_VERSION"
+
           # Bump
-          BASE_VERSION=`poetry version -s`
-          NEW_VERSION=`poetry version -s ${{ github.event.inputs.bump_rule }}`
-          echo "Bumping version $BASE_VERSION > $NEW_VERSION"
-          poetry run towncrier build --yes --version v$NEW_VERSION
+          pdm bump ${{ github.event.inputs.bump_rule }}
+
+          NEW_VERSION=`sed -ne 's/^version = "\([0-9\.a]*\)"/\1/p' pyproject.toml`
+          echo "Bumping to version $NEW_VERSION"
+
+          # Build CHANGELOG
+          pdm run towncrier build --yes --version v$NEW_VERSION
+
+          # Commit, tag and push
           git commit -a -m "bump: version $BASE_VERSION -> $NEW_VERSION"
           git tag v$NEW_VERSION
+          git push && git push --tags
 
           # Bump to alpha (so that future commits do not have the same
           # version as the tagged commit)
-          BASE_VERSION=`poetry version -s`
-          NEW_VERSION=`poetry version -s prerelease`
+          BASE_VERSION=`sed -ne 's/^version = "\([0-9\.a]*\)"/\1/p' pyproject.toml`
+
+          # Bump to pre-release of next version
+          pdm bump pre-release --pre alpha
+
+          NEW_VERSION=`sed -ne 's/^version = "\([0-9\.a]*\)"/\1/p' pyproject.toml`
           echo "Bumping version $BASE_VERSION > $NEW_VERSION"
+
+          # Commit and push
           git commit -a -m "bump(pre-release): version $BASE_VERSION > $NEW_VERSION"
-          git push && git push --tags
+          git push
