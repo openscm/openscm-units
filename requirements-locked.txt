@@ -5,7 +5,7 @@ appdirs==1.4.4
 flexcache==0.3
 flexparser==0.3.1
 globalwarmingpotentials==0.11.1
-numpy==2.0.2; python_version <= "3.11" or python_version >= "3.12"
+numpy==2.0.2
 pandas==2.2.3
 pint==0.24.3
 python-dateutil==2.9.0.post0

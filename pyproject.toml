@@ -21,8 +21,6 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
 ]
 
-[project.optional-dependencies]
-
 [build-system]
 requires = [
     "pdm-backend",
@@ -47,7 +45,7 @@ dev = [
     # Required for liccheck
     "setuptools>=74.1.2",
     "pip>=24.2",
-
+    "pandas-stubs>=2.2.2.240807",
 ]
 docs = [
     "attrs>=24.0.0",

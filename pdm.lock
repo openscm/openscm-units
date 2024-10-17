@@ -5,7 +5,7 @@
 groups = ["default", "dev", "docs", "tests"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:650d6699a8946496f2353ca2633c8389501a95135730fbf59764b90bb9d16cf4"
+content_hash = "sha256:fa8dcef9b1b61200877c52269bde9b4d5926d2614f0bdd4ea738729cbdb1c3d8"
 
 [[metadata.targets]]
 requires_python = ">=3.9"
@@ -1759,8 +1759,7 @@ name = "numpy"
 version = "2.0.2"
 requires_python = ">=3.9"
 summary = "Fundamental package for array computing in Python"
-groups = ["default"]
-marker = "python_version <= \"3.11\" or python_version >= \"3.12\""
+groups = ["default", "dev"]
 files = [
     {file = "numpy-2.0.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:51129a29dbe56f9ca83438b706e2e69a39892b5eda6cedcb6b0c9fdc9b0d3ece"},
     {file = "numpy-2.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:f15975dfec0cf2239224d80e32c3170b1d168335eaedee69da84fbe9f1f9cd04"},
@@ -1901,6 +1900,21 @@ files = [
     {file = "pandas-2.2.3-cp39-cp39-musllinux_1_2_x86_64.whl", hash = "sha256:7eee9e7cea6adf3e3d24e304ac6b8300646e2a5d1cd3a3c2abed9101b0846761"},
     {file = "pandas-2.2.3-cp39-cp39-win_amd64.whl", hash = "sha256:4850ba03528b6dd51d6c5d273c46f183f39a9baf3f0143e566b89450965b105e"},
     {file = "pandas-2.2.3.tar.gz", hash = "sha256:4f18ba62b61d7e192368b84517265a99b4d7ee8912f8708660fb4a366cc82667"},
+]
+
+[[package]]
+name = "pandas-stubs"
+version = "2.2.2.240807"
+requires_python = ">=3.9"
+summary = "Type annotations for pandas"
+groups = ["dev"]
+dependencies = [
+    "numpy>=1.23.5",
+    "types-pytz>=2022.1.1",
+]
+files = [
+    {file = "pandas_stubs-2.2.2.240807-py3-none-any.whl", hash = "sha256:893919ad82be4275f0d07bb47a95d08bae580d3fdea308a7acfcb3f02e76186e"},
+    {file = "pandas_stubs-2.2.2.240807.tar.gz", hash = "sha256:64a559725a57a449f46225fbafc422520b7410bff9252b661a225b5559192a93"},
 ]
 
 [[package]]
@@ -2821,6 +2835,17 @@ groups = ["docs"]
 files = [
     {file = "types-python-dateutil-2.9.0.20241003.tar.gz", hash = "sha256:58cb85449b2a56d6684e41aeefb4c4280631246a0da1a719bdbe6f3fb0317446"},
     {file = "types_python_dateutil-2.9.0.20241003-py3-none-any.whl", hash = "sha256:250e1d8e80e7bbc3a6c99b907762711d1a1cdd00e978ad39cb5940f6f0a87f3d"},
+]
+
+[[package]]
+name = "types-pytz"
+version = "2024.2.0.20241003"
+requires_python = ">=3.8"
+summary = "Typing stubs for pytz"
+groups = ["dev"]
+files = [
+    {file = "types-pytz-2024.2.0.20241003.tar.gz", hash = "sha256:575dc38f385a922a212bac00a7d6d2e16e141132a3c955078f4a4fd13ed6cb44"},
+    {file = "types_pytz-2024.2.0.20241003-py3-none-any.whl", hash = "sha256:3e22df1336c0c6ad1d29163c8fda82736909eb977281cb823c57f8bae07118b7"},
 ]
 
 [[package]]

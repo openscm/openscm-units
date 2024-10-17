@@ -81,7 +81,7 @@ nbconvert==7.16.4
 nbformat==5.10.4
 nest-asyncio==1.6.0
 notebook-shim==0.2.4
-numpy==2.0.2; python_version <= "3.11" or python_version >= "3.12"
+numpy==2.0.2
 overrides==7.7.0
 packaging==24.1
 paginate==0.5.7
