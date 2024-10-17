@@ -1,0 +1,68 @@
+# Test installation of the latest version from conda/mamba works.
+# We make sure that we run the tests that apply to the version we installed,
+# rather than the latest tests in main.
+# The reason we do this, is that we want this workflow to test
+# that installing from PyPI/conda leads to a correct installation.
+# If we tested against main, the tests could fail
+# because the tests from main require the new features in main to pass.
+name: Test installation conda
+
+on:
+  workflow_dispatch:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # This means At 03:00 on Wednesday.
+    # see https://crontab.guru/#0_0_*_*_3
+    - cron:  '0 3 * * 3'
+
+jobs:
+  test-micromamba-installation:
+    name: Test (micro)mamba install ${{ matrix.install-target }} (${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        # # There is an issue on windows, one for another day
+        # os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        os: ["ubuntu-latest", "macos-latest"]
+        python-version: [ "3.9", "3.10", "3.11" ]
+        # Check both the 'library' and the 'application' (i.e. locked package)
+        install-target: ["openscm-units", "openscm-units-locked"]
+
+    steps:
+    # While we wait for conda-forge release
+    # (https://github.com/conda-forge/staged-recipes/pull/26986)
+    # specify pins by hand
+    - name: Setup (micro)mamba and install package
+      uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-name: test-mamba-install
+        create-args: >-
+          python=${{ matrix.python-version }}
+          -c conda-forge
+          ${{ matrix.install-target }}
+        init-shell: bash
+    - name: Get version
+      shell: bash -leo pipefail {0}
+      run: |
+        INSTALLED_VERSION=`python -c 'import openscm_units; print(f"v{openscm_units.__version__}")'`
+        echo $INSTALLED_VERSION
+        echo "INSTALLED_VERSION=$INSTALLED_VERSION" >> $GITHUB_ENV
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ env.INSTALLED_VERSION }}
+    - name: Test installation
+      shell: bash -leo pipefail {0}
+      run: |
+        which python
+        which cfchecks
+        python scripts/test-install.py
+    - name: Install pytest and other test dependencies
+      shell: bash -leo pipefail {0}
+      run: |
+        micromamba install pytest pytest-regressions
+    - name: Run tests
+      shell: bash -leo pipefail {0}
+      run: |
+        pytest tests -r a -vv -s
