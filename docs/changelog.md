@@ -21,6 +21,13 @@ from the examples given in that link.
 
 <!-- towncrier release notes start -->
 
+## OpenSCM-Units v0.6.3 (2024-10-17)
+
+### 🔧 Trivial/Internal Changes
+
+- [#56](https://github.com/openscm/openscm-units/pull/56)
+
+
 ## OpenSCM-Units v0.6.2 (2024-10-17)
 
 ### Improvements

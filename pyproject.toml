@@ -1,6 +1,6 @@
 [project]
 name = "openscm-units"
-version = "0.6.3a0"
+version = "0.6.3"
 description = "Handling of units related to simple climate modelling."
 authors = [
     { name = "Zebedee Nicholls", email = "zebedee.nicholls@climate-energy-college.org" },
