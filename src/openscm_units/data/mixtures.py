@@ -1,6 +1,7 @@
 """
 Gas mixtures supported by OpenSCM Units
 """
+
 from __future__ import annotations
 
 _nan = float("nan")
@@ -402,14 +403,16 @@ MIXTURES: dict[str, dict[str, list[float | int]]] = {
     },
 }
 """
-dict: Gas mixtures supported by OpenSCM Units
+Gas mixtures supported by OpenSCM Units
 
 Last update: 2020-12-16
 
-Each key is the mixture's name. Each value is itself a dictionary where each
-key is the name of a component of the mixture and the value is a list in which
-the first element is the standard composition, the second element is the positive
-composition tolerance and the third element is the negative composition tolerance.
+Each key is the mixture's name.
+Each value is itself a dictionary,
+where each key is the name of a component of the mixture
+and the value is a list in which the first element is the standard composition,
+the second element is the positive composition tolerance
+and the third element is the negative composition tolerance.
 All values are given in mass percentage.
 
 Sources:

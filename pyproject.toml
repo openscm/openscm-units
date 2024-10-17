@@ -59,7 +59,7 @@ docs = [
     "mkdocs-section-index>=0.3.9",
     "mkdocstrings[python]>=0.25.0",
     "pymdown-extensions>=10.9",
-    "mkdocs-jupyter>=0.24.8",
+    "mkdocs-jupyter>=0.25.1",
     "jupyterlab>=4.2.0",
     "jupytext>=1.16.3",
 ]

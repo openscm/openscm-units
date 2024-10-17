@@ -4,7 +4,7 @@ This part of the project documentation
 will focus on a **learning-oriented** approach.
 You'll learn how to get started with the code in this project.
 
-It is currently empty, but we will aim to:
+We aim to:
 
 - Help newcomers with getting started
 - Teach readers about the library by having them write code

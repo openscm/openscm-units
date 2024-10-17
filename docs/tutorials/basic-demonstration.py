@@ -89,6 +89,7 @@ annual_co2_increase_erf_equiv
 # ## Further details
 #
 # This provides a very brief overview to the basic principles.
-# For further details, see the other notebooks
+# For further details, see
+# [design principles](../../further-background/design-principles)
 # and [Pint's docs](https://pint.readthedocs.io/en/stable/).
 # The notebook on design principles is a good starting point.

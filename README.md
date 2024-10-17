@@ -74,7 +74,11 @@ please [raise an issue](https://github.com/openscm/openscm-units/issues).
 
 The (non-locked) version of OpenSCM-Units can be installed with
 
-<!--- If you release on conda, you can use this
+=== "pip"
+    ```sh
+    pip install openscm-units
+    ```
+
 === "mamba"
     ```sh
     mamba install -c conda-forge openscm-units
@@ -83,12 +87,6 @@ The (non-locked) version of OpenSCM-Units can be installed with
 === "conda"
     ```sh
     conda install -c conda-forge openscm-units
-    ```
-
--->
-=== "pip"
-    ```sh
-    pip install openscm-units
     ```
 
 ### As an application
@@ -101,7 +99,11 @@ because of breaking updates to dependencies.
 
 The locked version of OpenSCM-Units can be installed with
 
-<!--- If you release on conda, you can use this
+=== "pip"
+    ```sh
+    pip install openscm-units[locked]
+    ```
+
 === "mamba"
     ```sh
     mamba install -c conda-forge openscm-units-locked
@@ -110,12 +112,6 @@ The locked version of OpenSCM-Units can be installed with
 === "conda"
     ```sh
     conda install -c conda-forge openscm-units-locked
-    ```
-
--->
-=== "pip"
-    ```sh
-    pip install openscm-units[locked]
     ```
 
 ### For developers

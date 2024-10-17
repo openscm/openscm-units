@@ -66,5 +66,5 @@ for context in ["Custom1", "Custom2"]:
     with unit_registry.context(context):
         print(
             f"{nitrous_oxide} in CO2-equivalent in context {context} "
-            "is {nitrous_oxide.to('tCO2 / yr')}"
+            f"is {nitrous_oxide.to('tCO2 / yr')}"
         )
