@@ -19,6 +19,21 @@ of rst and use slightly different categories.
 
 <!-- towncrier release notes start -->
 
+## openscm-units v0.6.2 (2024-10-17)
+
+### Improvements
+
+- Added the unit "NO" for NOx to support the units used for NOx in CMIP's biomass burning emissions. ([#55](https://github.com/openscm/openscm-units/pulls/55))
+
+### Improved Documentation
+
+- Wrote basic usage notebook and included all notebooks in docs. ([#54](https://github.com/openscm/openscm-units/pulls/54))
+
+### Trivial/Internal Changes
+
+- [#54](https://github.com/openscm/openscm-units/pulls/54)
+
+
 ## openscm-units v0.6.1 (2024-07-09)
 
 
