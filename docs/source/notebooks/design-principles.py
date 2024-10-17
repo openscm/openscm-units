@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.15.2
+#       jupytext_version: 1.16.2
 #   kernelspec:
 #     display_name: Python 3 (ipykernel)
 #     language: python
@@ -47,7 +47,7 @@ with unit_registry.context("AR4GWP100"):
     print((100 * unit_registry("Mt CH4 / yr")).to("Mt CO2 / yr"))
 
 # %% [markdown]
-# ## More details on emissions unit
+# ## More details on emissions units
 #
 # Emissions are a flux composed of three parts: mass, the species being emitted and the
 # time period e.g. "t CO2 / yr". As mass and time are part of SI units, all we need to
@@ -161,6 +161,36 @@ except DimensionalityError:
 # %%
 with unit_registry.context("NOx_conversions"):
     print(unit_registry("NOx").to("N"))
+
+# %% [markdown]
+# #### A gotcha
+#
+# The unit "NOx" is ambiguous at best.
+# In openscm-units, NOx is the same as NO2.
+
+# %%
+with unit_registry.context("NOx_conversions"):
+    print(unit_registry("NOx").to("NO2"))
+
+# %% [markdown]
+# This is generally what you want.
+# However, sometimes people report NOx with other units
+# (after all, the "x" in "NOx" doesn't specify how many oxygens).
+# Please be careful.
+# If you have data reported in NO, you can use the NO unit.
+
+# %%
+unit_registry("NOx").to("NO")
+
+# %% [markdown]
+# If you have data reported with a different value for "x",
+# you can always define your own custom unit with a line like
+#
+# ```python
+# openscm_units.unit_registry._add_gases(
+#     {"NO3": ["46/(14 + 3 * 16) * NOx", "nox_three_oxygens"]}
+# )
+# ```
 
 # %% [markdown]
 # ### NH$_3$
