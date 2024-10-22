@@ -75,6 +75,27 @@ The steps required are the following:
 
 1. Enjoy the newly available version
 
+## Testing strategy
+
+We support Python 3.9 and above.
+We follow the [Python life-cycle schedule](https://devguide.python.org/versions/) 
+and will drop support for Python versions when they reach their end of life.
+Given the nature of the package,
+we want to ensure support for a broad range of Python versions to minimise any downstream constraints.
+Libraries building on `openscm-units` are free to further restrict the Python versions 
+(or other dependencies) they support.
+
+For downstream package maintainers we recommend following
+the [SPEC 0000](https://scientific-python.org/specs/spec-0000/) deprecation policy.
+This policy provides support for a key scientific packages for 24 months after release
+and Python versions for 36 months after release.
+The Python ecosystem is quicker to adopt new versions than it was previously
+and these reduced support timelines reflect that.
+
+None-the-less we also recommend that lockfiles are used for analysis projects
+to capture the exact versions of dependencies used.
+This will enable the project to be recreated in the future even if the Python version is no longer supported.
+
 ## Read the Docs
 
 Our documentation is hosted by [Read the Docs (RtD)](https://www.readthedocs.org/),
