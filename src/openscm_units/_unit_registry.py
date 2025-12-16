@@ -229,28 +229,38 @@ class ScmUnitRegistry(pint.UnitRegistry):
         Add standard units.
 
         Has to be done separately because of pint's weird initialising.
+
+        We suppress redefinition warnings while adding these units
         """
-        self._add_gases(_STANDARD_GASES)
+        # Suppress pint's redefinition warnings for units that already exist
+        # We temporarily swallow these messages as they are emitted on every import
+        on_redefinition = self._on_redefinition
+        self._on_redefinition = "ignore"
 
-        self._add_gases({x: x for x in MIXTURES})
+        try:
+            self._add_gases(_STANDARD_GASES)
 
-        self.define("yr = 1 * year")
-        self.define("a = 1 * year = annum")
-        self.define("h = hour")
-        self.define("d = day")
-        self.define("degreeC = degC")
-        self.define("degreeF = degF")
-        self.define("kt = 1000 * t")  # since kt is used for "knot" in the defaults
-        self.define(
-            "Tt = 1000000000000 * t"
-        )  # since Tt is used for "tex" in the defaults
+            self._add_gases({x: x for x in MIXTURES})
 
-        self.define("ppm = [concentrations]")
-        self.define("ppb = ppm / 1000")
-        self.define("ppt = ppb / 1000")
-        # Have to rebuild cache to get right units for ppm as it is defined in
-        # pint
-        self._build_cache()
+            self.define("yr = 1 * year")
+            self.define("a = 1 * year = annum")
+            self.define("h = hour")
+            self.define("d = day")
+            self.define("degreeC = degC")
+            self.define("degreeF = degF")
+            self.define("kt = 1000 * t")  # since kt is used for "knot" in the defaults
+            self.define(
+                "Tt = 1000000000000 * t"
+            )  # since Tt is used for "tex" in the defaults
+
+            self.define("ppm = [concentrations]")
+            self.define("ppb = ppm / 1000")
+            self.define("ppt = ppb / 1000")
+            # Have to rebuild cache to get right units for ppm as it is defined in pint
+            self._build_cache()
+        finally:
+            # Restore original redefinition behaviour
+            self._on_redefinition = on_redefinition
 
     def enable_contexts(
         self,
