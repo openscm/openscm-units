@@ -7,7 +7,7 @@ See also `docs/source/notebooks/design-principles.py`
 from __future__ import annotations
 
 import math
-from typing import Any
+from typing import Any, Literal
 
 import globalwarmingpotentials
 import pandas as pd
@@ -224,33 +224,55 @@ class ScmUnitRegistry(pint.UnitRegistry):
         # below but that also feels like a bad pattern
         super().__init__(*args, **kwargs)
 
-    def add_standards(self) -> None:
+    def add_standards(
+        self, on_redefinition: Literal["ignore", "warn"] = "ignore"
+    ) -> None:
         """
         Add standard units.
 
         Has to be done separately because of pint's weird initialising.
+
+        Parameters
+        ----------
+        on_redefinition:
+            Action to take on redefinition of existing units
+
+            Some existing units (e.g. kt: kilotonne instead of knot) are redefined here.
+            The default behaviour is to ignore redefinition warnings.
+
+            This overrides the default units registry behaviour for the duration of
+            this method. The previous behaviour is restored afterwards.
+            "raise" is not supported here as the redefinitions are required.
         """
-        self._add_gases(_STANDARD_GASES)
+        # Suppress pint's redefinition warnings for units that already exist
+        # We temporarily swallow these messages as they are emitted on every import
+        previous_on_redefinition = self._on_redefinition
+        self._on_redefinition = on_redefinition
 
-        self._add_gases({x: x for x in MIXTURES})
+        try:
+            self._add_gases(_STANDARD_GASES)
 
-        self.define("yr = 1 * year")
-        self.define("a = 1 * year = annum")
-        self.define("h = hour")
-        self.define("d = day")
-        self.define("degreeC = degC")
-        self.define("degreeF = degF")
-        self.define("kt = 1000 * t")  # since kt is used for "knot" in the defaults
-        self.define(
-            "Tt = 1000000000000 * t"
-        )  # since Tt is used for "tex" in the defaults
+            self._add_gases({x: x for x in MIXTURES})
 
-        self.define("ppm = [concentrations]")
-        self.define("ppb = ppm / 1000")
-        self.define("ppt = ppb / 1000")
-        # Have to rebuild cache to get right units for ppm as it is defined in
-        # pint
-        self._build_cache()
+            self.define("yr = 1 * year")
+            self.define("a = 1 * year = annum")
+            self.define("h = hour")
+            self.define("d = day")
+            self.define("degreeC = degC")
+            self.define("degreeF = degF")
+            self.define("kt = 1000 * t")  # since kt is used for "knot" in the defaults
+            self.define(
+                "Tt = 1000000000000 * t"
+            )  # since Tt is used for "tex" in the defaults
+
+            self.define("ppm = [concentrations]")
+            self.define("ppb = ppm / 1000")
+            self.define("ppt = ppb / 1000")
+            # Have to rebuild cache to get right units for ppm as it is defined in pint
+            self._build_cache()
+        finally:
+            # Restore original redefinition behaviour
+            self._on_redefinition = previous_on_redefinition
 
     def enable_contexts(
         self,

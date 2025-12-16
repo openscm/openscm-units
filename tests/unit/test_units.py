@@ -1,10 +1,13 @@
+import logging
 import re
+import warnings
 
 import numpy as np
 import pytest
 from pint.errors import DimensionalityError
 
 from openscm_units import unit_registry
+from openscm_units._unit_registry import ScmUnitRegistry
 from openscm_units.data.mixtures import MIXTURES
 
 
@@ -415,3 +418,34 @@ def test_aliases(alias, exp):
     res = unit_registry.Quantity(1, alias)
 
     assert str(res.units) == exp
+
+
+@pytest.mark.parametrize("on_redefinition", ["ignore", "warn"])
+def test_redefinition_warnings(caplog, on_redefinition):
+    """
+    Test that creating a unit registry does not produce redefinition warnings.
+
+    When adding standard units via add_standards(), some units like 'yr', 'a',
+    'h', 'd', 'kt', 'Tt', and 'ppm' may already exist in pint's default
+    registry.
+    """
+    with caplog.at_level(logging.DEBUG):
+        with warnings.catch_warnings(record=True) as warning_list:
+            warnings.simplefilter("always")
+            test_registry = ScmUnitRegistry()
+            test_registry.add_standards(on_redefinition=on_redefinition)
+
+    if on_redefinition == "warn":
+        # Check that the warming logs are present
+        assert len(caplog.records)
+        # No Python warnings should be raised
+        assert len(warning_list) == 0
+
+        assert caplog.records[0].levelno == logging.WARNING
+        assert caplog.records[0].message.startswith("Redefining 'C'")
+    else:
+        # Check for Python warnings
+        assert warning_list == []
+
+        # Check for log messages
+        assert caplog.records == []
