@@ -420,7 +420,8 @@ def test_aliases(alias, exp):
     assert str(res.units) == exp
 
 
-def test_no_redefinition_warnings(caplog):
+@pytest.mark.parametrize("on_redefinition", ["ignore", "warn"])
+def test_redefinition_warnings(caplog, on_redefinition):
     """
     Test that creating a unit registry does not produce redefinition warnings.
 
@@ -432,10 +433,19 @@ def test_no_redefinition_warnings(caplog):
         with warnings.catch_warnings(record=True) as warning_list:
             warnings.simplefilter("always")
             test_registry = ScmUnitRegistry()
-            test_registry.add_standards()
+            test_registry.add_standards(on_redefinition=on_redefinition)
 
-    # Check for Python warnings
-    assert warning_list == []
+    if on_redefinition == "warn":
+        # Check that the warming logs are present
+        assert len(caplog.records)
+        # No Python warnings should be raised
+        assert len(warning_list) == 0
 
-    # Check for log messages
-    assert caplog.records == []
+        assert caplog.records[0].levelno == logging.WARNING
+        assert caplog.records[0].message.startswith("Redefining 'C'")
+    else:
+        # Check for Python warnings
+        assert warning_list == []
+
+        # Check for log messages
+        assert caplog.records == []

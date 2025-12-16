@@ -7,7 +7,7 @@ See also `docs/source/notebooks/design-principles.py`
 from __future__ import annotations
 
 import math
-from typing import Any
+from typing import Any, Literal
 
 import globalwarmingpotentials
 import pandas as pd
@@ -224,18 +224,30 @@ class ScmUnitRegistry(pint.UnitRegistry):
         # below but that also feels like a bad pattern
         super().__init__(*args, **kwargs)
 
-    def add_standards(self) -> None:
+    def add_standards(
+        self, on_redefinition: Literal["ignore", "warn"] = "ignore"
+    ) -> None:
         """
         Add standard units.
 
         Has to be done separately because of pint's weird initialising.
 
-        We suppress redefinition warnings while adding these units
+        Parameters
+        ----------
+        on_redefinition:
+            Action to take on redefinition of existing units
+
+            Some existing units (e.g. kt: kilotonne instead of knot) are redefined here.
+            The default behaviour is to ignore redefinition warnings.
+
+            This overrides the default units registry behaviour for the duration of
+            this method. The previous behaviour is restored afterwards.
+            "raise" is not supported here as the redefinitions are required.
         """
         # Suppress pint's redefinition warnings for units that already exist
         # We temporarily swallow these messages as they are emitted on every import
-        on_redefinition = self._on_redefinition
-        self._on_redefinition = "ignore"
+        previous_on_redefinition = self._on_redefinition
+        self._on_redefinition = on_redefinition
 
         try:
             self._add_gases(_STANDARD_GASES)
@@ -260,7 +272,7 @@ class ScmUnitRegistry(pint.UnitRegistry):
             self._build_cache()
         finally:
             # Restore original redefinition behaviour
-            self._on_redefinition = on_redefinition
+            self._on_redefinition = previous_on_redefinition
 
     def enable_contexts(
         self,
