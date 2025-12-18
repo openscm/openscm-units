@@ -66,7 +66,7 @@ plugins:
       handlers:
         python:
           paths: [src]
-          import:
+          inventories:
             # Cross-ref helpers (lots included here, remove what you don't want)
             - https://www.attrs.org/en/stable/objects.inv
             - https://unidata.github.io/cftime/objects.inv
