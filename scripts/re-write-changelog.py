@@ -1,6 +1,7 @@
 """
 Re-write CHANGELOG after converting rst to md
 """
+
 import re
 from pathlib import Path
 
