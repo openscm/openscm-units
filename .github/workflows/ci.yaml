@@ -108,6 +108,7 @@ jobs:
       - name: Run tests
         run: |
           pip install -U "pint${{ matrix.pint-version }}"
+          pip freeze
           pdm run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
           pdm run coverage report
 
