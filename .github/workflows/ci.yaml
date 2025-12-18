@@ -115,7 +115,7 @@ jobs:
         run: |
           # Use pip *inside* pdm to install different pint versions otherwise
           # pdm's own dependency resolver will resolve a single version that works for all python versions
-          pdm run pip install -U "pint${{ matrix.pint-version }}"
+          pdm run pip install -U ${{ matrix.pint-version }}
           pdm run pip freeze
           pdm run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
           pdm run coverage report
