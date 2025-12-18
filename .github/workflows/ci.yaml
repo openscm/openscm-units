@@ -89,7 +89,13 @@ jobs:
         # Python 3.11 is also tested as it has known issues with pint compatibility
         python-version: [ "3.10", "3.11","3.13" ]
         # Test all of the supported pint versions (including the latest)
-        pint-version: [ ">=0.22,<0.23", ">=0.23,<0.24", ">=0.24,<0.25", ">=0.25,<0.26", ">=0.25" ]
+        pint-version: [
+          "pint>=0.22,<0.23 numpy<2",
+          "pint>=0.23,<0.24 numpy<2",
+          "pint>=0.24,<0.25",
+          "pint>=0.25,<0.26",
+          "pint>=0.25"
+        ]
         exclude:
           # Known incompatibilities
           # Python 3.10 with pint 0.25 and above
@@ -107,8 +113,10 @@ jobs:
           pdm-dependency-install-flags: "-G dev -G tests"
       - name: Run tests
         run: |
-          pdm add "pint${{ matrix.pint-version }}"
-          pdm list
+          # Use pip *inside* pdm to install different pint versions otherwise
+          # pdm's own dependency resolver will resolve a single version that works for all python versions
+          pdm run pip install -U "pint${{ matrix.pint-version }}"
+          pdm run pip freeze
           pdm run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
           pdm run coverage report
 
