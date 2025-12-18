@@ -198,6 +198,7 @@ authorized_licenses = [
     "BSD 3-Clause",
     "CC0",
     "apache",
+    "Apache-2.0",
     "apache 2.0",
     "apache software",
     "apache software license",
@@ -215,6 +216,7 @@ authorized_licenses = [
     "Mozilla Public License 2.0 (MPL 2.0)",
     "python software foundation",
     "python software foundation license",
+    'PSF-2.0',
     "zpl 2.1",
 ]
 unauthorized_licenses = [
