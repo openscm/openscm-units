@@ -1,10 +1,12 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: v0.4.1
+_commit: v0.14.4
 _src_path: gl:znicholls/copier-core-python-repository
+conda_release: true
 email: zebedee.nicholls@climate-energy-college.org
 include_cli: false
 name: Zebedee Nicholls
 notebook_based_docs: true
+package_manager: uv
 pandas_doctests: false
 plot_dependencies: false
 project_description_short: Handling of units related to simple climate modelling.

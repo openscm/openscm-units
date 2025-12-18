@@ -5,13 +5,14 @@ Also test that associated constants are set correctly
 
 Thanks https://stackoverflow.com/a/25562415/10473080
 """
+
 import importlib
 import pkgutil
 
 import openscm_units
 
 
-def import_submodules(package_name):
+def import_submodules(package_name: str) -> None:
     """
     Test import of submodules
     """

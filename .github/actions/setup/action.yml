@@ -1,45 +1,29 @@
-name: "Setup Python and pdm"
-description: "setup Python and pdm with caches"
+name: "Setup Python and uv"
+description: "setup Python and uv"
 
 inputs:
   python-version:
     description: "Python version to use"
     required: true
-  pdm-dependency-install-flags:
-    description: "Flags to pass to pdm when running `pdm install`"
+  uv-dependency-install-flags:
+    description: "Flags to pass to uv when running `uv install`"
     required: true
-  run-pdm-install:
-    description: "Should we run the pdm install steps"
+  run-uv-install:
+    description: "Should we run the uv install steps"
     required: false
     default: true
 
 runs:
   using: "composite"
   steps:
-    - name: Write file with install flags
-      shell: bash
-      run: |
-        echo "${{ inputs.pdm-dependency-install-flags }}" > pdm-install-flags.txt
-    - name: Setup PDM
-      id: setup-pdm
-      uses: pdm-project/setup-pdm@v4.1
+    - name: Setup uv
+      id: setup-uv
+      uses: astral-sh/setup-uv@v4
       with:
+        version: "0.8.8"
         python-version: ${{ inputs.python-version }}
-        cache: true
-        cache-dependency-path: |
-          ./pdm.lock
-          ./pdm-install-flags.txt
     - name: Install dependencies
       shell: bash
-      if: ${{ (inputs.run-pdm-install == 'true')  && (steps.setup-pdm.outputs.cache-hit != 'true') }}
+      if: ${{ (inputs.run-uv-install == 'true') }}
       run: |
-        pdm install --no-self ${{ inputs.pdm-dependency-install-flags }}
-    # Now run same command but let the package install too
-    - name: Install package
-      shell: bash
-      # To ensure that the package is always installed, this step is run even if the cache was hit
-      if: ${{ inputs.run-pdm-install == 'true' }}
-      run: |
-        pdm install ${{ inputs.pdm-dependency-install-flags }}
-        pdm run which python
-        pdm run python --version  # Check python version just in case
+        uv sync ${{ inputs.uv-dependency-install-flags }}

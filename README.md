@@ -116,12 +116,12 @@ The locked version of OpenSCM-Units can be installed with
 
 ### For developers
 
-For development, we rely on [pdm](https://pdm-project.org/en/latest/)
+For development, we rely on [uv](https://docs.astral.sh/uv/)
 for all our dependency management.
-To get started, you will need to make sure that pdm is installed
-([instructions here](https://pdm-project.org/en/latest/#installation),
-although we found that installing with [pipx](https://pipx.pypa.io/stable/installation/)
-worked perfectly for us).
+To get started, you will need to make sure that uv is installed
+([instructions here](https://docs.astral.sh/uv/getting-started/installation/)
+(we found that the self-managed install was best,
+particularly for upgrading uv later).
 
 For all of our work, we use our `Makefile`.
 You can read the instructions out and run the commands by hand if you wish,
@@ -139,6 +139,6 @@ For the rest of our developer docs, please see [development][development].
 ## Original template
 
 This project was generated from this template:
-[copier core python repository](https://gitlab.com/znicholls/copier-core-python-repository).
+[copier core python repository](https://gitlab.com/openscm/copier-core-python-repository).
 [copier](https://copier.readthedocs.io/en/stable/) is used to manage and
 distribute this template.
