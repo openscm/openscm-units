@@ -62,11 +62,13 @@ plugins:
           - remove_input
   # Docstring generation
   - mkdocstrings:
+      # See https://analog-garage.github.io/mkdocstrings-python-xref/1.6.0/
+      default_handler: python_xref
       enable_inventory: true
       handlers:
-        python:
+        python_xref:
           paths: [src]
-          import:
+          inventories:
             # Cross-ref helpers (lots included here, remove what you don't want)
             - https://www.attrs.org/en/stable/objects.inv
             - https://unidata.github.io/cftime/objects.inv
@@ -74,6 +76,7 @@ plugins:
             - https://loguru.readthedocs.io/en/latest/objects.inv
             - https://matplotlib.org/stable/objects.inv
             - https://ncdata.readthedocs.io/en/stable/objects.inv
+            - https://numpy.org/doc/stable/objects.inv
             - https://openscm-units.readthedocs.io/en/stable/objects.inv
             - https://pandas.pydata.org/docs/objects.inv
             - https://pint.readthedocs.io/en/stable/objects.inv
@@ -82,12 +85,35 @@ plugins:
             - https://docs.scipy.org/doc/scipy/objects.inv
             - https://scitools-iris.readthedocs.io/en/stable/objects.inv
             - https://scmdata.readthedocs.io/en/stable/objects.inv
+            # # Not available for tqdm
+            # # https://github.com/tqdm/tqdm/issues/705
+            # - https://tqdm.github.io/objects.inv
             - https://validators.readthedocs.io/en/stable/objects.inv
             - http://xarray.pydata.org/en/stable/objects.inv
           options:
+            # It turns out that xref does this check without considering config.
+            # As a result, every docstring is parsed as a google-style docstring.
+            # As docstrings are only parsed once, this results in rendering failures.
+            # Hence, turn off the checks here.
+            # mkdocs_autorefs catches anything which doesn't end up being a correct reference.
+            # The fix might be as simple as changing
+            # `self.collect(ref, PythonOptions())`
+            # to `self.collect(ref, self.get_options({}))`
+            # in the python-xref source, but it's hard to predict the side effects
+            # so we haven't bothered with that route.
+            check_crossrefs: false
             docstring_style: numpy
-            show_root_heading: true
+            relative_crossrefs: true
+            separate_signature: true
+            show_root_heading: false
+            show_signature_annotations: true
             show_source: true
+            signature_crossrefs: true
+            summary:
+              attributes: true
+              classes: true
+              functions: true
+              modules: true
   # https://squidfunk.github.io/mkdocs-material/plugins/search/
   - search
   # Add clickable sections to the sidebar
@@ -97,6 +123,10 @@ plugins:
 markdown_extensions:
   # https://squidfunk.github.io/mkdocs-material/setup/extensions/python-markdown/#attribute-lists
   - attr_list
+  - footnotes
+  # https://squidfunk.github.io/mkdocs-material/reference/math/#katex-mkdocsyml
+  - pymdownx.arithmatex:
+      generic: true
   # Allow admonitions, useful for deprecation warnings
   # https://facelessuser.github.io/pymdown-extensions/extensions/blocks/plugins/admonition/
   - pymdownx.blocks.admonition
@@ -124,6 +154,14 @@ markdown_extensions:
   # Ensure that there are links to table of contents items
   - toc:
       permalink: "#"
+
+extra_javascript:
+  - javascripts/katex.js
+  - https://unpkg.com/katex@0/dist/katex.min.js
+  - https://unpkg.com/katex@0/dist/contrib/auto-render.min.js
+
+extra_css:
+  - https://unpkg.com/katex@0/dist/katex.min.css
 
 watch:
   - README.md

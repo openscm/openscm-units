@@ -10,7 +10,7 @@ See https://oprypin.github.io/mkdocs-literate-nav/
 - [Tutorials](tutorials/index.md)
     - [Basic demonstration](tutorials/basic-demonstration.py)
 - [Further background](further-background/index.md)
-    - [Design principles](further-background/design-principles.py)
+    - [Dependency pinning and testing](further-background/dependency-pinning-and-testing.md)
 - [Development](development.md)
 - [API reference](api/openscm_units/)
 - [Changelog](changelog.md)

@@ -11,30 +11,39 @@ defaults:
 jobs:
   draft-release:
     name: Create draft release
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ "ubuntu-latest" ]
+        python-version: [ "3.11" ]
+    runs-on: "${{ matrix.os }}"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Setup PDM
-        uses: pdm-project/setup-pdm@v4
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.9"
+          version: "0.8.8"
+          python-version: ${{ matrix.python-version }}
       - name: Add version to environment
         run: |
-          PROJECT_VERSION=`sed -ne 's/^version = "\([0-9\.a]*\)"/\1/p' pyproject.toml`
+          PROJECT_VERSION=`sed -ne 's/^version = "\([0-9\.]*\)"/\1/p' pyproject.toml`
           echo "PROJECT_VERSION=$PROJECT_VERSION" >> $GITHUB_ENV
       - name: Build package for PyPI
         run: |
-          pdm build
+          uv run python scripts/add-locked-targets-to-pyproject-toml.py
+          uv build
+          # Just in case, undo the changes to `pyproject.toml`
+          git restore --staged . && git restore .
       - name: Generate Release Notes
         run: |
           echo "" >> ".github/release_template.md"
           echo "## Changelog" >> ".github/release_template.md"
           echo "" >> ".github/release_template.md"
-          pdm add typer
-          pdm run python scripts/changelog-to-release-template.py >> ".github/release_template.md"
+          uv add typer
+          uv run python scripts/changelog-to-release-template.py >> ".github/release_template.md"
           echo "" >> ".github/release_template.md"
           echo "## Changes" >> ".github/release_template.md"
           echo "" >> ".github/release_template.md"

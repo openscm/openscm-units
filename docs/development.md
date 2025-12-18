@@ -48,8 +48,8 @@ should change depending on the updates to the code base.
 Releasing is semi-automated via a CI job.
 The CI job requires the type of version bump
 that will be performed to be manually specified.
-See the pdm-bump docs for the
-[list of available bump rules](https://github.com/carstencodes/pdm-bump#usage).
+See the `uv version` docs (specifically the `--bump` flag) for the
+[list of available bump rules](https://docs.astral.sh/uv/reference/cli/#uv-version).
 
 ### Standard process
 
@@ -57,7 +57,7 @@ The steps required are the following:
 
 1. Bump the version: manually trigger the "bump" workflow from the main branch
    (see here: [bump workflow](https://github.com/openscm/openscm-units/actions/workflows/bump.yaml)).
-   A valid "bump_rule" (see [pdm-bump's docs](https://github.com/carstencodes/pdm-bump#usage))
+   A valid "bump_rule" (see [uv's docs](https://docs.astral.sh/uv/reference/cli/#uv-version))
    will need to be specified.
    This will then trigger a draft release.
 
@@ -70,10 +70,27 @@ The steps required are the following:
    This triggers a release to PyPI
    (which you can then add to the release if you want).
 
+1. Go to your conda feedstock repository
+   (likely something like https://github.com/conda-forge/openscm-units-feedstock)
+   and make a new merge request that updates your `recipe/meta.yaml` file
+   to point to the newly released version on PyPI.
+
+   - If you have updated any dependencies, copy these across to your `recipe/meta.yaml` file.
+   - If you are releasing a locked version on conda too,
+     you can generate the pins for your lock file with `scripts/print-conda-recipe-pins.py`.
+
 1. That's it, release done, make noise on social media of choice, do whatever
    else
 
 1. Enjoy the newly available version
+
+#### Further details
+
+We use [uv's build backend](https://docs.astral.sh/uv/concepts/build-backend) for building our project
+and `scripts/add-locked-targets-to-pyproject-toml.py`
+to provide locked extra groups for our package.
+Including locked extra groups is why we run `scripts/add-locked-targets-to-pyproject-toml.py`
+before any step related to building the package in the CI.
 
 ## Read the Docs
 

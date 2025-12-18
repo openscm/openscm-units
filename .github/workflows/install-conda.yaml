@@ -2,7 +2,7 @@
 # We make sure that we run the tests that apply to the version we installed,
 # rather than the latest tests in main.
 # The reason we do this, is that we want this workflow to test
-# that installing from PyPI/conda leads to a correct installation.
+# that installing from conda/mamba leads to a correct installation.
 # If we tested against main, the tests could fail
 # because the tests from main require the new features in main to pass.
 name: Test installation conda
@@ -18,29 +18,23 @@ on:
 jobs:
   test-micromamba-installation:
     name: Test (micro)mamba install ${{ matrix.install-target }} (${{ matrix.python-version }}, ${{ matrix.os }})
-    runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: false
       matrix:
-        # # There is an issue on windows, one for another day
-        # os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        os: ["ubuntu-latest", "macos-latest"]
-        python-version: [ "3.9", "3.10", "3.11" ]
-        # Check both the 'library' and the 'application' (i.e. locked package)
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        # Test against all security and bugfix versions: https://devguide.python.org/versions/
+        python-version: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
+        # Check both 'library' install and the 'application' (i.e. locked) install
         install-target: ["openscm-units", "openscm-units-locked"]
-
+    runs-on: "${{ matrix.os }}"
     steps:
-    # While we wait for conda-forge release
-    # (https://github.com/conda-forge/staged-recipes/pull/26986)
-    # specify pins by hand
     - name: Setup (micro)mamba and install package
       uses: mamba-org/setup-micromamba@v1
       with:
         environment-name: test-mamba-install
         create-args: >-
           python=${{ matrix.python-version }}
-          -c conda-forge
-          ${{ matrix.install-target }}
+          -c conda-forge ${{ matrix.install-target }}
         init-shell: bash
     - name: Get version
       shell: bash -leo pipefail {0}
@@ -48,6 +42,10 @@ jobs:
         INSTALLED_VERSION=`python -c 'import openscm_units; print(f"v{openscm_units.__version__}")'`
         echo $INSTALLED_VERSION
         echo "INSTALLED_VERSION=$INSTALLED_VERSION" >> $GITHUB_ENV
+    - name: Check installed version environment variable
+      shell: bash -leo pipefail {0}
+      run: |
+        echo "${{ env.INSTALLED_VERSION }}"
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
@@ -60,8 +58,24 @@ jobs:
     - name: Install pytest and other test dependencies
       shell: bash -leo pipefail {0}
       run: |
-        micromamba install pytest pytest-regressions
+        pip install -r requirements-only-tests-min-locked.txt
+        # micromamba install pytest pytest-regressions
     - name: Run tests
       shell: bash -leo pipefail {0}
       run: |
-        pytest tests -r a -vv -s
+        # Can't run doctests here because the paths are different.
+        # This only runs with minimum test dependencies installed.
+        # So this is really just a smoke test,
+        # rather than a super thorough integration test.
+        # You will have to make sure that your tests run
+        # without all the extras installed for this to pass.
+        pytest tests -r a -vv tests
+    - name: Install all test dependencies
+      shell: bash -leo pipefail {0}
+      run: |
+        pip install -r requirements-only-tests-locked.txt
+    - name: Run tests
+      shell: bash -leo pipefail {0}
+      run: |
+        # Can't run doctests here because the paths are different.
+        pytest tests -r a -vv tests

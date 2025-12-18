@@ -15,7 +15,11 @@ jobs:
     # https://docs.pypi.org/trusted-publishers/adding-a-publisher/#github-actions
     # You can comment this line out if you don't want it.
     environment: deploy
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ "ubuntu-latest" ]
+        python-version: [ "3.11" ]
+    runs-on: "${{ matrix.os }}"
     permissions:
       # this permission is mandatory for trusted publishing with PyPI
       id-token: write
@@ -24,10 +28,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Setup PDM
-        uses: pdm-project/setup-pdm@v4
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: "3.9"
+          version: "0.8.8"
+          python-version: ${{ matrix.python-version }}
       - name: Publish to PyPI
         run: |
-          pdm publish
+          uv run python scripts/add-locked-targets-to-pyproject-toml.py
+          uv build
+          uv publish
+          # Just in case, undo the changes to `pyproject.toml`
+          git restore --staged . && git restore .
