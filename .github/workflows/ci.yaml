@@ -51,7 +51,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ "ubuntu-latest" ]
-        python-version: [ "3.9", "3.10", "3.11" ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13" ]
     runs-on: "${{ matrix.os }}"
     defaults:
       run:
@@ -81,13 +81,58 @@ jobs:
         uses: codecov/codecov-action@v4.2.0
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  test-pint-compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest" ]
+        # Testing the highest and lowest supported Python versions
+        python-version: [ "3.10", "3.13" ]
+        # Test all of the supported pint versions (including the latest)
+        pint-version: [
+          # The double quotes are needed to avoid parsing issues with the >= and < characters
+          "'pint>=0.22,<0.23' 'numpy<2'",
+          "'pint>=0.23,<0.24' 'numpy<2'",
+          "'pint>=0.24,<0.25'",
+          "'pint>=0.25,<0.26'",
+          "'pint>=0.25'"
+        ]
+        exclude:
+          # Known incompatibilities
+          # Python 3.10 with pint 0.25 and above
+          - python-version: "3.10"
+            pint-version: "'pint>=0.25,<0.26'"
+          - python-version: "3.10"
+            pint-version: "'pint>=0.25'"
+          # Python 3.13 with pint <0.24
+          # Python 3.11 is the lowest version that supports pint 0.22/0.23
+          - python-version: "3.13"
+            pint-version: "'pint>=0.23,<0.24' 'numpy<2'"
+          - python-version: "3.13"
+            pint-version: "'pint>=0.22,<0.23' 'numpy<2'"
+    runs-on: "${{ matrix.os }}"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          python-version: ${{ matrix.python-version }}
+          pdm-dependency-install-flags: "-G dev -G tests"
+      - name: Run tests
+        run: |
+          # Use pip *inside* pdm to install different pint versions otherwise
+          # pdm's own dependency resolver will resolve a single version that works for all python versions
+          pdm run pip install -U ${{ matrix.pint-version }}
+          pdm run pip freeze
+          pdm run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
+          pdm run coverage report
 
   imports-without-extras:
     strategy:
       fail-fast: false
       matrix:
         os: [ "ubuntu-latest" ]
-        python-version: [ "3.9", "3.10", "3.11" ]
+        python-version: [ "3.10", "3.11", "3.12", "3.13" ]
     runs-on: "${{ matrix.os }}"
     steps:
       - name: Check out repository
@@ -107,7 +152,7 @@ jobs:
       - name: Setup PDM
         uses: pdm-project/setup-pdm@v4
         with:
-          python-version: "3.9"
+          python-version: "3.10"
           pdm-dependency-install-flags: "not-used"
           run-pdm-install: false
       - name: Build package
@@ -125,7 +170,7 @@ jobs:
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
         with:
-          python-version: "3.9"
+          python-version: "3.10"
           pdm-dependency-install-flags: "-G dev"
       - name: Check licences of dependencies
         shell: bash

@@ -374,12 +374,12 @@ def test_mixture_constituent_sum_one():
 
 
 def test_split_invalid():
-    with pytest.raises(ValueError, match="Dimensions don't contain a gas mixture."):
+    with pytest.raises(ValueError, match=r"Dimensions don't contain a gas mixture."):
         unit_registry.split_gas_mixture(1 * unit_registry("CO2"))
 
     with pytest.raises(
         NotImplementedError,
-        match="More than one gas mixture in dimensions is not supported.",
+        match=r"More than one gas mixture in dimensions is not supported.",
     ):
         unit_registry.split_gas_mixture(
             1 * unit_registry("CFC400") * unit_registry("HFC423a")
@@ -387,7 +387,7 @@ def test_split_invalid():
 
     with pytest.raises(
         NotImplementedError,
-        match="Mixture has dimensionality 2 != 1, which is not supported.",
+        match=r"Mixture has dimensionality 2 != 1, which is not supported.",
     ):
         unit_registry.split_gas_mixture(1 * unit_registry("CFC400") ** 2)
 
