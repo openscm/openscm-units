@@ -107,8 +107,8 @@ jobs:
           pdm-dependency-install-flags: "-G dev -G tests"
       - name: Run tests
         run: |
-          pip install -U "pint${{ matrix.pint-version }}"
-          pip freeze
+          pdm add "pint${{ matrix.pint-version }}"
+          pdm list
           pdm run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
           pdm run coverage report
 
