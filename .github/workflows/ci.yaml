@@ -101,9 +101,9 @@ jobs:
           # Known incompatibilities
           # Python 3.10 with pint 0.25 and above
           - python-version: "3.10"
-            pint-version: "'>=0.25,<0.26'"
+            pint-version: "'pint>=0.25,<0.26'"
           - python-version: "3.10"
-            pint-version: ">=0.25"
+            pint-version: "'pint>=0.25'"
           # Python 3.13 with pint <0.24
           # Python 3.11 is the lowest version that supports pint 0.22/0.23
           - python-version: "3.13"
