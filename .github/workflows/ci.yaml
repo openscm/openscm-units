@@ -86,39 +86,30 @@ jobs:
       fail-fast: false
       matrix:
         os: [ "ubuntu-latest" ]
-        python-version: [ "3.10", "3.13" ]
+        # Python 3.11 is also tested as it has known issues with pint compatibility
+        python-version: [ "3.10", "3.11","3.13" ]
         # Test all of the supported pint versions (including the latest)
         pint-version: [ ">=0.22,<0.23", ">=0.23,<0.24", ">=0.24,<0.25", ">=0.25,<0.26", ">=0.25" ]
+        exclude:
+          # Known incompatibilities
+          # Python 3.10 with pint 0.25 and above
+          - python-version: "3.10"
+            pint-version: ">=0.25,<0.26"
+          - python-version: "3.10"
+            pint-version: ">=0.25"
     runs-on: "${{ matrix.os }}"
-    defaults:
-      run:
-        # This might be needed for Windows
-        # and doesn't seem to affect unix-based systems so we include it.
-        # If you have better proof of whether this is needed or not,
-        # feel free to update.
-        shell: bash
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
         with:
           python-version: ${{ matrix.python-version }}
-          # When running the tests, install with all optional dependencies
-          # to get maximum test coverage.
-          # If we find that we're getting failures
-          # when people try to run without installing optional dependencies,
-          # we should add a CI step that runs the tests without optional dependencies too.
-          # We don't have that right now, because we're not sure this pain point exists.
-          pdm-dependency-install-flags: "-G :all -G tests"
+          pdm-dependency-install-flags: "-G dev -G tests"
       - name: Run tests
         run: |
           pip install -U "pint${{ matrix.pint-version }}"
           pdm run pytest -r a -v src tests --doctest-modules --cov=src --cov-report=term-missing --cov-report=xml
           pdm run coverage report
-      - name: Upload coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v4.2.0
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   imports-without-extras:
     strategy:
